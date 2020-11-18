@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DeviceInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <AnalyManuf>厦门海腾发动机测试设备有限公司</AnalyManuf>
+  <AnalyName>尾气分析仪</AnalyName>
+  <AnalyModel>AVL DITEST GAS 1000 UV</AnalyModel>
+  <AnalyDate></AnalyDate>
+  <DynoModel>SH-ME-Dyno</DynoModel>
+  <DynoManuf>上海赛赫</DynoManuf>
+</DeviceInfo>
