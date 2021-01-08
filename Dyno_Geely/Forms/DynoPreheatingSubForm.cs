@@ -49,7 +49,7 @@ namespace Dyno_Geely {
                     if (ackParams.speed > 10) {
                         _bCanStop = true;
                     }
-                    if (ackParams.speed < 0.01 && _bCanStop) {
+                    if (ackParams.dynoPreheat || (ackParams.speed < 0.01 && _bCanStop)) {
                         _timer.Enabled = false;
                         _dicResults[this] = true;
                         try {
@@ -59,6 +59,7 @@ namespace Dyno_Geely {
                                 btnStart.Enabled = true;
                                 btnStop.Enabled = false;
                                 lblMsg.Text = "测功机预热成功结束";
+                                btnBeamUp.PerformClick();
                             });
                         } catch (ObjectDisposedException) {
                             // 关闭窗口后仍有一定几率会进入主UI线程，此时访问界面元素会引发此异常，直接忽略即可
@@ -71,7 +72,7 @@ namespace Dyno_Geely {
                         };
                         if (!_dynoCmd.SaveDynoPreheatDataCmd(cmdParams)) {
                             MessageBox.Show("执行保存测功机预热数据命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
+                            //return;
                         }
                         PreheatingDoneEventArgs args = new PreheatingDoneEventArgs {
                             Result = _dicResults[this]

@@ -8,11 +8,11 @@
     <PassWord>tiger</PassWord>
   </MES>
   <Native>
-    <UserName>root</UserName>
+    <UserName>sa</UserName>
     <PassWord>sh49</PassWord>
-    <DBName>DYNO_GEELY</DBName>
+    <DBName>ProAsm_G4</DBName>
     <IP>127.0.0.1</IP>
-    <Port>3306</Port>
+    <Port>1433</Port>
   </Native>
   <Dyno>
     <Host>192.168.1.49</Host>
@@ -22,9 +22,6 @@
     <PassWord>tiger</PassWord>
   </Dyno>
   <Flowmeter>
-    <O2SpanLow>19.8</O2SpanLow>
-    <O2SpanHigh>21.8</O2SpanHigh>
-    <LowFlowSpan>97</LowFlowSpan>
     <TargetPressure>101.3</TargetPressure>
     <TargetTempe>23.5</TargetTempe>
   </Flowmeter>
@@ -33,6 +30,10 @@
     <K50Std>0</K50Std>
     <K70Std>0</K70Std>
   </Smoker>
+  <OilTemp>
+    <TempStd>20</TempStd>
+    <ErrStd>2</ErrStd>
+  </OilTemp>
   <Weather>
     <ErrTempeStd>0.5</ErrTempeStd>
     <ErrHumidityStd>3</ErrHumidityStd>
@@ -43,7 +44,6 @@
   </Weather>
   <RealtimeInterval>1000</RealtimeInterval>
   <Name>操作员</Name>
-  <LastID>0</LastID>
   <DynoIP>127.0.0.1</DynoIP>
   <DynoPort>5555</DynoPort>
   <RecvTimeout>5000</RecvTimeout>

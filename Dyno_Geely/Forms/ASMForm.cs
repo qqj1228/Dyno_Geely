@@ -15,7 +15,7 @@ namespace Dyno_Geely {
         private readonly string _VIN;
         private readonly DynoCmd _dynoCmd;
         private readonly MainSetting _mainCfg;
-        private readonly ModelMySQL _db;
+        private readonly ModelLocal _db;
         private readonly EnvironmentData _envData;
         private readonly Logger _log;
         private readonly System.Timers.Timer _timer;
@@ -24,7 +24,7 @@ namespace Dyno_Geely {
         private readonly ASMResultForm f_result;
         private DateTime _startTime;
 
-        public ASMForm(string VIN, DynoCmd dynoCmd, MainSetting mainCfg, ModelMySQL db, EnvironmentData envData, Logger log) {
+        public ASMForm(string VIN, DynoCmd dynoCmd, MainSetting mainCfg, ModelLocal db, EnvironmentData envData, Logger log) {
             InitializeComponent();
             _lastHeight = this.Height;
             _VIN = VIN;
@@ -215,7 +215,7 @@ namespace Dyno_Geely {
 
         private void SaveDBData() {
             _db.SetTestQTYInVehicleInfo(_VIN);
-            _db.InsertRecords(_dtRealTime.TableName, _dtRealTime);
+            _db.InsertRecords(_dtRealTime);
             _db.SaveASMResult(_VIN, _startTime, Convert.ToDouble(_dtRealTime.Rows[_dtRealTime.Rows.Count - 1]["TimeSN"]), _envData, _resultData);
         }
 

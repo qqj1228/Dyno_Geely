@@ -17,7 +17,7 @@ namespace Dyno_Geely.Forms {
         private readonly Dictionary<Form, bool> _dicResults;
         private readonly System.Timers.Timer _timer;
         public event EventHandler<PreheatingDoneEventArgs> PreheatingDone;
-        // -1: 未开始; 0：预热；1：清零；2：泄露检查；3：低流量检查；4：氧量程检查
+        // -1: 停止检测; 0：预热；1：清零；2：泄露检查；3：低流量检查；4：氧量程检查
         private int _step;
         // 结果数组, 存放每一步的结果, -1: 失败, 0: 无结果, 1: 成功
         // [0]：预热；[1]：清零；[2]：泄露检查；[3]：低流量检查；[4]：氧量程检查
@@ -42,7 +42,7 @@ namespace Dyno_Geely.Forms {
                 _timer.Enabled = false;
                 _dynoCmd.GetGasBoxPreheatSelfCheckRealTimeDataCmd(true, ref ackParams);
                 _step++;
-                if (!_dynoCmd.StartGasBoxPreheatSelfCheckCmd(false, _step)) {
+                if (!_dynoCmd.StartGasBoxPreheatSelfCheckCmd(false, _step, false, false)) {
                     MessageBox.Show("执行开始分析仪预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _timer.Enabled = true;
@@ -170,7 +170,7 @@ namespace Dyno_Geely.Forms {
             for (int i = 0; i < _iResults.Length; i++) {
                 _iResults[i] = 0;
             }
-            if (!_dynoCmd.StartGasBoxPreheatSelfCheckCmd(false, _step)) {
+            if (!_dynoCmd.StartGasBoxPreheatSelfCheckCmd(false, _step, false, false)) {
                 MessageBox.Show("执行开始分析仪预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
             } else {
                 _timer.Enabled = true;
@@ -184,7 +184,7 @@ namespace Dyno_Geely.Forms {
 
         private void BtnStop_Click(object sender, EventArgs e) {
             _dynoCmd.ReconnectServer();
-            if (!_dynoCmd.StartGasBoxPreheatSelfCheckCmd(true, _step)) {
+            if (!_dynoCmd.StartGasBoxPreheatSelfCheckCmd(true, -1, false, false)) {
                 MessageBox.Show("执行停止分析仪预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
             } else {
                 _timer.Enabled = false;

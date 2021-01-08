@@ -28,6 +28,8 @@
             DevComponents.DotNetBar.Layout.BorderPattern borderPattern3 = new DevComponents.DotNetBar.Layout.BorderPattern();
             DevComponents.DotNetBar.Layout.BorderPattern borderPattern4 = new DevComponents.DotNetBar.Layout.BorderPattern();
             this.layoutMain = new DevComponents.DotNetBar.Layout.LayoutControl();
+            this.txtBoxTargetPressure = new System.Windows.Forms.TextBox();
+            this.txtBoxTargetTempe = new System.Windows.Forms.TextBox();
             this.btnStop = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
             this.lblLowFlowSpan = new System.Windows.Forms.Label();
@@ -37,10 +39,8 @@
             this.lblO2Span = new System.Windows.Forms.Label();
             this.lblDiluteO2 = new System.Windows.Forms.Label();
             this.lblO2SpanCheck = new System.Windows.Forms.Label();
-            this.lblTargetTempe = new System.Windows.Forms.Label();
             this.lblTemperature = new System.Windows.Forms.Label();
             this.lblTempeCheck = new System.Windows.Forms.Label();
-            this.lblTargetPressure = new System.Windows.Forms.Label();
             this.lblPressure = new System.Windows.Forms.Label();
             this.lblPressureCheck = new System.Windows.Forms.Label();
             this.lblResult = new System.Windows.Forms.Label();
@@ -55,11 +55,11 @@
             this.layoutControlItem19 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem21 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutGroup3 = new DevComponents.DotNetBar.Layout.LayoutGroup();
-            this.layoutControlItem23 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem34 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem24 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem25 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutGroup4 = new DevComponents.DotNetBar.Layout.LayoutGroup();
-            this.layoutControlItem26 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem23 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem28 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem30 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem31 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
@@ -88,6 +88,8 @@
             // layoutMain
             // 
             this.layoutMain.BackColor = System.Drawing.Color.Transparent;
+            this.layoutMain.Controls.Add(this.txtBoxTargetPressure);
+            this.layoutMain.Controls.Add(this.txtBoxTargetTempe);
             this.layoutMain.Controls.Add(this.btnStop);
             this.layoutMain.Controls.Add(this.btnStart);
             this.layoutMain.Controls.Add(this.lblLowFlowSpan);
@@ -97,10 +99,8 @@
             this.layoutMain.Controls.Add(this.lblO2Span);
             this.layoutMain.Controls.Add(this.lblDiluteO2);
             this.layoutMain.Controls.Add(this.lblO2SpanCheck);
-            this.layoutMain.Controls.Add(this.lblTargetTempe);
             this.layoutMain.Controls.Add(this.lblTemperature);
             this.layoutMain.Controls.Add(this.lblTempeCheck);
-            this.layoutMain.Controls.Add(this.lblTargetPressure);
             this.layoutMain.Controls.Add(this.lblPressure);
             this.layoutMain.Controls.Add(this.lblPressureCheck);
             this.layoutMain.Controls.Add(this.lblResult);
@@ -123,6 +123,24 @@
             this.layoutControlItem33});
             this.layoutMain.Size = new System.Drawing.Size(784, 411);
             this.layoutMain.TabIndex = 1;
+            // 
+            // txtBoxTargetPressure
+            // 
+            this.txtBoxTargetPressure.Location = new System.Drawing.Point(487, 257);
+            this.txtBoxTargetPressure.Margin = new System.Windows.Forms.Padding(0);
+            this.txtBoxTargetPressure.Name = "txtBoxTargetPressure";
+            this.txtBoxTargetPressure.Size = new System.Drawing.Size(289, 32);
+            this.txtBoxTargetPressure.TabIndex = 14;
+            this.txtBoxTargetPressure.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // txtBoxTargetTempe
+            // 
+            this.txtBoxTargetTempe.Location = new System.Drawing.Point(95, 257);
+            this.txtBoxTargetTempe.Margin = new System.Windows.Forms.Padding(0);
+            this.txtBoxTargetTempe.Name = "txtBoxTargetTempe";
+            this.txtBoxTargetTempe.Size = new System.Drawing.Size(289, 32);
+            this.txtBoxTargetTempe.TabIndex = 10;
+            this.txtBoxTargetTempe.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // btnStop
             // 
@@ -237,25 +255,12 @@
             this.lblO2SpanCheck.Text = "--";
             this.lblO2SpanCheck.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // lblTargetTempe
-            // 
-            this.lblTargetTempe.AutoSize = true;
-            this.lblTargetTempe.BackColor = System.Drawing.Color.Black;
-            this.lblTargetTempe.ForeColor = System.Drawing.Color.Gold;
-            this.lblTargetTempe.Location = new System.Drawing.Point(95, 257);
-            this.lblTargetTempe.Margin = new System.Windows.Forms.Padding(0);
-            this.lblTargetTempe.Name = "lblTargetTempe";
-            this.lblTargetTempe.Size = new System.Drawing.Size(289, 24);
-            this.lblTargetTempe.TabIndex = 10;
-            this.lblTargetTempe.Text = "--";
-            this.lblTargetTempe.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // lblTemperature
             // 
             this.lblTemperature.AutoSize = true;
             this.lblTemperature.BackColor = System.Drawing.Color.Black;
             this.lblTemperature.ForeColor = System.Drawing.Color.Gold;
-            this.lblTemperature.Location = new System.Drawing.Point(95, 289);
+            this.lblTemperature.Location = new System.Drawing.Point(95, 290);
             this.lblTemperature.Margin = new System.Windows.Forms.Padding(0);
             this.lblTemperature.Name = "lblTemperature";
             this.lblTemperature.Size = new System.Drawing.Size(289, 24);
@@ -268,33 +273,20 @@
             this.lblTempeCheck.AutoSize = true;
             this.lblTempeCheck.BackColor = System.Drawing.Color.Black;
             this.lblTempeCheck.ForeColor = System.Drawing.Color.Gold;
-            this.lblTempeCheck.Location = new System.Drawing.Point(95, 321);
+            this.lblTempeCheck.Location = new System.Drawing.Point(95, 322);
             this.lblTempeCheck.Margin = new System.Windows.Forms.Padding(0);
             this.lblTempeCheck.Name = "lblTempeCheck";
-            this.lblTempeCheck.Size = new System.Drawing.Size(289, 25);
+            this.lblTempeCheck.Size = new System.Drawing.Size(289, 24);
             this.lblTempeCheck.TabIndex = 12;
             this.lblTempeCheck.Text = "--";
             this.lblTempeCheck.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // lblTargetPressure
-            // 
-            this.lblTargetPressure.AutoSize = true;
-            this.lblTargetPressure.BackColor = System.Drawing.Color.Black;
-            this.lblTargetPressure.ForeColor = System.Drawing.Color.Gold;
-            this.lblTargetPressure.Location = new System.Drawing.Point(487, 257);
-            this.lblTargetPressure.Margin = new System.Windows.Forms.Padding(0);
-            this.lblTargetPressure.Name = "lblTargetPressure";
-            this.lblTargetPressure.Size = new System.Drawing.Size(289, 24);
-            this.lblTargetPressure.TabIndex = 14;
-            this.lblTargetPressure.Text = "--";
-            this.lblTargetPressure.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblPressure
             // 
             this.lblPressure.AutoSize = true;
             this.lblPressure.BackColor = System.Drawing.Color.Black;
             this.lblPressure.ForeColor = System.Drawing.Color.Gold;
-            this.lblPressure.Location = new System.Drawing.Point(487, 289);
+            this.lblPressure.Location = new System.Drawing.Point(487, 290);
             this.lblPressure.Margin = new System.Windows.Forms.Padding(0);
             this.lblPressure.Name = "lblPressure";
             this.lblPressure.Size = new System.Drawing.Size(289, 24);
@@ -307,10 +299,10 @@
             this.lblPressureCheck.AutoSize = true;
             this.lblPressureCheck.BackColor = System.Drawing.Color.Black;
             this.lblPressureCheck.ForeColor = System.Drawing.Color.Gold;
-            this.lblPressureCheck.Location = new System.Drawing.Point(487, 321);
+            this.lblPressureCheck.Location = new System.Drawing.Point(487, 322);
             this.lblPressureCheck.Margin = new System.Windows.Forms.Padding(0);
             this.lblPressureCheck.Name = "lblPressureCheck";
-            this.lblPressureCheck.Size = new System.Drawing.Size(289, 25);
+            this.lblPressureCheck.Size = new System.Drawing.Size(289, 24);
             this.lblPressureCheck.TabIndex = 16;
             this.lblPressureCheck.Text = "--";
             this.lblPressureCheck.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -475,7 +467,7 @@
             this.layoutGroup3.Height = 35;
             this.layoutGroup3.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             this.layoutGroup3.Items.AddRange(new DevComponents.DotNetBar.Layout.LayoutItemBase[] {
-            this.layoutControlItem23,
+            this.layoutControlItem34,
             this.layoutControlItem24,
             this.layoutControlItem25});
             this.layoutGroup3.MinSize = new System.Drawing.Size(120, 32);
@@ -494,18 +486,17 @@
             this.layoutGroup3.Width = 50;
             this.layoutGroup3.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
-            // layoutControlItem23
+            // layoutControlItem34
             // 
-            this.layoutControlItem23.Control = this.lblTargetTempe;
-            this.layoutControlItem23.Height = 33;
-            this.layoutControlItem23.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem23.MinSize = new System.Drawing.Size(64, 18);
-            this.layoutControlItem23.Name = "layoutControlItem23";
-            this.layoutControlItem23.Text = "目标值:";
-            this.layoutControlItem23.TextAlignment = DevComponents.DotNetBar.Layout.eTextAlignment.Center;
-            this.layoutControlItem23.TextLineAlignment = DevComponents.DotNetBar.Layout.eTextLineAlignment.Middle;
-            this.layoutControlItem23.Width = 100;
-            this.layoutControlItem23.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem34.Control = this.txtBoxTargetTempe;
+            this.layoutControlItem34.Height = 34;
+            this.layoutControlItem34.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem34.Name = "layoutControlItem34";
+            this.layoutControlItem34.Text = "目标值:";
+            this.layoutControlItem34.TextAlignment = DevComponents.DotNetBar.Layout.eTextAlignment.Center;
+            this.layoutControlItem34.TextLineAlignment = DevComponents.DotNetBar.Layout.eTextLineAlignment.Middle;
+            this.layoutControlItem34.Width = 100;
+            this.layoutControlItem34.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
             // layoutControlItem24
             // 
@@ -523,7 +514,7 @@
             // layoutControlItem25
             // 
             this.layoutControlItem25.Control = this.lblTempeCheck;
-            this.layoutControlItem25.Height = 34;
+            this.layoutControlItem25.Height = 33;
             this.layoutControlItem25.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             this.layoutControlItem25.MinSize = new System.Drawing.Size(64, 18);
             this.layoutControlItem25.Name = "layoutControlItem25";
@@ -538,7 +529,7 @@
             this.layoutGroup4.Height = 35;
             this.layoutGroup4.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             this.layoutGroup4.Items.AddRange(new DevComponents.DotNetBar.Layout.LayoutItemBase[] {
-            this.layoutControlItem26,
+            this.layoutControlItem23,
             this.layoutControlItem28,
             this.layoutControlItem30});
             this.layoutGroup4.MinSize = new System.Drawing.Size(120, 32);
@@ -557,18 +548,17 @@
             this.layoutGroup4.Width = 50;
             this.layoutGroup4.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
-            // layoutControlItem26
+            // layoutControlItem23
             // 
-            this.layoutControlItem26.Control = this.lblTargetPressure;
-            this.layoutControlItem26.Height = 33;
-            this.layoutControlItem26.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem26.MinSize = new System.Drawing.Size(64, 18);
-            this.layoutControlItem26.Name = "layoutControlItem26";
-            this.layoutControlItem26.Text = "目标值:";
-            this.layoutControlItem26.TextAlignment = DevComponents.DotNetBar.Layout.eTextAlignment.Center;
-            this.layoutControlItem26.TextLineAlignment = DevComponents.DotNetBar.Layout.eTextLineAlignment.Middle;
-            this.layoutControlItem26.Width = 100;
-            this.layoutControlItem26.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem23.Control = this.txtBoxTargetPressure;
+            this.layoutControlItem23.Height = 34;
+            this.layoutControlItem23.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem23.Name = "layoutControlItem23";
+            this.layoutControlItem23.Text = "目标值:";
+            this.layoutControlItem23.TextAlignment = DevComponents.DotNetBar.Layout.eTextAlignment.Center;
+            this.layoutControlItem23.TextLineAlignment = DevComponents.DotNetBar.Layout.eTextLineAlignment.Middle;
+            this.layoutControlItem23.Width = 100;
+            this.layoutControlItem23.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
             // layoutControlItem28
             // 
@@ -586,7 +576,7 @@
             // layoutControlItem30
             // 
             this.layoutControlItem30.Control = this.lblPressureCheck;
-            this.layoutControlItem30.Height = 34;
+            this.layoutControlItem30.Height = 33;
             this.layoutControlItem30.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             this.layoutControlItem30.MinSize = new System.Drawing.Size(64, 18);
             this.layoutControlItem30.Name = "layoutControlItem30";
@@ -790,7 +780,6 @@
             // 
             // layoutControlItem22
             // 
-            this.layoutControlItem22.Control = this.lblTargetTempe;
             this.layoutControlItem22.Height = 33;
             this.layoutControlItem22.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             this.layoutControlItem22.MinSize = new System.Drawing.Size(64, 18);
@@ -874,20 +863,16 @@
         private System.Windows.Forms.Label lblO2Span;
         private System.Windows.Forms.Label lblDiluteO2;
         private System.Windows.Forms.Label lblO2SpanCheck;
-        private System.Windows.Forms.Label lblTargetTempe;
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem18;
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem19;
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem21;
-        private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem23;
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem17;
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem20;
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem22;
         private System.Windows.Forms.Label lblTemperature;
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem24;
         private System.Windows.Forms.Label lblTempeCheck;
-        private System.Windows.Forms.Label lblTargetPressure;
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem25;
-        private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem26;
         private System.Windows.Forms.Label lblPressure;
         private System.Windows.Forms.Label lblPressureCheck;
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem28;
@@ -900,5 +885,9 @@
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem32;
         private System.Windows.Forms.Button btnStop;
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem33;
+        private System.Windows.Forms.TextBox txtBoxTargetTempe;
+        private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem34;
+        private System.Windows.Forms.TextBox txtBoxTargetPressure;
+        private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem23;
     }
 }

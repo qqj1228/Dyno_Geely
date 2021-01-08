@@ -1,183 +1,52 @@
-﻿using MySql.Data.MySqlClient;
+﻿using Dyno_Geely;
+using LibBase;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace Dyno_Geely {
-    public class ModelMySQL {
-        private string _strConn;
-        private readonly Logger _log;
-        private readonly SQLSetting _sqlSetting;
+    public class ModelLocal : ModelBase {
+        private readonly SQLSetting _setting;
 
-        public ModelMySQL(SQLSetting settings, Logger log) {
-            _log = log;
-            _sqlSetting = settings;
-            _strConn = string.Empty;
-            ReadConfig();
+        public ModelLocal(SQLSetting setting, DataBaseType type, Logger log) {
+            _setting = setting;
+            ModelParameter dbParam = new ModelParameter {
+                DataBaseType = type,
+                UserName = _setting.UserName,
+                PassWord = _setting.PassWord,
+                Host = _setting.IP,
+                Port = _setting.Port,
+                DBorService = _setting.DBName
+            };
+            InitDataBase(dbParam, log);
         }
 
-        void ReadConfig() {
-            _strConn = "server=" + _sqlSetting.IP + ";" + "port=" + _sqlSetting.Port + ";";
-            _strConn += "uid=" + _sqlSetting.UserName + ";";
-            _strConn += "pwd=" + _sqlSetting.PassWord + ";";
-            _strConn += "database=" + _sqlSetting.DBName + ";";
-            _strConn += "charset=utf8mb4;";
+        public int DeleteAllRecords(string strTable) {
+            return DeleteRecord(strTable, null);
         }
 
-        public void TestConnect() {
-            using (MySqlConnection mySqlConn = new MySqlConnection(_strConn)) {
-                mySqlConn.Open();
-                mySqlConn.Close();
-            }
+        public int DeleteRecordByID(string strTable, string strID) {
+            return DeleteRecords(strTable, "ID", new List<string>() { strID });
         }
 
-        /// <summary>
-        /// 执行update insert delete语句，失败了返回-1，成功了返回影响的行数
-        /// </summary>
-        /// <param name="connectionString"></param>
-        /// <param name="strSQL"></param>
-        /// <returns></returns>
-        private int ExecuteNonQuery(string strSQL, string Connection) {
-            using (MySqlConnection connection = new MySqlConnection(Connection)) {
-                int val = -1;
-                try {
-                    connection.Open();
-                    MySqlCommand cmd = new MySqlCommand(strSQL, connection);
-                    val = cmd.ExecuteNonQuery();
-                    cmd.Parameters.Clear();
-                } catch (MySqlException ex) {
-                    _log.TraceError("Error SQL: " + strSQL);
-                    _log.TraceError(ex.Message);
-                    throw new Exception(ex.Message);
-                } finally {
-                    if (connection.State != ConnectionState.Closed) {
-                        connection.Close();
-                    }
-                }
-                return val;
-            }
-        }
-
-        private void Query(string strSQL, DataTable dt, string Connection) {
-            using (MySqlConnection connection = new MySqlConnection(Connection)) {
-                try {
-                    connection.Open();
-                    MySqlDataAdapter adapter = new MySqlDataAdapter(strSQL, connection);
-                    adapter.Fill(dt);
-                } catch (MySqlException ex) {
-                    _log.TraceError("Error SQL: " + strSQL);
-                    _log.TraceError(ex.Message);
-                    throw new Exception(ex.Message);
-                } finally {
-                    if (connection.State != ConnectionState.Closed) {
-                        connection.Close();
-                    }
-                }
-            }
-        }
-
-        private object QueryOne(string strSQL, string Connection) {
-            using (MySqlConnection connection = new MySqlConnection(Connection)) {
-                using (MySqlCommand cmd = new MySqlCommand(strSQL, connection)) {
-                    try {
-                        connection.Open();
-                        object obj = cmd.ExecuteScalar();
-                        if ((Object.Equals(obj, null)) || (Object.Equals(obj, System.DBNull.Value))) {
-                            return null;
-                        } else {
-                            return obj;
-                        }
-                    } catch (MySqlException ex) {
-                        _log.TraceError("Error SQL: " + strSQL);
-                        _log.TraceError(ex.Message);
-                        throw new Exception(ex.Message);
-                    } finally {
-                        if (connection.State != ConnectionState.Closed) {
-                            connection.Close();
-                        }
-                    }
-                }
-            }
-        }
-
-        public int InsertRecords(string strTable, DataTable dt) {
-            int iRet = 0;
-            for (int iRow = 0; iRow < dt.Rows.Count; iRow++) {
-                string strSQL = "insert into " + strTable + " (";
-                for (int iCol = 0; iCol < dt.Columns.Count; iCol++) {
-                    if (dt.Rows[iRow][iCol].ToString().Length != 0) {
-                        strSQL += dt.Columns[iCol].ColumnName + ",";
-                    }
-                }
-                strSQL = strSQL.Trim(',');
-                strSQL += ") values (";
-                for (int iCol = 0; iCol < dt.Columns.Count; iCol++) {
-                    if (dt.Rows[iRow][iCol].ToString().Length != 0) {
-                        if (dt.Columns[iCol].DataType == typeof(DateTime)) {
-                            strSQL += "str_to_date('" + ((DateTime)dt.Rows[iRow][iCol]).ToString("yyyyMMdd-HHmmss") + "', '%Y%m%d-%H%i%S'),";
-                        } else {
-                            strSQL += "'" + dt.Rows[iRow][iCol].ToString() + "',";
-                        }
-                    }
-                }
-                strSQL = strSQL.Trim(',');
-                strSQL += ")";
-                iRet += ExecuteNonQuery(strSQL, _strConn);
-            }
-            return iRet;
-        }
-
-        public int UpdateRecords(string strTable, DataTable dt, string strWhereKey, string[] strWhereValues) {
-            int iRet = 0;
-            if (dt.Rows.Count != strWhereValues.Length) {
-                return -1;
-            }
-            for (int iRow = 0; iRow < dt.Rows.Count; iRow++) {
-                string strSQL = "update " + strTable + " set ";
-                for (int iCol = 0; iCol < dt.Columns.Count; iCol++) {
-                    if (dt.Rows[iRow][iCol].ToString().Length != 0 && dt.Rows[iRow][iCol].ToString() != dt.Columns[iCol].ColumnName) {
-                        if (dt.Columns[iCol].DataType == typeof(DateTime)) {
-                            strSQL += dt.Columns[iCol].ColumnName + "=" + "str_to_date('" + ((DateTime)dt.Rows[iRow][iCol]).ToString("yyyyMMdd-HHmmss") + "', '%Y%m%d-%H%i%S'),";
-                        } else {
-                            strSQL += dt.Columns[iCol].ColumnName + "='" + dt.Rows[iRow][iCol].ToString() + "',";
-                        }
-                    }
-                }
-                strSQL = strSQL.Trim(',');
-                strSQL += " where " + strWhereKey + "='" + strWhereValues[iRow] + "'";
-                iRet += ExecuteNonQuery(strSQL, _strConn);
-            }
-            return iRet;
-        }
-
-        public string[] GetValue(string strTable, string strField, string strWhereKey, string strWhereValue, string strDataTimeFormat = "yyyy-MM-dd HH:mm:ss") {
-            string strSQL = "select " + strField + " from " + strTable + " where " + strWhereKey + " = '" + strWhereValue + "'";
-            DataTable dt = new DataTable();
-            Query(strSQL, dt, _strConn);
-            string[] values = new string[dt.Rows.Count];
-            for (int i = 0; i < dt.Rows.Count; i++) {
-                if (dt.Columns[0].DataType == typeof(DateTime)) {
-                    values[i] = ((DateTime)dt.Rows[i][0]).ToString(strDataTimeFormat);
-                } else {
-                    values[i] = dt.Rows[i][0].ToString();
-                }
-            }
-            Array.Sort(values);
-            dt.Dispose();
-            return values;
+        public DateTime GetPreheating() {
+            DataTable dt = new DataTable("SH_Preheating");
+            dt.Columns.Add("LastTime", typeof(DateTime));
+            GetRecords(dt, new Dictionary<string, string> { { "ID", "1" } });
+            return (DateTime)dt.Rows[0]["LastTime"];
         }
 
         public void UpdatePreheating() {
-            DataTable dt = new DataTable("Preheating");
+            DataTable dt = new DataTable("SH_Preheating");
             dt.Columns.Add("LastTime", typeof(DateTime));
             DataRow dr = dt.NewRow();
             dr["LastTime"] = DateTime.Now;
             dt.Rows.Add(dr);
-            UpdateRecords("Preheating", dt, "ID", new string[] { "1" });
+            UpdateRecords(dt, "ID", new List<string>() { "1" });
         }
 
         private void GenerateDataTableFromClass<T>(DataTable dt, T obj) {
@@ -206,67 +75,68 @@ namespace Dyno_Geely {
         }
 
         public void GetVehicleInfo(string strVIN, VehicleInfo vi) {
-            string strSQL = "select * from VehicleInfo where VIN = '" + strVIN + "'";
+            string strSQL = "select * from SH_VehicleInfo where VIN = '" + strVIN + "'";
             DataTable dtVI = new DataTable("VehicleInfo");
-            Query(strSQL, dtVI, _strConn);
+            Query(strSQL, dtVI);
             if (dtVI.Rows.Count > 0) {
                 FillClassFromDataTable(dtVI, vi);
             }
         }
 
         public void SetTestQTYInVehicleInfo(string strVIN) {
-            string strSQL = "select * from VehicleInfo where VIN = '" + strVIN + "'";
-            DataTable dtVI = new DataTable("VehicleInfo");
-            Query(strSQL, dtVI, _strConn);
+            string strSQL = "select * from SH_VehicleInfo where VIN = '" + strVIN + "'";
+            DataTable dtVI = new DataTable("SH_VehicleInfo");
+            Query(strSQL, dtVI);
             if (dtVI.Rows.Count > 0) {
                 DataRow dr = dtVI.Rows[dtVI.Rows.Count - 1];
                 dr["TestQTY"] = Convert.ToInt32(dr["TestQTY"]) + 1;
-                UpdateRecords(dtVI.TableName, dtVI, "ID", new string[] { dr["ID"].ToString() });
+                UpdateRecords(dtVI, "ID", new List<string>() { dr["ID"].ToString() });
             }
         }
 
         public void GetEmissionInfo(string strVIN, EmissionInfo ei) {
-            string strSQL = "select * from VehicleInfo where VIN = '" + strVIN + "'";
-            DataTable dtVI = new DataTable("VehicleInfo");
-            Query(strSQL, dtVI, _strConn);
+            string strSQL = "select * from SH_VehicleInfo where VIN = '" + strVIN + "'";
+            DataTable dtVI = new DataTable("SH_VehicleInfo");
+            Query(strSQL, dtVI);
             if (dtVI.Rows.Count > 0) {
                 DataRow dr = dtVI.Rows[dtVI.Rows.Count - 1];
-                DataTable dtEI = new DataTable("EmissionInfo");
-                strSQL = "select * from EmissionInfo where VehicleModel = '" + dr["VehicleModel"] + "' and OpenInfoSN = '" + dr["OpenInfoSN"] + "'";
-                Query(strSQL, dtEI, _strConn);
+                DataTable dtEI = new DataTable("SH_EmissionInfo");
+                strSQL = "select * from SH_EmissionInfo where VehicleModel = '" + dr["VehicleModel"] + "' and OpenInfoSN = '" + dr["OpenInfoSN"] + "'";
+                Query(strSQL, dtEI);
                 FillClassFromDataTable(dtEI, ei);
             }
         }
 
         public void SaveEmissionInfo(string strVIN, EmissionInfo ei) {
-            string strSQL = "select * from VehicleInfo where VIN = '" + strVIN + "'";
-            DataTable dtVI = new DataTable("VehicleInfo");
-            Query(strSQL, dtVI, _strConn);
+            string strSQL = "select * from SH_VehicleInfo where VIN = '" + strVIN + "'";
+            DataTable dtVI = new DataTable("SH_VehicleInfo");
+            Query(strSQL, dtVI);
 
-            strSQL = "select ID from EmissionInfo where VehicleModel = '" + ei.VehicleModel + "' and OpenInfoSN = '" + ei.OpenInfoSN + "'";
-            object EI_ID = QueryOne(strSQL, _strConn);
+            strSQL = "select ID from SH_EmissionInfo where VehicleModel = '" + ei.VehicleModel + "' and OpenInfoSN = '" + ei.OpenInfoSN + "'";
+            object EI_ID = QueryOne(strSQL);
 
-            DataTable dtEI = new DataTable("EmissionInfo");
+            DataTable dtEI = new DataTable("SH_EmissionInfo");
             GenerateDataTableFromClass(dtEI, ei);
             if (dtVI.Rows.Count > 0) {
                 if (EI_ID != null) {
-                    UpdateRecords(dtEI.TableName, dtEI, "ID", new string[] { EI_ID.ToString() });
+                    UpdateRecords(dtEI, "ID", new List<string>() { EI_ID.ToString() });
                 } else {
-                    InsertRecords(dtEI.TableName, dtEI);
+                    InsertRecords(dtEI);
                 }
             } else {
+                dtVI.Columns.Remove("TestQTY");
                 DataRow dr = dtVI.NewRow();
                 dr["VIN"] = strVIN;
                 dr["VehicleModel"] = ei.VehicleModel;
                 dr["OpenInfoSN"] = ei.OpenInfoSN;
                 dtVI.Rows.Add(dr);
-                InsertRecords(dtVI.TableName, dtVI);
-                InsertRecords(dtEI.TableName, dtEI);
+                InsertRecords(dtVI);
+                InsertRecords(dtEI);
             }
         }
 
         public void SaveLDResult(string strVIN, DateTime startTime, double runningTime, EnvironmentData envData, LDResultData resultData) {
-            DataTable dt = new DataTable("LugdownResult");
+            DataTable dt = new DataTable("SH_LugdownResult");
             dt.Columns.Add("VIN");
             dt.Columns.Add("Temperature");
             dt.Columns.Add("Humidity");
@@ -303,11 +173,11 @@ namespace Dyno_Geely {
             dr["NOx80"] = resultData.NOx80;
             dr["Result"] = resultData.Result == "合格" ? 1 : 0;
             dt.Rows.Add(dr);
-            InsertRecords(dt.TableName, dt);
+            InsertRecords(dt);
         }
 
         public void SaveASMResult(string strVIN, DateTime startTime, double runningTime, EnvironmentData envData, ASMResultData resultData) {
-            DataTable dt = new DataTable("ASMResult");
+            DataTable dt = new DataTable("SH_ASMResult");
             dt.Columns.Add("VIN");
             dt.Columns.Add("Temperature");
             dt.Columns.Add("Humidity");
@@ -362,11 +232,11 @@ namespace Dyno_Geely {
             dr["NO2540Evl"] = resultData.NO2540Evl == "合格" ? 1 : 0;
             dr["Result"] = resultData.Result == "合格" ? 1 : 0;
             dt.Rows.Add(dr);
-            InsertRecords(dt.TableName, dt);
+            InsertRecords(dt);
         }
 
         public void SaveFALResult(string strVIN, DateTime startTime, double runningTime, EnvironmentData envData, FALResultData resultData) {
-            DataTable dt = new DataTable("FALResult");
+            DataTable dt = new DataTable("SH_FALResult");
             dt.Columns.Add("VIN");
             dt.Columns.Add("Temperature");
             dt.Columns.Add("Humidity");
@@ -397,11 +267,11 @@ namespace Dyno_Geely {
             dr["K3"] = resultData.K3;
             dr["Result"] = resultData.Result == "合格" ? 1 : 0;
             dt.Rows.Add(dr);
-            InsertRecords(dt.TableName, dt);
+            InsertRecords(dt);
         }
 
         public void SaveTSIResult(string strVIN, DateTime startTime, double runningTime, EnvironmentData envData, TSIResultData resultData) {
-            DataTable dt = new DataTable("TSIResult");
+            DataTable dt = new DataTable("SH_TSIResult");
             dt.Columns.Add("VIN");
             dt.Columns.Add("Temperature");
             dt.Columns.Add("Humidity");
@@ -444,11 +314,11 @@ namespace Dyno_Geely {
             dr["LambdaResult"] = resultData.LambdaResult == "合格" ? 1 : 0;
             dr["Result"] = resultData.Result == "合格" ? 1 : 0;
             dt.Rows.Add(dr);
-            InsertRecords(dt.TableName, dt);
+            InsertRecords(dt);
         }
 
         public void SaveVMASResult(string strVIN, DateTime startTime, double runningTime, EnvironmentData envData, VMASResultData resultData) {
-            DataTable dt = new DataTable("VMASResult");
+            DataTable dt = new DataTable("SH_VMASResult");
             dt.Columns.Add("VIN");
             dt.Columns.Add("Temperature");
             dt.Columns.Add("Humidity");
@@ -485,7 +355,7 @@ namespace Dyno_Geely {
             dr["NOEvl"] = resultData.NOEvl == "合格" ? 1 : 0;
             dr["Result"] = resultData.Result == "合格" ? 1 : 0;
             dt.Rows.Add(dr);
-            InsertRecords(dt.TableName, dt);
+            InsertRecords(dt);
         }
 
     }

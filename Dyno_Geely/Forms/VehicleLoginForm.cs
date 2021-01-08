@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace Dyno_Geely {
     public partial class VehicleLoginForm : Form {
-        private readonly ModelMySQL _db;
+        private readonly ModelLocal _db;
         private readonly MainSetting _mainCfg;
         private readonly Logger _log;
         private readonly SerialPortClass _sp;
@@ -21,7 +21,7 @@ namespace Dyno_Geely {
         public VehicleInfo VI { get; set; }
         public EmissionInfo EI { get; set; }
 
-        public VehicleLoginForm(ModelMySQL db, MainSetting mainCfg, Logger log) {
+        public VehicleLoginForm(ModelLocal db, MainSetting mainCfg, Logger log) {
             InitializeComponent();
             _lastHeight = this.Height;
             _db = db;
@@ -105,7 +105,7 @@ namespace Dyno_Geely {
             txtBoxEnergyStorage.Text = EI.EnergyStorage;
             txtBoxBatteryCap.Text = EI.BatteryCap;
             cmbBoxTestMethod.SelectedIndex = EI.TestMethod;
-            if (EI.Name.Length > 0) {
+            if (EI.Name != null && EI.Name.Length > 0) {
                 cmbBoxName.Text = EI.Name;
             } else {
                 EI.Name = cmbBoxName.Text;

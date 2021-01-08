@@ -39,13 +39,16 @@ namespace Dyno_Geely {
 
         public DynoCmd(Config cfg) {
             _log = new Logger("DynoCmd", ".\\log", EnumLogLevel.LogLevelAll, true, 100);
+            _log.TraceInfo("================================================================================");
+            _log.TraceInfo("============================== DynoCmd Started =================================");
+            _log.TraceInfo("================================================================================");
             _cfg = cfg;
             _recvBuf = new byte[BUFSIZE];
             _RecvFlag = new ManualResetEvent(true);
             Connected = false;
             ClientID = "SaiHe";
             ServiceID = MD5Encrypt(GetMD5InitString());
-            _dateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = "yyyyMMddHHmmss" };
+            _dateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = "yyyy-M-dd HH:mm:ss" };
         }
 
         ~DynoCmd() {
@@ -151,7 +154,7 @@ namespace Dyno_Geely {
                 _log.TraceError("RecvMsg() occur error: " + ex.Message);
                 return;
             }
-            _log.TraceInfo("Dyno client received raw message: " + Environment.NewLine + strRecv);
+            //_log.TraceInfo("Dyno client received raw message: " + Environment.NewLine + strRecv);
             // 去除头部的一个'{'和尾部的一个'}'
             // 不能使用 strRecv.Trim(new char[] { '{', '}' })，因为会删除尾部连续多个'}'
             if (strRecv.StartsWith("{")) {
@@ -339,7 +342,7 @@ namespace Dyno_Geely {
         }
 
         public bool SaveDynoPreheatDataCmd(SaveDynoPreheatDataParams cmdParams) {
-            if (!DoCmd("SaveDynoPreheatData", cmdParams, false)) {
+            if (!DoCmd("SaveDynoPreheatData", cmdParams, true)) {
                 _log.TraceError("DoCmd(\"SaveDynoPreheatData\") return false");
                 return false;
             }
@@ -351,11 +354,13 @@ namespace Dyno_Geely {
             }
         }
 
-        public bool StartGasBoxPreheatSelfCheckCmd(bool stopCheck, int step) {
+        public bool StartGasBoxPreheatSelfCheckCmd(bool stopCheck, int step, bool isQY, bool isRetry) {
             StartGasBoxPreheatSelfCheckParams cmdParams = new StartGasBoxPreheatSelfCheckParams {
                 ClientID = ClientID,
                 stopCheck = stopCheck,
-                step = step
+                step = step,
+                isQY = isQY,
+                isRetry = isRetry
             };
             if (!DoCmd("StartGasBoxPreheatSelfCheck", cmdParams, true)) {
                 _log.TraceError("DoCmd(\"StartGasBoxPreheatSelfCheck\") return false");
@@ -387,11 +392,13 @@ namespace Dyno_Geely {
             }
         }
 
-        public bool StartFlowmeterCheckCmd(bool stopCheck, int step, ref StartFlowmeterCheckAckParams ackParams) {
+        public bool StartFlowmeterCheckCmd(bool stopCheck, int step, double tempe, double pressure, ref StartFlowmeterCheckAckParams ackParams) {
             StartFlowmeterCheckParams cmdParams = new StartFlowmeterCheckParams {
                 ClientID = ClientID,
                 stopCheck = stopCheck,
-                step = step
+                step = step,
+                FlowmeterTargetPressure = pressure,
+                FlowmeterTargetTempe = tempe
             };
             if (!DoCmd("StartFlowmeterCheck", cmdParams, true)) {
                 _log.TraceError("DoCmd(\"StartFlowmeterCheck\") return false");
@@ -480,6 +487,83 @@ namespace Dyno_Geely {
                 return true;
             } else {
                 _log.TraceError("_msgAckRecv.Cmd[\"SaveWeatherCheckDataAck\"] is wrong");
+                return false;
+            }
+        }
+
+        public bool StartTachometerCheckCmd(ref StartTachometerCheckAckParams ackParams) {
+            StartTachometerCheckParams cmdParams = new StartTachometerCheckParams {
+                ClientID = ClientID
+            };
+            if (!DoCmd("StartTachometerCheck", cmdParams, true)) {
+                _log.TraceError("DoCmd(\"StartTachometerCheck\") return false");
+                return false;
+            }
+            if (_msgAckRecv != null && _msgAckRecv.Cmd == "StartTachometerCheckAck" && _msgAckRecv.Params != null) {
+                ackParams = JsonConvert.DeserializeObject<StartTachometerCheckAckParams>(((JObject)_msgAckRecv.Params).ToString(), _dateTimeConverter);
+                return true;
+            } else {
+                _log.TraceError("_msgAckRecv.Cmd[\"StartFlowmeterCheckAck\"] is wrong");
+                return false;
+            }
+        }
+
+        public bool GetTachometerCheckRealTimeDataCmd(ref GetTachometerCheckRealTimeDataAckParams ackParams) {
+            GetTachometerCheckRealTimeDataParams cmdParams = new GetTachometerCheckRealTimeDataParams {
+                ClientID = ClientID
+            };
+            if (!DoCmd("GetTachometerCheckRealTimeData", cmdParams, false)) {
+                _log.TraceError("DoCmd(\"GetTachometerCheckRealTimeData\") return false");
+                return false;
+            }
+            if (_msgAckRecv != null && _msgAckRecv.Cmd == "GetTachometerCheckRealTimeDataAck" && _msgAckRecv.Params != null) {
+                ackParams = JsonConvert.DeserializeObject<GetTachometerCheckRealTimeDataAckParams>(((JObject)_msgAckRecv.Params).ToString(), _dateTimeConverter);
+                return true;
+            } else {
+                _log.TraceError("_msgAckRecv.Cmd[\"GetFlowmeterCheckRealTimeDataAck\"] is wrong");
+                return false;
+            }
+        }
+
+        public bool SaveTachometerCheckCmd(SaveTachometerCheckParams cmdParams) {
+            if (!DoCmd("SaveTachometerCheck", cmdParams, true)) {
+                _log.TraceError("DoCmd(\"SaveTachometerCheck\") return false");
+                return false;
+            }
+            if (_msgAckRecv != null && _msgAckRecv.Cmd == "SaveTachometerCheckAck") {
+                return true;
+            } else {
+                _log.TraceError("_msgAckRecv.Cmd[\"SaveTachometerCheckAck\"] is wrong");
+                return false;
+            }
+        }
+
+        public bool GetOilThermometerPreheatSelfCheckRealTimeDataCmd(ref GetOilThermometerPreheatSelfCheckRealTimeDataAckParams ackParams) {
+            GetOilThermometerPreheatSelfCheckRealTimeDataParams cmdParams = new GetOilThermometerPreheatSelfCheckRealTimeDataParams {
+                ClientID = ClientID
+            };
+            if (!DoCmd("GetOilThermometerPreheatSelfCheckRealTimeData", cmdParams, false)) {
+                _log.TraceError("DoCmd(\"GetOilThermometerPreheatSelfCheckRealTimeData\") return false");
+                return false;
+            }
+            if (_msgAckRecv != null && _msgAckRecv.Cmd == "GetOilThermometerPreheatSelfCheckRealTimeDataAck" && _msgAckRecv.Params != null) {
+                ackParams = JsonConvert.DeserializeObject<GetOilThermometerPreheatSelfCheckRealTimeDataAckParams>(((JObject)_msgAckRecv.Params).ToString(), _dateTimeConverter);
+                return true;
+            } else {
+                _log.TraceError("_msgAckRecv.Cmd[\"GetOilThermometerPreheatSelfCheckRealTimeDataAck\"] is wrong");
+                return false;
+            }
+        }
+
+        public bool SaveOilThermometerPreheatSelfCheckCmd(SaveOilThermometerPreheatSelfCheckParams cmdParams) {
+            if (!DoCmd("SaveOilThermometerPreheatSelfCheck", cmdParams, true)) {
+                _log.TraceError("DoCmd(\"SaveOilThermometerPreheatSelfCheck\") return false");
+                return false;
+            }
+            if (_msgAckRecv != null && _msgAckRecv.Cmd == "SaveOilThermometerPreheatSelfCheckAck") {
+                return true;
+            } else {
+                _log.TraceError("_msgAckRecv.Cmd[\"SaveOilThermometerPreheatSelfCheckAck\"] is wrong");
                 return false;
             }
         }

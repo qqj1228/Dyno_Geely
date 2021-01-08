@@ -27,47 +27,47 @@ namespace Dyno_Geely {
             DevComponents.DotNetBar.Layout.BorderPattern borderPattern1 = new DevComponents.DotNetBar.Layout.BorderPattern();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VMASResultForm));
             this.layoutMain = new DevComponents.DotNetBar.Layout.LayoutControl();
-            this.lblMsg = new System.Windows.Forms.Label();
-            this.layoutControlItem1 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
-            this.layoutSpacerItem1 = new DevComponents.DotNetBar.Layout.LayoutSpacerItem();
-            this.label1 = new System.Windows.Forms.Label();
-            this.layoutControlItem2 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
-            this.label2 = new System.Windows.Forms.Label();
-            this.layoutControlItem3 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
-            this.label3 = new System.Windows.Forms.Label();
-            this.layoutControlItem4 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
-            this.label4 = new System.Windows.Forms.Label();
-            this.layoutControlItem5 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.lblHCLimit = new System.Windows.Forms.Label();
-            this.layoutControlItem6 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.label1 = new System.Windows.Forms.Label();
+            this.lblMsg = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.lblCOLimit = new System.Windows.Forms.Label();
-            this.layoutControlItem7 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.lblNOLimit = new System.Windows.Forms.Label();
-            this.layoutControlItem8 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.label5 = new System.Windows.Forms.Label();
-            this.layoutControlItem9 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.lblHC = new System.Windows.Forms.Label();
-            this.layoutControlItem10 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.lblCO = new System.Windows.Forms.Label();
-            this.layoutControlItem11 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.lblNO = new System.Windows.Forms.Label();
-            this.layoutControlItem12 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.label6 = new System.Windows.Forms.Label();
-            this.layoutControlItem13 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.lblHCEvl = new System.Windows.Forms.Label();
-            this.layoutControlItem14 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.lblCOEvl = new System.Windows.Forms.Label();
-            this.layoutControlItem15 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.lblNOEvl = new System.Windows.Forms.Label();
-            this.layoutControlItem16 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
-            this.layoutGroup1 = new DevComponents.DotNetBar.Layout.LayoutGroup();
             this.label7 = new System.Windows.Forms.Label();
-            this.layoutControlItem17 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.lblHCNO = new System.Windows.Forms.Label();
-            this.layoutControlItem18 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.label8 = new System.Windows.Forms.Label();
-            this.layoutControlItem19 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.lblResult = new System.Windows.Forms.Label();
+            this.layoutControlItem1 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutGroup1 = new DevComponents.DotNetBar.Layout.LayoutGroup();
+            this.layoutSpacerItem1 = new DevComponents.DotNetBar.Layout.LayoutSpacerItem();
+            this.layoutControlItem2 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem3 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem4 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem5 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem6 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem7 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem8 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem9 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem10 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem11 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem12 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem13 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem14 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem15 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem16 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem17 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem18 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem19 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem20 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutMain.SuspendLayout();
             this.SuspendLayout();
@@ -112,58 +112,41 @@ namespace Dyno_Geely {
             this.layoutMain.Size = new System.Drawing.Size(784, 561);
             this.layoutMain.TabIndex = 0;
             // 
-            // lblMsg
+            // lblHCLimit
             // 
-            this.lblMsg.AutoSize = true;
-            this.lblMsg.Location = new System.Drawing.Point(4, 4);
-            this.lblMsg.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
-            this.lblMsg.Name = "lblMsg";
-            this.lblMsg.Size = new System.Drawing.Size(776, 81);
-            this.lblMsg.TabIndex = 0;
-            this.lblMsg.Text = "简易瞬态工况法结果数据";
-            this.lblMsg.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // layoutControlItem1
-            // 
-            this.layoutControlItem1.Control = this.lblMsg;
-            this.layoutControlItem1.Height = 16;
-            this.layoutControlItem1.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Text = "Label:";
-            this.layoutControlItem1.TextVisible = false;
-            this.layoutControlItem1.Width = 100;
-            this.layoutControlItem1.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            // 
-            // layoutSpacerItem1
-            // 
-            this.layoutSpacerItem1.Height = 25;
-            this.layoutSpacerItem1.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutSpacerItem1.Name = "layoutSpacerItem1";
-            this.layoutSpacerItem1.Width = 25;
-            this.layoutSpacerItem1.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.lblHCLimit.AutoSize = true;
+            this.lblHCLimit.BackColor = System.Drawing.Color.Black;
+            this.lblHCLimit.ForeColor = System.Drawing.Color.Gold;
+            this.lblHCLimit.Location = new System.Drawing.Point(202, 190);
+            this.lblHCLimit.Margin = new System.Windows.Forms.Padding(0);
+            this.lblHCLimit.Name = "lblHCLimit";
+            this.lblHCLimit.Size = new System.Drawing.Size(186, 85);
+            this.lblHCLimit.TabIndex = 6;
+            this.lblHCLimit.Text = "--";
+            this.lblHCLimit.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.LightYellow;
             this.label1.Location = new System.Drawing.Point(202, 97);
-            this.label1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.label1.Margin = new System.Windows.Forms.Padding(0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(186, 85);
             this.label1.TabIndex = 2;
             this.label1.Text = "HC(g/km)";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // layoutControlItem2
+            // lblMsg
             // 
-            this.layoutControlItem2.Control = this.label1;
-            this.layoutControlItem2.Height = 25;
-            this.layoutControlItem2.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Text = "Label:";
-            this.layoutControlItem2.TextVisible = false;
-            this.layoutControlItem2.Width = 25;
-            this.layoutControlItem2.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.lblMsg.AutoSize = true;
+            this.lblMsg.Location = new System.Drawing.Point(4, 4);
+            this.lblMsg.Margin = new System.Windows.Forms.Padding(0);
+            this.lblMsg.Name = "lblMsg";
+            this.lblMsg.Size = new System.Drawing.Size(776, 81);
+            this.lblMsg.TabIndex = 0;
+            this.lblMsg.Text = "简易瞬态工况法结果数据";
+            this.lblMsg.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label2
             // 
@@ -177,17 +160,6 @@ namespace Dyno_Geely {
             this.label2.Text = "CO(g/km)";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // layoutControlItem3
-            // 
-            this.layoutControlItem3.Control = this.label2;
-            this.layoutControlItem3.Height = 25;
-            this.layoutControlItem3.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem3.Name = "layoutControlItem3";
-            this.layoutControlItem3.Text = "Label:";
-            this.layoutControlItem3.TextVisible = false;
-            this.layoutControlItem3.Width = 25;
-            this.layoutControlItem3.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -200,17 +172,6 @@ namespace Dyno_Geely {
             this.label3.Text = "NO(g/km)";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // layoutControlItem4
-            // 
-            this.layoutControlItem4.Control = this.label3;
-            this.layoutControlItem4.Height = 25;
-            this.layoutControlItem4.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem4.Name = "layoutControlItem4";
-            this.layoutControlItem4.Text = "Label:";
-            this.layoutControlItem4.TextVisible = false;
-            this.layoutControlItem4.Width = 25;
-            this.layoutControlItem4.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            // 
             // label4
             // 
             this.label4.AutoSize = true;
@@ -222,41 +183,6 @@ namespace Dyno_Geely {
             this.label4.TabIndex = 5;
             this.label4.Text = "限值";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // layoutControlItem5
-            // 
-            this.layoutControlItem5.Control = this.label4;
-            this.layoutControlItem5.Height = 25;
-            this.layoutControlItem5.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem5.Name = "layoutControlItem5";
-            this.layoutControlItem5.Text = "Label:";
-            this.layoutControlItem5.TextVisible = false;
-            this.layoutControlItem5.Width = 25;
-            this.layoutControlItem5.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            // 
-            // lblHCLimit
-            // 
-            this.lblHCLimit.AutoSize = true;
-            this.lblHCLimit.BackColor = System.Drawing.Color.Black;
-            this.lblHCLimit.ForeColor = System.Drawing.Color.Gold;
-            this.lblHCLimit.Location = new System.Drawing.Point(202, 190);
-            this.lblHCLimit.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
-            this.lblHCLimit.Name = "lblHCLimit";
-            this.lblHCLimit.Size = new System.Drawing.Size(186, 85);
-            this.lblHCLimit.TabIndex = 6;
-            this.lblHCLimit.Text = "--";
-            this.lblHCLimit.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // layoutControlItem6
-            // 
-            this.layoutControlItem6.Control = this.lblHCLimit;
-            this.layoutControlItem6.Height = 25;
-            this.layoutControlItem6.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem6.Name = "layoutControlItem6";
-            this.layoutControlItem6.Text = "Label:";
-            this.layoutControlItem6.TextVisible = false;
-            this.layoutControlItem6.Width = 25;
-            this.layoutControlItem6.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
             // lblCOLimit
             // 
@@ -271,17 +197,6 @@ namespace Dyno_Geely {
             this.lblCOLimit.Text = "--";
             this.lblCOLimit.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // layoutControlItem7
-            // 
-            this.layoutControlItem7.Control = this.lblCOLimit;
-            this.layoutControlItem7.Height = 25;
-            this.layoutControlItem7.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem7.Name = "layoutControlItem7";
-            this.layoutControlItem7.Text = "Label:";
-            this.layoutControlItem7.TextVisible = false;
-            this.layoutControlItem7.Width = 25;
-            this.layoutControlItem7.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            // 
             // lblNOLimit
             // 
             this.lblNOLimit.AutoSize = true;
@@ -295,17 +210,6 @@ namespace Dyno_Geely {
             this.lblNOLimit.Text = "--";
             this.lblNOLimit.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // layoutControlItem8
-            // 
-            this.layoutControlItem8.Control = this.lblNOLimit;
-            this.layoutControlItem8.Height = 25;
-            this.layoutControlItem8.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem8.Name = "layoutControlItem8";
-            this.layoutControlItem8.Text = "Label:";
-            this.layoutControlItem8.TextVisible = false;
-            this.layoutControlItem8.Width = 25;
-            this.layoutControlItem8.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -317,17 +221,6 @@ namespace Dyno_Geely {
             this.label5.TabIndex = 9;
             this.label5.Text = "实测值";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // layoutControlItem9
-            // 
-            this.layoutControlItem9.Control = this.label5;
-            this.layoutControlItem9.Height = 25;
-            this.layoutControlItem9.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem9.Name = "layoutControlItem9";
-            this.layoutControlItem9.Text = "Label:";
-            this.layoutControlItem9.TextVisible = false;
-            this.layoutControlItem9.Width = 25;
-            this.layoutControlItem9.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
             // lblHC
             // 
@@ -342,17 +235,6 @@ namespace Dyno_Geely {
             this.lblHC.Text = "--";
             this.lblHC.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // layoutControlItem10
-            // 
-            this.layoutControlItem10.Control = this.lblHC;
-            this.layoutControlItem10.Height = 25;
-            this.layoutControlItem10.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem10.Name = "layoutControlItem10";
-            this.layoutControlItem10.Text = "Label:";
-            this.layoutControlItem10.TextVisible = false;
-            this.layoutControlItem10.Width = 25;
-            this.layoutControlItem10.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            // 
             // lblCO
             // 
             this.lblCO.AutoSize = true;
@@ -365,17 +247,6 @@ namespace Dyno_Geely {
             this.lblCO.TabIndex = 11;
             this.lblCO.Text = "--";
             this.lblCO.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // layoutControlItem11
-            // 
-            this.layoutControlItem11.Control = this.lblCO;
-            this.layoutControlItem11.Height = 25;
-            this.layoutControlItem11.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem11.Name = "layoutControlItem11";
-            this.layoutControlItem11.Text = "Label:";
-            this.layoutControlItem11.TextVisible = false;
-            this.layoutControlItem11.Width = 25;
-            this.layoutControlItem11.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
             // lblNO
             // 
@@ -390,17 +261,6 @@ namespace Dyno_Geely {
             this.lblNO.Text = "--";
             this.lblNO.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // layoutControlItem12
-            // 
-            this.layoutControlItem12.Control = this.lblNO;
-            this.layoutControlItem12.Height = 25;
-            this.layoutControlItem12.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem12.Name = "layoutControlItem12";
-            this.layoutControlItem12.Text = "Label:";
-            this.layoutControlItem12.TextVisible = false;
-            this.layoutControlItem12.Width = 25;
-            this.layoutControlItem12.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -412,17 +272,6 @@ namespace Dyno_Geely {
             this.label6.TabIndex = 13;
             this.label6.Text = "判定结果";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // layoutControlItem13
-            // 
-            this.layoutControlItem13.Control = this.label6;
-            this.layoutControlItem13.Height = 25;
-            this.layoutControlItem13.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem13.Name = "layoutControlItem13";
-            this.layoutControlItem13.Text = "Label:";
-            this.layoutControlItem13.TextVisible = false;
-            this.layoutControlItem13.Width = 25;
-            this.layoutControlItem13.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
             // lblHCEvl
             // 
@@ -437,17 +286,6 @@ namespace Dyno_Geely {
             this.lblHCEvl.Text = "--";
             this.lblHCEvl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // layoutControlItem14
-            // 
-            this.layoutControlItem14.Control = this.lblHCEvl;
-            this.layoutControlItem14.Height = 25;
-            this.layoutControlItem14.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem14.Name = "layoutControlItem14";
-            this.layoutControlItem14.Text = "Label:";
-            this.layoutControlItem14.TextVisible = false;
-            this.layoutControlItem14.Width = 25;
-            this.layoutControlItem14.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            // 
             // lblCOEvl
             // 
             this.lblCOEvl.AutoSize = true;
@@ -460,17 +298,6 @@ namespace Dyno_Geely {
             this.lblCOEvl.TabIndex = 15;
             this.lblCOEvl.Text = "--";
             this.lblCOEvl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // layoutControlItem15
-            // 
-            this.layoutControlItem15.Control = this.lblCOEvl;
-            this.layoutControlItem15.Height = 25;
-            this.layoutControlItem15.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem15.Name = "layoutControlItem15";
-            this.layoutControlItem15.Text = "Label:";
-            this.layoutControlItem15.TextVisible = false;
-            this.layoutControlItem15.Width = 25;
-            this.layoutControlItem15.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
             // lblNOEvl
             // 
@@ -485,16 +312,66 @@ namespace Dyno_Geely {
             this.lblNOEvl.Text = "--";
             this.lblNOEvl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // layoutControlItem16
+            // label7
             // 
-            this.layoutControlItem16.Control = this.lblNOEvl;
-            this.layoutControlItem16.Height = 25;
-            this.layoutControlItem16.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem16.Name = "layoutControlItem16";
-            this.layoutControlItem16.Text = "Label:";
-            this.layoutControlItem16.TextVisible = false;
-            this.layoutControlItem16.Width = 25;
-            this.layoutControlItem16.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.label7.AutoSize = true;
+            this.label7.BackColor = System.Drawing.Color.LightYellow;
+            this.label7.Location = new System.Drawing.Point(4, 474);
+            this.label7.Margin = new System.Windows.Forms.Padding(0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(188, 81);
+            this.label7.TabIndex = 18;
+            this.label7.Text = "HC+NO(g/km)\r\n实测值";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblHCNO
+            // 
+            this.lblHCNO.AutoSize = true;
+            this.lblHCNO.BackColor = System.Drawing.Color.Black;
+            this.lblHCNO.ForeColor = System.Drawing.Color.Gold;
+            this.lblHCNO.Location = new System.Drawing.Point(200, 474);
+            this.lblHCNO.Margin = new System.Windows.Forms.Padding(0);
+            this.lblHCNO.Name = "lblHCNO";
+            this.lblHCNO.Size = new System.Drawing.Size(188, 81);
+            this.lblHCNO.TabIndex = 19;
+            this.lblHCNO.Text = "--";
+            this.lblHCNO.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.BackColor = System.Drawing.Color.LightYellow;
+            this.label8.Location = new System.Drawing.Point(396, 474);
+            this.label8.Margin = new System.Windows.Forms.Padding(0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(188, 81);
+            this.label8.TabIndex = 20;
+            this.label8.Text = "最终结果";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblResult
+            // 
+            this.lblResult.AutoSize = true;
+            this.lblResult.BackColor = System.Drawing.Color.Black;
+            this.lblResult.ForeColor = System.Drawing.Color.Gold;
+            this.lblResult.Location = new System.Drawing.Point(592, 474);
+            this.lblResult.Margin = new System.Windows.Forms.Padding(0);
+            this.lblResult.Name = "lblResult";
+            this.lblResult.Size = new System.Drawing.Size(188, 81);
+            this.lblResult.TabIndex = 21;
+            this.lblResult.Text = "--";
+            this.lblResult.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // layoutControlItem1
+            // 
+            this.layoutControlItem1.Control = this.lblMsg;
+            this.layoutControlItem1.Height = 16;
+            this.layoutControlItem1.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem1.Name = "layoutControlItem1";
+            this.layoutControlItem1.Text = "Label:";
+            this.layoutControlItem1.TextVisible = false;
+            this.layoutControlItem1.Width = 100;
+            this.layoutControlItem1.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
             // layoutGroup1
             // 
@@ -529,17 +406,178 @@ namespace Dyno_Geely {
             this.layoutGroup1.Width = 100;
             this.layoutGroup1.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
-            // label7
+            // layoutSpacerItem1
             // 
-            this.label7.AutoSize = true;
-            this.label7.BackColor = System.Drawing.Color.LightYellow;
-            this.label7.Location = new System.Drawing.Point(4, 474);
-            this.label7.Margin = new System.Windows.Forms.Padding(0);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(188, 81);
-            this.label7.TabIndex = 19;
-            this.label7.Text = "HC+NO(g/km)\r\n实测值";
-            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.layoutSpacerItem1.Height = 25;
+            this.layoutSpacerItem1.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutSpacerItem1.Name = "layoutSpacerItem1";
+            this.layoutSpacerItem1.Width = 25;
+            this.layoutSpacerItem1.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
+            // layoutControlItem2
+            // 
+            this.layoutControlItem2.Control = this.label1;
+            this.layoutControlItem2.Height = 25;
+            this.layoutControlItem2.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem2.Name = "layoutControlItem2";
+            this.layoutControlItem2.Text = "Label:";
+            this.layoutControlItem2.TextVisible = false;
+            this.layoutControlItem2.Width = 25;
+            this.layoutControlItem2.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
+            // layoutControlItem3
+            // 
+            this.layoutControlItem3.Control = this.label2;
+            this.layoutControlItem3.Height = 25;
+            this.layoutControlItem3.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem3.Name = "layoutControlItem3";
+            this.layoutControlItem3.Text = "Label:";
+            this.layoutControlItem3.TextVisible = false;
+            this.layoutControlItem3.Width = 25;
+            this.layoutControlItem3.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
+            // layoutControlItem4
+            // 
+            this.layoutControlItem4.Control = this.label3;
+            this.layoutControlItem4.Height = 25;
+            this.layoutControlItem4.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem4.Name = "layoutControlItem4";
+            this.layoutControlItem4.Text = "Label:";
+            this.layoutControlItem4.TextVisible = false;
+            this.layoutControlItem4.Width = 25;
+            this.layoutControlItem4.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
+            // layoutControlItem5
+            // 
+            this.layoutControlItem5.Control = this.label4;
+            this.layoutControlItem5.Height = 25;
+            this.layoutControlItem5.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem5.Name = "layoutControlItem5";
+            this.layoutControlItem5.Text = "Label:";
+            this.layoutControlItem5.TextVisible = false;
+            this.layoutControlItem5.Width = 25;
+            this.layoutControlItem5.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
+            // layoutControlItem6
+            // 
+            this.layoutControlItem6.Control = this.lblHCLimit;
+            this.layoutControlItem6.Height = 25;
+            this.layoutControlItem6.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem6.Name = "layoutControlItem6";
+            this.layoutControlItem6.Text = "Label:";
+            this.layoutControlItem6.TextVisible = false;
+            this.layoutControlItem6.Width = 25;
+            this.layoutControlItem6.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
+            // layoutControlItem7
+            // 
+            this.layoutControlItem7.Control = this.lblCOLimit;
+            this.layoutControlItem7.Height = 25;
+            this.layoutControlItem7.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem7.Name = "layoutControlItem7";
+            this.layoutControlItem7.Text = "Label:";
+            this.layoutControlItem7.TextVisible = false;
+            this.layoutControlItem7.Width = 25;
+            this.layoutControlItem7.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
+            // layoutControlItem8
+            // 
+            this.layoutControlItem8.Control = this.lblNOLimit;
+            this.layoutControlItem8.Height = 25;
+            this.layoutControlItem8.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem8.Name = "layoutControlItem8";
+            this.layoutControlItem8.Text = "Label:";
+            this.layoutControlItem8.TextVisible = false;
+            this.layoutControlItem8.Width = 25;
+            this.layoutControlItem8.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
+            // layoutControlItem9
+            // 
+            this.layoutControlItem9.Control = this.label5;
+            this.layoutControlItem9.Height = 25;
+            this.layoutControlItem9.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem9.Name = "layoutControlItem9";
+            this.layoutControlItem9.Text = "Label:";
+            this.layoutControlItem9.TextVisible = false;
+            this.layoutControlItem9.Width = 25;
+            this.layoutControlItem9.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
+            // layoutControlItem10
+            // 
+            this.layoutControlItem10.Control = this.lblHC;
+            this.layoutControlItem10.Height = 25;
+            this.layoutControlItem10.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem10.Name = "layoutControlItem10";
+            this.layoutControlItem10.Text = "Label:";
+            this.layoutControlItem10.TextVisible = false;
+            this.layoutControlItem10.Width = 25;
+            this.layoutControlItem10.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
+            // layoutControlItem11
+            // 
+            this.layoutControlItem11.Control = this.lblCO;
+            this.layoutControlItem11.Height = 25;
+            this.layoutControlItem11.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem11.Name = "layoutControlItem11";
+            this.layoutControlItem11.Text = "Label:";
+            this.layoutControlItem11.TextVisible = false;
+            this.layoutControlItem11.Width = 25;
+            this.layoutControlItem11.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
+            // layoutControlItem12
+            // 
+            this.layoutControlItem12.Control = this.lblNO;
+            this.layoutControlItem12.Height = 25;
+            this.layoutControlItem12.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem12.Name = "layoutControlItem12";
+            this.layoutControlItem12.Text = "Label:";
+            this.layoutControlItem12.TextVisible = false;
+            this.layoutControlItem12.Width = 25;
+            this.layoutControlItem12.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
+            // layoutControlItem13
+            // 
+            this.layoutControlItem13.Control = this.label6;
+            this.layoutControlItem13.Height = 25;
+            this.layoutControlItem13.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem13.Name = "layoutControlItem13";
+            this.layoutControlItem13.Text = "Label:";
+            this.layoutControlItem13.TextVisible = false;
+            this.layoutControlItem13.Width = 25;
+            this.layoutControlItem13.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
+            // layoutControlItem14
+            // 
+            this.layoutControlItem14.Control = this.lblHCEvl;
+            this.layoutControlItem14.Height = 25;
+            this.layoutControlItem14.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem14.Name = "layoutControlItem14";
+            this.layoutControlItem14.Text = "Label:";
+            this.layoutControlItem14.TextVisible = false;
+            this.layoutControlItem14.Width = 25;
+            this.layoutControlItem14.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
+            // layoutControlItem15
+            // 
+            this.layoutControlItem15.Control = this.lblCOEvl;
+            this.layoutControlItem15.Height = 25;
+            this.layoutControlItem15.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem15.Name = "layoutControlItem15";
+            this.layoutControlItem15.Text = "Label:";
+            this.layoutControlItem15.TextVisible = false;
+            this.layoutControlItem15.Width = 25;
+            this.layoutControlItem15.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
+            // layoutControlItem16
+            // 
+            this.layoutControlItem16.Control = this.lblNOEvl;
+            this.layoutControlItem16.Height = 25;
+            this.layoutControlItem16.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem16.Name = "layoutControlItem16";
+            this.layoutControlItem16.Text = "Label:";
+            this.layoutControlItem16.TextVisible = false;
+            this.layoutControlItem16.Width = 25;
+            this.layoutControlItem16.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
             // layoutControlItem17
             // 
@@ -552,19 +590,6 @@ namespace Dyno_Geely {
             this.layoutControlItem17.Width = 25;
             this.layoutControlItem17.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
-            // lblHCNO
-            // 
-            this.lblHCNO.AutoSize = true;
-            this.lblHCNO.BackColor = System.Drawing.Color.Black;
-            this.lblHCNO.ForeColor = System.Drawing.Color.Gold;
-            this.lblHCNO.Location = new System.Drawing.Point(200, 474);
-            this.lblHCNO.Margin = new System.Windows.Forms.Padding(0);
-            this.lblHCNO.Name = "lblHCNO";
-            this.lblHCNO.Size = new System.Drawing.Size(188, 81);
-            this.lblHCNO.TabIndex = 20;
-            this.lblHCNO.Text = "--";
-            this.lblHCNO.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // layoutControlItem18
             // 
             this.layoutControlItem18.Control = this.lblHCNO;
@@ -576,18 +601,6 @@ namespace Dyno_Geely {
             this.layoutControlItem18.Width = 25;
             this.layoutControlItem18.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.BackColor = System.Drawing.Color.LightYellow;
-            this.label8.Location = new System.Drawing.Point(396, 474);
-            this.label8.Margin = new System.Windows.Forms.Padding(0);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(188, 81);
-            this.label8.TabIndex = 21;
-            this.label8.Text = "最终结果";
-            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // layoutControlItem19
             // 
             this.layoutControlItem19.Control = this.label8;
@@ -598,19 +611,6 @@ namespace Dyno_Geely {
             this.layoutControlItem19.TextVisible = false;
             this.layoutControlItem19.Width = 25;
             this.layoutControlItem19.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            // 
-            // lblResult
-            // 
-            this.lblResult.AutoSize = true;
-            this.lblResult.BackColor = System.Drawing.Color.Black;
-            this.lblResult.ForeColor = System.Drawing.Color.Gold;
-            this.lblResult.Location = new System.Drawing.Point(592, 474);
-            this.lblResult.Margin = new System.Windows.Forms.Padding(0);
-            this.lblResult.Name = "lblResult";
-            this.lblResult.Size = new System.Drawing.Size(188, 81);
-            this.lblResult.TabIndex = 22;
-            this.lblResult.Text = "--";
-            this.lblResult.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // layoutControlItem20
             // 
@@ -631,6 +631,7 @@ namespace Dyno_Geely {
             this.Controls.Add(this.layoutMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "VMASResultForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "简易瞬态工况法最终结果";
             this.layoutMain.ResumeLayout(false);
             this.layoutMain.PerformLayout();

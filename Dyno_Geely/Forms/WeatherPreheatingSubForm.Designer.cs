@@ -83,8 +83,8 @@
             this.txtBoxErrPressureStd.Size = new System.Drawing.Size(143, 32);
             this.txtBoxErrPressureStd.TabIndex = 17;
             this.txtBoxErrPressureStd.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtBoxErrPressureStd.TextChanged += new System.EventHandler(this.TxtBox_TextChanged);
             this.txtBoxErrPressureStd.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox_KeyPress);
-            this.txtBoxErrPressureStd.Leave += new System.EventHandler(this.TxtBoxErrPressureStd_Leave);
             // 
             // txtBoxErrHumidityStd
             // 
@@ -94,8 +94,8 @@
             this.txtBoxErrHumidityStd.Size = new System.Drawing.Size(133, 32);
             this.txtBoxErrHumidityStd.TabIndex = 10;
             this.txtBoxErrHumidityStd.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtBoxErrHumidityStd.TextChanged += new System.EventHandler(this.TxtBox_TextChanged);
             this.txtBoxErrHumidityStd.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox_KeyPress);
-            this.txtBoxErrHumidityStd.Leave += new System.EventHandler(this.TxtBoxErrHumidityStd_Leave);
             // 
             // txtBoxErrTempeStd
             // 
@@ -105,8 +105,8 @@
             this.txtBoxErrTempeStd.Size = new System.Drawing.Size(133, 32);
             this.txtBoxErrTempeStd.TabIndex = 3;
             this.txtBoxErrTempeStd.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtBoxErrTempeStd.TextChanged += new System.EventHandler(this.TxtBox_TextChanged);
             this.txtBoxErrTempeStd.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox_KeyPress);
-            this.txtBoxErrTempeStd.Leave += new System.EventHandler(this.TxtBoxErrTempeStd_Leave);
             // 
             // btnPressure
             // 
@@ -229,8 +229,8 @@
             this.txtBoxEnvPressure.Size = new System.Drawing.Size(143, 32);
             this.txtBoxEnvPressure.TabIndex = 16;
             this.txtBoxEnvPressure.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtBoxEnvPressure.TextChanged += new System.EventHandler(this.TxtBox_TextChanged);
             this.txtBoxEnvPressure.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox_KeyPress);
-            this.txtBoxEnvPressure.Leave += new System.EventHandler(this.TxtBoxEnvPressure_Leave);
             // 
             // txtBoxEnvHumidity
             // 
@@ -240,8 +240,8 @@
             this.txtBoxEnvHumidity.Size = new System.Drawing.Size(133, 32);
             this.txtBoxEnvHumidity.TabIndex = 9;
             this.txtBoxEnvHumidity.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtBoxEnvHumidity.TextChanged += new System.EventHandler(this.TxtBox_TextChanged);
             this.txtBoxEnvHumidity.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox_KeyPress);
-            this.txtBoxEnvHumidity.Leave += new System.EventHandler(this.TxtBoxEnvHumidity_Leave);
             // 
             // lblPressure
             // 
@@ -304,8 +304,8 @@
             this.txtBoxEnvTempe.Size = new System.Drawing.Size(133, 32);
             this.txtBoxEnvTempe.TabIndex = 2;
             this.txtBoxEnvTempe.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtBoxEnvTempe.TextChanged += new System.EventHandler(this.TxtBox_TextChanged);
             this.txtBoxEnvTempe.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox_KeyPress);
-            this.txtBoxEnvTempe.Leave += new System.EventHandler(this.TxtBoxEnvTempe_Leave);
             // 
             // btnDone
             // 

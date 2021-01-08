@@ -11,11 +11,11 @@ namespace Dyno_Geely {
     public partial class MainForm : Form {
         private readonly Logger _log;
         private readonly Config _cfg;
-        private readonly ModelMySQL _db;
+        private readonly ModelLocal _db;
         private readonly DynoCmd _dynoCmd;
         private float _lastHeight;
 
-        public MainForm(Logger log, Config cfg, ModelMySQL db, DynoCmd dynoCmd) {
+        public MainForm(Logger log, Config cfg, ModelLocal db, DynoCmd dynoCmd) {
             InitializeComponent();
             _lastHeight = this.Height;
             _log = log;
@@ -37,8 +37,7 @@ namespace Dyno_Geely {
         private void MainForm_Load(object sender, EventArgs e) {
             this.Text += " Ver: " + MainFileVersion.AssemblyVersion;
             lblInfo.Text = string.Empty;
-            string[] strResults = _db.GetValue("preheating", "LastTime", "ID", "1");
-            if (DateTime.Compare(DateTime.Now.AddDays(-1), Convert.ToDateTime(strResults[0])) > 0) {
+            if (DateTime.Compare(DateTime.Now.AddDays(-1), _db.GetPreheating()) > 0) {
                 lblInfo.Text = "请先进行设备预热";
                 lblInfo.ForeColor = Color.Red;
 #if DEBUG
@@ -96,16 +95,19 @@ namespace Dyno_Geely {
             if (f_vehicleLogin.DialogResult == DialogResult.OK) {
                 EnvironmentData envData = new EnvironmentData();
 #if DEBUG
-                //LugdownForm f_Lugdown = new LugdownForm(f_vehicleLogin.VI.VIN, _dynoCmd, _cfg.Main.Data, _db, envData, _log);
-                //f_Lugdown.ShowDialog();
+                SelfcheckForm f_prepare = new SelfcheckForm(_dynoCmd, _cfg.Main.Data, envData);
+                f_prepare.ShowDialog();
+
+                LugdownForm f_Lugdown = new LugdownForm(f_vehicleLogin.VI.VIN, _dynoCmd, _cfg.Main.Data, _db, envData, _log);
+                f_Lugdown.ShowDialog();
                 //ASMForm f_ASM = new ASMForm(f_vehicleLogin.VI.VIN, _dynoCmd, _cfg.Main.Data, _db, envData, _log);
                 //f_ASM.ShowDialog();
                 //FALForm f_FAL = new FALForm(f_vehicleLogin.VI.VIN, _dynoCmd, _cfg.Main.Data, _db, envData, _log);
                 //f_FAL.ShowDialog();
                 //TSIForm f_TSI = new TSIForm(f_vehicleLogin.VI.VIN, _dynoCmd, _cfg.Main.Data, _db, envData, _log);
                 //f_TSI.ShowDialog();
-                VMASForm f_VMAS = new VMASForm(f_vehicleLogin.VI.VIN, _dynoCmd, _cfg.Main.Data, _db, envData, _log);
-                f_VMAS.ShowDialog();
+                //VMASForm f_VMAS = new VMASForm(f_vehicleLogin.VI.VIN, _dynoCmd, _cfg.Main.Data, _db, envData, _log);
+                //f_VMAS.ShowDialog();
 #else
                 SelfcheckForm f_prepare = new SelfcheckForm(_dynoCmd, _cfg.Main.Data, envData);
                 f_prepare.ShowDialog();

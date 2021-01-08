@@ -21,10 +21,12 @@ namespace Dyno_Geely {
         private readonly FlowmeterPreheatingSubForm f_flowmeterPreheating;
         private readonly SmokerPreheatingSubForm f_smokerPreheating;
         private readonly WeatherPreheatingSubForm f_weatherPreheating;
+        private readonly TachometerPreheatingSubForm f_tachometerPreheating;
+        private readonly OilTempPreheatingSubForm f_oilTempPreheating;
 
         public PreheatingForm(DynoCmd dynoCmd, MainSetting mainCfg) {
             InitializeComponent();
-            _lastHeight = this.Height;
+            _lastHeight = Height;
             _dynoCmd = dynoCmd;
             _dicResults = new Dictionary<Form, bool>();
             f_dynoPreheating = new DynoPreheatingSubForm(_dynoCmd, mainCfg, _dicResults);
@@ -32,27 +34,35 @@ namespace Dyno_Geely {
             f_flowmeterPreheating = new FlowmeterPreheatingSubForm(_dynoCmd, mainCfg, _dicResults);
             f_smokerPreheating = new SmokerPreheatingSubForm(_dynoCmd, mainCfg, _dicResults);
             f_weatherPreheating = new WeatherPreheatingSubForm(_dynoCmd, mainCfg, _dicResults);
+            f_tachometerPreheating = new TachometerPreheatingSubForm(_dynoCmd, mainCfg, _dicResults);
+            f_oilTempPreheating = new OilTempPreheatingSubForm(_dynoCmd, mainCfg, _dicResults);
 
             f_dynoPreheating.PreheatingDone += OnPreheatingDone;
             f_gasBoxPreheating.PreheatingDone += OnPreheatingDone;
             f_flowmeterPreheating.PreheatingDone += OnPreheatingDone;
             f_smokerPreheating.PreheatingDone += OnPreheatingDone;
             f_weatherPreheating.PreheatingDone += OnPreheatingDone;
+            f_tachometerPreheating.PreheatingDone += OnPreheatingDone;
+            f_oilTempPreheating.PreheatingDone += OnPreheatingDone;
 
             _dicResults.Add(f_dynoPreheating, false);
             _dicResults.Add(f_gasBoxPreheating, false);
             _dicResults.Add(f_flowmeterPreheating, false);
             _dicResults.Add(f_smokerPreheating, false);
             _dicResults.Add(f_weatherPreheating, false);
+            _dicResults.Add(f_tachometerPreheating, false);
+            _dicResults.Add(f_oilTempPreheating, false);
 
-            _buttonsOrder = new Button[] { btn1Dyno, btn2GasBox, btn3Flowmeter, btn4Smoker, btn5Weather };
+            _buttonsOrder = new Button[] { btn1Dyno, btn2GasBox, btn3Flowmeter, btn4Smoker, btn5Weather, btn6Tacho, btn7Oil };
 
             _dicSubForms = new Dictionary<Button, Form> {
                 { btn1Dyno, f_dynoPreheating },
                 { btn2GasBox, f_gasBoxPreheating },
                 { btn3Flowmeter, f_flowmeterPreheating },
                 { btn4Smoker, f_smokerPreheating },
-                { btn5Weather, f_weatherPreheating }
+                { btn5Weather, f_weatherPreheating },
+                { btn6Tacho, f_tachometerPreheating },
+                { btn7Oil, f_oilTempPreheating }
             };
         }
 
@@ -93,15 +103,17 @@ namespace Dyno_Geely {
             if (_lastHeight == 0) {
                 return;
             }
-            float scale = this.Height / _lastHeight;
+            float scale = Height / _lastHeight;
             layoutMain.Font = new Font(layoutMain.Font.FontFamily, layoutMain.Font.Size * scale, layoutMain.Font.Style);
             btn1Dyno.Font = new Font(btn1Dyno.Font.FontFamily, btn1Dyno.Font.Size * scale, btn1Dyno.Font.Style);
-            btn3Flowmeter.Font = new Font(btn3Flowmeter.Font.FontFamily, btn3Flowmeter.Font.Size * scale, btn3Flowmeter.Font.Style);
             btn2GasBox.Font = new Font(btn2GasBox.Font.FontFamily, btn2GasBox.Font.Size * scale, btn2GasBox.Font.Style);
+            btn3Flowmeter.Font = new Font(btn3Flowmeter.Font.FontFamily, btn3Flowmeter.Font.Size * scale, btn3Flowmeter.Font.Style);
             btn4Smoker.Font = new Font(btn4Smoker.Font.FontFamily, btn4Smoker.Font.Size * scale, btn4Smoker.Font.Style);
             btn5Weather.Font = new Font(btn5Weather.Font.FontFamily, btn5Weather.Font.Size * scale, btn5Weather.Font.Style);
+            btn6Tacho.Font = new Font(btn6Tacho.Font.FontFamily, btn6Tacho.Font.Size * scale, btn6Tacho.Font.Style);
+            btn7Oil.Font = new Font(btn7Oil.Font.FontFamily, btn7Oil.Font.Size * scale, btn7Oil.Font.Style);
             pnlForm.Font = new Font(pnlForm.Font.FontFamily, pnlForm.Font.Size * scale, pnlForm.Font.Style);
-            _lastHeight = this.Height;
+            _lastHeight = Height;
         }
 
         private void Button_Click(object sender, EventArgs e) {

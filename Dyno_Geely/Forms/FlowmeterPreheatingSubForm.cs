@@ -16,7 +16,7 @@ namespace Dyno_Geely {
         private readonly Dictionary<Form, bool> _dicResults;
         private readonly System.Timers.Timer _timer;
         public event EventHandler<PreheatingDoneEventArgs> PreheatingDone;
-        // -1: 未开始; 0：流量检查；1：氧量程检查；2：温度检查；3：压力检查
+        // -1: 停止检测; 0：流量检查；1：氧量程检查；2：温度检查；3：压力检查
         private int _step;
         // 结果数组, 存放每一步的结果, -1: 失败, 0: 无结果, 1: 成功
         // [0]：流量检查；[1]：氧量程检查；[2]：温度检查；[3]：压力检查
@@ -42,7 +42,7 @@ namespace Dyno_Geely {
                 _dynoCmd.GetFlowmeterCheckRealTimeDataCmd(true, ref ackParams);
                 _step++;
                 StartFlowmeterCheckAckParams startAckParams = new StartFlowmeterCheckAckParams();
-                if (!_dynoCmd.StartFlowmeterCheckCmd(false, _step, ref startAckParams)) {
+                if (!_dynoCmd.StartFlowmeterCheckCmd(false, _step, _mainCfg.Flowmeter.TargetTempe, _mainCfg.Flowmeter.TargetPressure, ref startAckParams)) {
                     MessageBox.Show("执行开始流量计预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _timer.Enabled = true;
@@ -50,8 +50,6 @@ namespace Dyno_Geely {
                         lblLowFlowSpan.Text = startAckParams.FlowmeterLowFlowSpan.ToString("F");
                         lblO2Span.Text = startAckParams.FlowmeterO2SpanLow.ToString("F");
                         lblO2Span.Text += "/" + startAckParams.FlowmeterO2SpanHight.ToString("F");
-                        lblTargetTempe.Text = startAckParams.FlowmeterTargetTempe.ToString("F");
-                        lblTargetPressure.Text = startAckParams.FlowmeterTargetPressure.ToString("F");
                     });
                 }
             } else if (strResult == "失败") {
@@ -158,6 +156,8 @@ namespace Dyno_Geely {
 
         private void FlowmeterPreheatingSubForm_Load(object sender, EventArgs e) {
             lblMsg.Text = "流量计预热";
+            txtBoxTargetTempe.Text = _mainCfg.Flowmeter.TargetTempe.ToString("F");
+            txtBoxTargetPressure.Text = _mainCfg.Flowmeter.TargetPressure.ToString("F");
         }
 
         private void BtnStart_Click(object sender, EventArgs e) {
@@ -166,22 +166,20 @@ namespace Dyno_Geely {
                 _iResults[i] = 0;
             }
             StartFlowmeterCheckAckParams ackParams = new StartFlowmeterCheckAckParams();
-            if (!_dynoCmd.StartFlowmeterCheckCmd(false, _step, ref ackParams)) {
+            if (!_dynoCmd.StartFlowmeterCheckCmd(false, _step, _mainCfg.Flowmeter.TargetTempe, _mainCfg.Flowmeter.TargetPressure, ref ackParams)) {
                 MessageBox.Show("执行开始流量计预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
             } else {
                 _timer.Enabled = true;
                 lblLowFlowSpan.Text = ackParams.FlowmeterLowFlowSpan.ToString("F");
                 lblO2Span.Text = ackParams.FlowmeterO2SpanLow.ToString("F");
                 lblO2Span.Text += "/" + ackParams.FlowmeterO2SpanHight.ToString("F");
-                lblTargetTempe.Text = ackParams.FlowmeterTargetTempe.ToString("F");
-                lblTargetPressure.Text = ackParams.FlowmeterTargetPressure.ToString("F");
             }
         }
 
         private void BtnStop_Click(object sender, EventArgs e) {
             _dynoCmd.ReconnectServer();
             StartFlowmeterCheckAckParams ackParams = new StartFlowmeterCheckAckParams();
-            if (!_dynoCmd.StartFlowmeterCheckCmd(true, _step, ref ackParams)) {
+            if (!_dynoCmd.StartFlowmeterCheckCmd(true, _step, _mainCfg.Flowmeter.TargetTempe, _mainCfg.Flowmeter.TargetPressure, ref ackParams)) {
                 MessageBox.Show("执行停止流量计预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
             } else {
                 _timer.Enabled = false;
@@ -189,8 +187,6 @@ namespace Dyno_Geely {
                 lblLowFlowSpan.Text = ackParams.FlowmeterLowFlowSpan.ToString("F");
                 lblO2Span.Text = ackParams.FlowmeterO2SpanLow.ToString("F");
                 lblO2Span.Text += "/" + ackParams.FlowmeterO2SpanHight.ToString("F");
-                lblTargetTempe.Text = ackParams.FlowmeterTargetTempe.ToString("F");
-                lblTargetPressure.Text = ackParams.FlowmeterTargetPressure.ToString("F");
                 lblFlow.Text = "--";
                 lblDiluteO2.Text = "--";
                 lblTemperature.Text = "--";

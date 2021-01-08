@@ -17,7 +17,7 @@ namespace Dyno_Geely {
         private readonly System.Timers.Timer _timer;
         public event EventHandler<PreheatingDoneEventArgs> PreheatingDone;
         private DateTime _startTime;
-        private double _tempe, _humidity, _pressure;
+        //private double _tempe, _humidity, _pressure;
         // 存放检测结果，[0]: 温度; [1]: 湿度; [2]: 气压
         private readonly bool[] _bResults;
         private bool _bCommResult; // 通讯结果
@@ -47,6 +47,12 @@ namespace Dyno_Geely {
                             lblTempe.Text = ackParams.EnvTemperature.ToString("F");
                             lblHumidity.Text = ackParams.EnvHumidity.ToString("F");
                             lblPressure.Text = ackParams.EnvPressure.ToString("F");
+                            double errTempe = Math.Round(Math.Abs(ackParams.EnvTemperature - _mainCfg.Weather.EnvTempe), 2);
+                            lblErrTempe.Text = errTempe.ToString();
+                            double errHumidity = Math.Round(Math.Abs(ackParams.EnvHumidity - _mainCfg.Weather.EnvHumidity), 2);
+                            lblErrHumidity.Text = errHumidity.ToString();
+                            double errPressure = Math.Round(Math.Abs(ackParams.EnvPressure - _mainCfg.Weather.EnvPressure), 2);
+                            lblErrPressure.Text = errPressure.ToString();
                         });
                     } catch (ObjectDisposedException) {
                         // 关闭窗口后仍有一定几率会进入主UI线程，此时访问界面元素会引发此异常，直接忽略即可
@@ -81,107 +87,63 @@ namespace Dyno_Geely {
         }
 
         private void BtnTempe_Click(object sender, EventArgs e) {
-            try {
-                _tempe = Convert.ToDouble(lblTempe.Text);
-                double errTempe = Math.Round(Math.Abs(_tempe - _mainCfg.Weather.EnvTempe), 2);
-                lblErrTempe.Text = errTempe.ToString();
-                if (_mainCfg.Weather.ErrTempeStd < errTempe) {
-                    _bResults[0] = false;
-                    lblTempeResult.Text = "失败";
-                } else {
-                    _bResults[0] = true;
-                    lblTempeResult.Text = "合格";
-                }
-            } catch (Exception ex) {
-                lblErrTempe.Text = "--";
-                lblTempeResult.Text = "--";
-                MessageBox.Show(ex.Message, "温度误差值计算出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            if (_mainCfg.Weather.ErrTempeStd < Convert.ToDouble(lblErrTempe.Text)) {
+                _bResults[0] = false;
+                lblTempeResult.Text = "失败";
+            } else {
+                _bResults[0] = true;
+                lblTempeResult.Text = "合格";
             }
         }
 
         private void BtnHumidity_Click(object sender, EventArgs e) {
-            try {
-                _humidity = Convert.ToDouble(lblHumidity.Text);
-                double errHumidity = Math.Round(Math.Abs(_humidity - _mainCfg.Weather.EnvHumidity), 2);
-                lblErrHumidity.Text = errHumidity.ToString();
-                if (_mainCfg.Weather.ErrHumidityStd < errHumidity) {
-                    _bResults[1] = false;
-                    lblHumidityResult.Text = "失败";
-                } else {
-                    _bResults[1] = true;
-                    lblHumidityResult.Text = "合格";
-                }
-            } catch (Exception ex) {
-                lblErrHumidity.Text = "--";
-                lblHumidityResult.Text = "--";
-                MessageBox.Show(ex.Message, "湿度误差值计算出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            if (_mainCfg.Weather.ErrHumidityStd < Convert.ToDouble(lblErrHumidity.Text)) {
+                _bResults[1] = false;
+                lblHumidityResult.Text = "失败";
+            } else {
+                _bResults[1] = true;
+                lblHumidityResult.Text = "合格";
             }
         }
 
         private void BtnPressure_Click(object sender, EventArgs e) {
-            try {
-                _pressure = Convert.ToDouble(lblPressure.Text);
-                double errPressure = Math.Round(Math.Abs(_pressure - _mainCfg.Weather.EnvPressure), 2);
-                lblErrPressure.Text = errPressure.ToString();
-                if (_mainCfg.Weather.ErrPressureStd < errPressure) {
-                    _bResults[2] = false;
-                    lblPressureResult.Text = "失败";
-                } else {
-                    _bResults[2] = true;
-                    lblPressureResult.Text = "合格";
+            if (_mainCfg.Weather.ErrPressureStd < Convert.ToDouble(lblErrPressure.Text)) {
+                _bResults[2] = false;
+                lblPressureResult.Text = "失败";
+            } else {
+                _bResults[2] = true;
+                lblPressureResult.Text = "合格";
+            }
+        }
+
+        private void TxtBox_TextChanged(object sender, EventArgs e) {
+            if (sender is TextBox txtBox) {
+                double value;
+                try {
+                    value = Convert.ToDouble(txtBox.Text);
+                } catch (Exception) {
+                    value = 0;
                 }
-            } catch (Exception ex) {
-                lblErrPressure.Text = "--";
-                lblPressureResult.Text = "--";
-                MessageBox.Show(ex.Message, "气压误差值计算出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void TxtBoxErrTempeStd_Leave(object sender, EventArgs e) {
-            try {
-                _mainCfg.Weather.ErrTempeStd = Convert.ToDouble(txtBoxErrTempeStd.Text);
-            } catch (Exception ex) {
-                MessageBox.Show(ex.Message, "标准温度误差值输入出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void TxtBoxErrHumidityStd_Leave(object sender, EventArgs e) {
-            try {
-                _mainCfg.Weather.ErrHumidityStd = Convert.ToDouble(txtBoxErrHumidityStd.Text);
-            } catch (Exception ex) {
-                MessageBox.Show(ex.Message, "标准湿度误差值输入出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void TxtBoxErrPressureStd_Leave(object sender, EventArgs e) {
-            try {
-                _mainCfg.Weather.ErrPressureStd = Convert.ToDouble(txtBoxErrPressureStd.Text);
-            } catch (Exception ex) {
-                MessageBox.Show(ex.Message, "标准气压误差值输入出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void TxtBoxEnvTempe_Leave(object sender, EventArgs e) {
-            try {
-                _mainCfg.Weather.EnvTempe = Convert.ToDouble(txtBoxEnvTempe.Text);
-            } catch (Exception ex) {
-                MessageBox.Show(ex.Message, "环境温度输入出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void TxtBoxEnvHumidity_Leave(object sender, EventArgs e) {
-            try {
-                _mainCfg.Weather.EnvHumidity = Convert.ToDouble(txtBoxEnvHumidity.Text);
-            } catch (Exception ex) {
-                MessageBox.Show(ex.Message, "环境湿度输入出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void TxtBoxEnvPressure_Leave(object sender, EventArgs e) {
-            try {
-                _mainCfg.Weather.EnvPressure = Convert.ToDouble(txtBoxEnvPressure.Text);
-            } catch (Exception ex) {
-                MessageBox.Show(ex.Message, "环境气压入出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                switch (txtBox.Name) {
+                case "txtBoxErrTempeStd":
+                    _mainCfg.Weather.ErrTempeStd = value;
+                    break;
+                case "txtBoxErrHumidityStd":
+                    _mainCfg.Weather.ErrHumidityStd = value;
+                    break;
+                case "txtBoxErrPressureStd":
+                    _mainCfg.Weather.ErrPressureStd = value;
+                    break;
+                case "txtBoxEnvTempe":
+                    _mainCfg.Weather.EnvTempe = value;
+                    break;
+                case "txtBoxEnvHumidity":
+                    _mainCfg.Weather.EnvHumidity = value;
+                    break;
+                case "txtBoxEnvPressure":
+                    _mainCfg.Weather.EnvPressure = value;
+                    break;
+                }
             }
         }
 
@@ -216,18 +178,18 @@ namespace Dyno_Geely {
         private void BtnDone_Click(object sender, EventArgs e) {
             _timer.Enabled = false;
             _dicResults[this] = _bResults[0] && _bResults[1] && _bResults[2];
-            lblResult.Text = _dicResults[this] ? "成功" : "失败";
+            lblResult.Text = _dicResults[this] ? "合格" : "不合格";
             SaveWeatherCheckDataParams cmdParams = new SaveWeatherCheckDataParams {
                 ClientID = _dynoCmd.ClientID,
                 StartTime = _startTime,
                 EndTime = DateTime.Now,
-                CommCheck = _bCommResult ? "成功" : "失败",
+                CommCheck = _bCommResult ? "1" : "2",
                 EnvTemperature = _mainCfg.Weather.EnvTempe,
-                InstrumentTemperature = _tempe,
+                InstrumentTemperature = Convert.ToDouble(lblTempe.Text),
                 EnvHumidity = _mainCfg.Weather.EnvHumidity,
-                InstrumentHumidity = _humidity,
+                InstrumentHumidity = Convert.ToDouble(lblHumidity.Text),
                 EnvPressure = _mainCfg.Weather.EnvPressure,
-                InstrumentPressure = _pressure,
+                InstrumentPressure = Convert.ToDouble(lblPressure.Text),
                 Result = lblResult.Text
             };
             if (!_dynoCmd.SaveWeatherCheckDataCmd(cmdParams)) {

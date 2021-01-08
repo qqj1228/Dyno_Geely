@@ -42,7 +42,7 @@ namespace Dyno_Geely {
         public SQLSetting() {
             UserName = "sa";
             PassWord = "sh49";
-            DBName = "Orient_ASM";
+            DBName = "ProAsm_G4";
             IP = "127.0.0.1";
             Port = "1433";
         }
@@ -51,15 +51,9 @@ namespace Dyno_Geely {
 
     [Serializable]
     public class FlowmeterSetting {
-        public double O2SpanLow { get; set; }
-        public double O2SpanHigh { get; set; }
-        public double LowFlowSpan { get; set; }
         public double TargetPressure { get; set; }
         public double TargetTempe { get; set; }
         public FlowmeterSetting() {
-            O2SpanLow = 19.8;
-            O2SpanHigh = 21.8;
-            LowFlowSpan = 97;
             TargetPressure = 101.3;
             TargetTempe = 23.5;
         }
@@ -96,6 +90,16 @@ namespace Dyno_Geely {
     }
 
     [Serializable]
+    public class OilTempSetting {
+        public double TempStd { get; set; }
+        public double ErrStd { get; set; }
+        public OilTempSetting() {
+            TempStd = 20;
+            ErrStd = 2;
+        }
+    }
+
+    [Serializable]
     public class MainSetting {
         public OracleSetting MES { get; set; }
         public SQLSetting Native { get; set; }
@@ -103,9 +107,9 @@ namespace Dyno_Geely {
         public FlowmeterSetting Flowmeter { get; set; }
         public SmokerSetting Smoker { get; set; }
         public WeatherSetting Weather { get; set; }
+        public OilTempSetting OilTemp { get; set; }
         public int RealtimeInterval { get; set; } // 获取实时数据的间隔时间
         public string Name { get; set; } // 操作员名字
-        public int LastID { get; set; }
         public string DynoIP { get; set; } // 测功机服务器IP地址
         public int DynoPort { get; set; } // 测功机服务器端口号
         public int RecvTimeout { get; set; } // 发送命令后等待返回的超时时间
@@ -122,9 +126,9 @@ namespace Dyno_Geely {
             Flowmeter = new FlowmeterSetting();
             Smoker = new SmokerSetting();
             Weather = new WeatherSetting();
+            OilTemp = new OilTempSetting();
             RealtimeInterval = 1000;
             Name = "Emission";
-            LastID = 0;
             DynoIP = "127.0.0.1";
             DynoPort = 5555;
             RecvTimeout = 5000;

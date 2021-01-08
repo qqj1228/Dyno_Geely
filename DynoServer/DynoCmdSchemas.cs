@@ -626,31 +626,31 @@ namespace Dyno_Geely {
 
     public class DeviceCtrlParams {
         public string CtrlIDStr { get; set; }
-        public string RYLX { get; set; }
-        public double startspeed { get; set; }
-        public double endspeed { get; set; }
-        public double targetspeed { get; set; }
-        public double targetacce { get; set; }
-        public double eddycurrentcount { get; set; }
-        public double targetihp { get; set; }
-        public bool bco2 { get; set; }
-        public double co2 { get; set; }
-        public bool bco { get; set; }
-        public double co { get; set; }
-        public bool bhc { get; set; }
-        public double chc { get; set; }
-        public bool bno { get; set; }
-        public double no { get; set; }
-        public bool bo2 { get; set; }
-        public double o2 { get; set; }
-        public bool bno2 { get; set; }
-        public double no2 { get; set; }
-        public double tempeCali { get; set; }
-        public double humidityCali { get; set; }
-        public double atmosCali { get; set; }
-        public double freq { get; set; }
-        public double targetfreq { get; set; }
-        public double realfreq { get; set; }
+        //public string RYLX { get; set; }
+        //public double startspeed { get; set; }
+        //public double endspeed { get; set; }
+        //public double targetspeed { get; set; }
+        //public double targetacce { get; set; }
+        //public double eddycurrentcount { get; set; }
+        //public double targetihp { get; set; }
+        //public bool bco2 { get; set; }
+        //public double co2 { get; set; }
+        //public bool bco { get; set; }
+        //public double co { get; set; }
+        //public bool bhc { get; set; }
+        //public double chc { get; set; }
+        //public bool bno { get; set; }
+        //public double no { get; set; }
+        //public bool bo2 { get; set; }
+        //public double o2 { get; set; }
+        //public bool bno2 { get; set; }
+        //public double no2 { get; set; }
+        //public double tempeCali { get; set; }
+        //public double humidityCali { get; set; }
+        //public double atmosCali { get; set; }
+        //public double freq { get; set; }
+        //public double targetfreq { get; set; }
+        //public double realfreq { get; set; }
     }
 
     public class DeviceCtrlAckParams {

@@ -43,6 +43,7 @@ namespace Dyno_Geely {
     public class GetDynoPreheatRealTimeDataAckParams {
         public string msg { get; set; }
         public double speed { get; set; }
+        public bool dynoPreheat { get; set; }
     }
 
     public class SaveDynoPreheatDataParams {
@@ -56,6 +57,8 @@ namespace Dyno_Geely {
         public string ClientID { get; set; }
         public bool stopCheck { get; set; }
         public int step { get; set; }
+        public bool isQY { get; set; }
+        public bool isRetry { get; set; }
     }
 
     public class GetGasBoxPreheatSelfCheckRealTimeDataParams {
@@ -82,13 +85,13 @@ namespace Dyno_Geely {
         public string ClientID { get; set; }
         public bool stopCheck { get; set; }
         public int step { get; set; }
+        public double FlowmeterTargetPressure { get; set; }
+        public double FlowmeterTargetTempe { get; set; }
     }
     public class StartFlowmeterCheckAckParams {
         public double FlowmeterO2SpanLow { get; set; }
         public double FlowmeterO2SpanHight { get; set; }
         public double FlowmeterLowFlowSpan { get; set; }
-        public double FlowmeterTargetPressure { get; set; }
-        public double FlowmeterTargetTempe { get; set; }
     }
 
     public class GetFlowmeterCheckRealTimeDataParams {
@@ -131,6 +134,49 @@ namespace Dyno_Geely {
         public double InstrumentPressure { get; set; }
         public string Result { get; set; }
     }
+
+    public class StartTachometerCheckParams {
+        public string ClientID { get; set; }
+    }
+    public class StartTachometerCheckAckParams {
+        public int QYRpmLow { get; set; }
+        public int QYRpmHight { get; set; }
+        public int CYRpmLow { get; set; }
+        public int CYRpmHight { get; set; }
+    }
+    public class GetTachometerCheckRealTimeDataParams {
+        public string ClientID { get; set; }
+    }
+    public class GetTachometerCheckRealTimeDataAckParams {
+        public double RPM { get; set; }
+        public double CYRPM { get; set; }
+    }
+    public class SaveTachometerCheckParams {
+        public string ClientID { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+        public double IdleSpeed { get; set; }
+        public string CommCheck { get; set; }
+        public string Result { get; set; }
+    }
+
+    public class GetOilThermometerPreheatSelfCheckRealTimeDataParams {
+        public string ClientID { get; set; }
+    }
+    public class GetOilThermometerPreheatSelfCheckRealTimeDataAckParams {
+        public string msg { get; set; }
+        public double OilTemperature { get; set; }
+        public double CYOilTemperature { get; set; }
+    }
+    public class SaveOilThermometerPreheatSelfCheckParams {
+        public string ClientID { get; set; }
+        public string OilTemperatureData { get; set; }
+        public string TempDataIn { get; set; }
+        public string AbsError { get; set; }
+        public string ReError { get; set; }
+        public string Result { get; set; }
+    }
+
 
     public class GetSmokerPreheatSelfCheckRealTimeDataParams {
         public string ClientID { get; set; }
@@ -626,31 +672,31 @@ namespace Dyno_Geely {
 
     public class DeviceCtrlParams {
         public string CtrlIDStr { get; set; }
-        public string RYLX { get; set; }
-        public double startspeed { get; set; }
-        public double endspeed { get; set; }
-        public double targetspeed { get; set; }
-        public double targetacce { get; set; }
-        public double eddycurrentcount { get; set; }
-        public double targetihp { get; set; }
-        public bool bco2 { get; set; }
-        public double co2 { get; set; }
-        public bool bco { get; set; }
-        public double co { get; set; }
-        public bool bhc { get; set; }
-        public double chc { get; set; }
-        public bool bno { get; set; }
-        public double no { get; set; }
-        public bool bo2 { get; set; }
-        public double o2 { get; set; }
-        public bool bno2 { get; set; }
-        public double no2 { get; set; }
-        public double tempeCali { get; set; }
-        public double humidityCali { get; set; }
-        public double atmosCali { get; set; }
-        public double freq { get; set; }
-        public double targetfreq { get; set; }
-        public double realfreq { get; set; }
+        //public string RYLX { get; set; }
+        //public double startspeed { get; set; }
+        //public double endspeed { get; set; }
+        //public double targetspeed { get; set; }
+        //public double targetacce { get; set; }
+        //public double eddycurrentcount { get; set; }
+        //public double targetihp { get; set; }
+        //public bool bco2 { get; set; }
+        //public double co2 { get; set; }
+        //public bool bco { get; set; }
+        //public double co { get; set; }
+        //public bool bhc { get; set; }
+        //public double chc { get; set; }
+        //public bool bno { get; set; }
+        //public double no { get; set; }
+        //public bool bo2 { get; set; }
+        //public double o2 { get; set; }
+        //public bool bno2 { get; set; }
+        //public double no2 { get; set; }
+        //public double tempeCali { get; set; }
+        //public double humidityCali { get; set; }
+        //public double atmosCali { get; set; }
+        //public double freq { get; set; }
+        //public double targetfreq { get; set; }
+        //public double realfreq { get; set; }
     }
 
     public class DeviceCtrlAckParams {
