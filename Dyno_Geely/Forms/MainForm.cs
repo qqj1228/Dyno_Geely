@@ -17,7 +17,7 @@ namespace Dyno_Geely {
 
         public MainForm(Logger log, Config cfg, ModelLocal db, DynoCmd dynoCmd) {
             InitializeComponent();
-            _lastHeight = this.Height;
+            _lastHeight = Height;
             _log = log;
             _cfg = cfg;
             _db = db;
@@ -35,7 +35,7 @@ namespace Dyno_Geely {
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
-            this.Text += " Ver: " + MainFileVersion.AssemblyVersion;
+            Text += " Ver: " + MainFileVersion.AssemblyVersion;
             lblInfo.Text = string.Empty;
             if (DateTime.Compare(DateTime.Now.AddDays(-1), _db.GetPreheating()) > 0) {
                 lblInfo.Text = "请先进行设备预热";
@@ -56,11 +56,11 @@ namespace Dyno_Geely {
             if (_lastHeight == 0) {
                 return;
             }
-            float scale = this.Height / _lastHeight;
-            foreach (Control control in this.Controls) {
+            float scale = Height / _lastHeight;
+            foreach (Control control in Controls) {
                 ResizeContrlFont(control, scale);
             }
-            _lastHeight = this.Height;
+            _lastHeight = Height;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
@@ -90,12 +90,20 @@ namespace Dyno_Geely {
         }
 
         private void BtnLogin_Click(object sender, EventArgs e) {
-            VehicleLoginForm f_vehicleLogin = new VehicleLoginForm(_db, _cfg.Main.Data, _log);
+            VehicleLoginForm f_vehicleLogin = new VehicleLoginForm(_db, _dynoCmd, _cfg.Main.Data, _log);
             f_vehicleLogin.ShowDialog();
             if (f_vehicleLogin.DialogResult == DialogResult.OK) {
                 EnvironmentData envData = new EnvironmentData();
+                bool bDiesel = false;
+                switch (f_vehicleLogin.EI.TestMethod) {
+                case 4:
+                case 6:
+                case 7:
+                    bDiesel = true;
+                    break;
+                }
 #if DEBUG
-                SelfcheckForm f_prepare = new SelfcheckForm(_dynoCmd, _cfg.Main.Data, envData);
+                SelfcheckForm f_prepare = new SelfcheckForm(_dynoCmd, _cfg.Main.Data, envData, bDiesel);
                 f_prepare.ShowDialog();
 
                 LugdownForm f_Lugdown = new LugdownForm(f_vehicleLogin.VI.VIN, _dynoCmd, _cfg.Main.Data, _db, envData, _log);
@@ -109,7 +117,7 @@ namespace Dyno_Geely {
                 //VMASForm f_VMAS = new VMASForm(f_vehicleLogin.VI.VIN, _dynoCmd, _cfg.Main.Data, _db, envData, _log);
                 //f_VMAS.ShowDialog();
 #else
-                SelfcheckForm f_prepare = new SelfcheckForm(_dynoCmd, _cfg.Main.Data, envData);
+                SelfcheckForm f_prepare = new SelfcheckForm(_dynoCmd, _cfg.Main.Data, envData, bDiesel);
                 f_prepare.ShowDialog();
                 if (f_prepare.DialogResult == DialogResult.Yes) {
                     switch (f_vehicleLogin.EI.TestMethod) {

@@ -160,7 +160,7 @@ namespace Dyno_Geely {
         public string VIN { get; set; }
         public string VehicleModel { get; set; } // 车辆型号
         public string OpenInfoSN { get; set; } // 信息公开编号
-        public string TestQTY { get; set; } // 检测次数
+        public int TestQTY { get; set; } // 检测次数
     }
 
     public class EmissionInfo {
@@ -170,16 +170,16 @@ namespace Dyno_Geely {
         public string EngineModel { get; set; } // 发动机型号
         public string EngineSN { get; set; } // 发动机编号
         public string EngineMfr { get; set; } // 发动机生产企业
-        public string EngineVolume { get; set; } // 发动机排量
-        public string CylinderQTY { get; set; } // 气缸数量
-        public string FuelSupply { get; set; } // 燃油供给系统
-        public string RatedPower { get; set; } // 额定功率
+        public double EngineVolume { get; set; } // 发动机排量
+        public int CylinderQTY { get; set; } // 气缸数量
+        public int FuelSupply { get; set; } // 燃油供给系统
+        public double RatedPower { get; set; } // 额定功率
         public int RatedRPM { get; set; } // 额定转速
-        public string EmissionStage { get; set; } // 车辆排放阶段
-        public string Transmission { get; set; } // 变速箱形式
+        public int EmissionStage { get; set; } // 车辆排放阶段
+        public int Transmission { get; set; } // 变速箱形式
         public string CatConverter { get; set; } // 催化转化器
-        public string RefMass { get; set; } // 基准质量
-        public string MaxMass { get; set; } // 最大设计总质量
+        public int RefMass { get; set; } // 基准质量
+        public int MaxMass { get; set; } // 最大设计总质量
         public string OBDLocation { get; set; } // OBD接口位置
         public string PostProcessing { get; set; } // 后处理类型
         public string PostProcessor { get; set; } // 后处理型号
@@ -188,6 +188,88 @@ namespace Dyno_Geely {
         public string BatteryCap { get; set; } // 电池容量
         public int TestMethod { get; set; } // 检测方法
         public string Name { get; set; } // 检验员名字
+
+        public EmissionInfo() {
+            TestMethod = 5;
+        }
+
+        private readonly string[] _fuelSupplyStrings = new string[] {
+            "---------",
+            "化油器",
+            "化油器改造",
+            "开环电喷",
+            "闭环电喷",
+            "高压共轨",
+            "泵喷嘴",
+            "单体泵",
+            "直列泵",
+            "机械泵",
+            "其他"
+        };
+        public string GetFuelSupplyString() {
+            return _fuelSupplyStrings[FuelSupply];
+        }
+        public string[] GetFuelSupplyStrings() {
+            return _fuelSupplyStrings;
+        }
+
+        private readonly string[] _emissionStageStrings = new string[] {
+            "---------",
+            "国0",
+            "国I",
+            "国II",
+            "国III",
+            "国IV",
+            "国V",
+            "国VI",
+            "新能源",
+            "国I改造",
+            "国III改造",
+            "国VI6a",
+            "国VI6b",
+            "国VII"
+        };
+        public string GetEmissionStageString() {
+            return _emissionStageStrings[EmissionStage];
+        }
+        public string[] GetEmissionStageStrings() {
+            return _emissionStageStrings;
+        }
+
+
+        private readonly string[] _transmissionStrings = new string[] {
+            "---------",
+            "手动",
+            "自动",
+            "手自一体"
+        };
+        public string GetTransmissionString() {
+            return _transmissionStrings[Transmission];
+        }
+        public string[] GetTransmissionStrings() {
+            return _transmissionStrings;
+        }
+
+
+        private readonly string[] _testMethodStrings = new string[] {
+            "免检",
+            "✓双怠速法✓",
+            "✓稳态工况法✓",
+            "✓简易瞬态工况法✓",
+            "✓加载减速法✓",
+            "---------",
+            "✓自由加速法✓",
+            "林格曼黑度法",
+            "瞬态工况法",
+            "其它"
+        };
+        public string GetTestMethodString() {
+            return _testMethodStrings[TestMethod];
+        }
+        public string[] GetTestMethodStrings() {
+            return _testMethodStrings;
+        }
+
     }
 
     public class EnvironmentData {
@@ -274,4 +356,30 @@ namespace Dyno_Geely {
         public string Result { get; set; }
     }
 
+    public class NewVehicle {
+        public int CarId { get; set; }
+        public string VIN { get; set; }
+        public string CLXH { get; set; }
+        public string ZZL { get; set; }
+        public string JZZL { get; set; }
+        public string FDJXH { get; set; }
+        public string FDJH { get; set; }
+        public string GYFS { get; set; }
+        public string EDGL { get; set; }
+        public string EDZS { get; set; }
+        public string FDJSCQY { get; set; }
+        public string FDJPL { get; set; }
+        public string PFSP { get; set; }
+        public string QDDJXH { get; set; }
+        public string CNZZXH { get; set; }
+        public string DCRL { get; set; }
+        public string HasOBD { get; set; }
+        public string CHQXH { get; set; }
+        public string DPF { get; set; }
+        public string DPFXH { get; set; }
+        public string SCR { get; set; }
+        public string SRCXH { get; set; }
+        public string CheckMethod { get; set; }
+        public string CheckType { get; set; }
+    }
 }

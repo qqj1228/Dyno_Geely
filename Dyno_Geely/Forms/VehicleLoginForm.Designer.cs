@@ -36,11 +36,8 @@
             this.txtBoxMaxMass = new System.Windows.Forms.TextBox();
             this.txtBoxRefMass = new System.Windows.Forms.TextBox();
             this.txtBoxCatConverter = new System.Windows.Forms.TextBox();
-            this.txtBoxTransmission = new System.Windows.Forms.TextBox();
-            this.txtBoxEmissionStage = new System.Windows.Forms.TextBox();
             this.txtBoxRatedRPM = new System.Windows.Forms.TextBox();
             this.txtBoxRatedPower = new System.Windows.Forms.TextBox();
-            this.txtBoxFuelSupply = new System.Windows.Forms.TextBox();
             this.txtBoxCylinderQTY = new System.Windows.Forms.TextBox();
             this.txtBoxEngineVolume = new System.Windows.Forms.TextBox();
             this.txtBoxEngineMfr = new System.Windows.Forms.TextBox();
@@ -54,9 +51,16 @@
             this.chkBoxAutoStart = new System.Windows.Forms.CheckBox();
             this.layoutMain = new DevComponents.DotNetBar.Layout.LayoutControl();
             this.txtBoxGettedVIN = new System.Windows.Forms.TextBox();
+            this.cmbBoxFuelSupply = new System.Windows.Forms.ComboBox();
+            this.cmbBoxEmissionStage = new System.Windows.Forms.ComboBox();
+            this.cmbBoxTransmission = new System.Windows.Forms.ComboBox();
+            this.cmbBoxSelectVehicleModel = new System.Windows.Forms.ComboBox();
+            this.chkBoxNewVehicleModel = new System.Windows.Forms.CheckBox();
             this.layoutControlItem31 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem29 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem32 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem61 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem62 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem33 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem34 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem35 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
@@ -65,11 +69,11 @@
             this.layoutControlItem38 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem39 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem40 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
-            this.layoutControlItem41 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem58 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem42 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem43 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
-            this.layoutControlItem44 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
-            this.layoutControlItem45 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem59 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem60 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem46 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem47 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem48 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
@@ -81,8 +85,8 @@
             this.layoutControlItem54 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem55 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem30 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
-            this.layoutControlItem56 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem57 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem56 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutGroup1 = new DevComponents.DotNetBar.Layout.LayoutGroup();
             this.layoutSpacerItem1 = new DevComponents.DotNetBar.Layout.LayoutSpacerItem();
             this.layoutControlItem28 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
@@ -113,27 +117,30 @@
             this.layoutControlItem3 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem2 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem1 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem41 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem44 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem45 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutMain.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnStart
             // 
-            this.btnStart.Location = new System.Drawing.Point(508, 650);
+            this.btnStart.Location = new System.Drawing.Point(508, 678);
             this.btnStart.Margin = new System.Windows.Forms.Padding(0);
             this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(496, 50);
-            this.btnStart.TabIndex = 28;
+            this.btnStart.Size = new System.Drawing.Size(496, 35);
+            this.btnStart.TabIndex = 30;
             this.btnStart.Text = "启动检测";
             this.btnStart.UseVisualStyleBackColor = true;
             this.btnStart.Click += new System.EventHandler(this.BtnStart_Click);
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(4, 650);
+            this.btnSave.Location = new System.Drawing.Point(4, 678);
             this.btnSave.Margin = new System.Windows.Forms.Padding(0);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(496, 50);
-            this.btnSave.TabIndex = 27;
+            this.btnSave.Size = new System.Drawing.Size(496, 35);
+            this.btnSave.TabIndex = 29;
             this.btnSave.Text = "保存信息";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.BtnSave_Click);
@@ -143,194 +150,170 @@
             this.cmbBoxTestMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbBoxTestMethod.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cmbBoxTestMethod.FormattingEnabled = true;
-            this.cmbBoxTestMethod.Location = new System.Drawing.Point(196, 607);
+            this.cmbBoxTestMethod.Location = new System.Drawing.Point(196, 635);
             this.cmbBoxTestMethod.Margin = new System.Windows.Forms.Padding(0);
             this.cmbBoxTestMethod.Name = "cmbBoxTestMethod";
             this.cmbBoxTestMethod.Size = new System.Drawing.Size(304, 27);
-            this.cmbBoxTestMethod.TabIndex = 25;
+            this.cmbBoxTestMethod.TabIndex = 27;
             // 
             // txtBoxBatteryCap
             // 
-            this.txtBoxBatteryCap.Location = new System.Drawing.Point(700, 564);
+            this.txtBoxBatteryCap.Location = new System.Drawing.Point(700, 592);
             this.txtBoxBatteryCap.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxBatteryCap.Name = "txtBoxBatteryCap";
             this.txtBoxBatteryCap.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxBatteryCap.TabIndex = 24;
+            this.txtBoxBatteryCap.TabIndex = 26;
             // 
             // txtBoxEnergyStorage
             // 
-            this.txtBoxEnergyStorage.Location = new System.Drawing.Point(196, 564);
+            this.txtBoxEnergyStorage.Location = new System.Drawing.Point(196, 592);
             this.txtBoxEnergyStorage.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxEnergyStorage.Name = "txtBoxEnergyStorage";
             this.txtBoxEnergyStorage.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxEnergyStorage.TabIndex = 23;
+            this.txtBoxEnergyStorage.TabIndex = 25;
             // 
             // txtBoxMotorModel
             // 
-            this.txtBoxMotorModel.Location = new System.Drawing.Point(700, 521);
+            this.txtBoxMotorModel.Location = new System.Drawing.Point(700, 549);
             this.txtBoxMotorModel.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxMotorModel.Name = "txtBoxMotorModel";
             this.txtBoxMotorModel.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxMotorModel.TabIndex = 22;
+            this.txtBoxMotorModel.TabIndex = 24;
             // 
             // txtBoxPostProcessor
             // 
-            this.txtBoxPostProcessor.Location = new System.Drawing.Point(196, 521);
+            this.txtBoxPostProcessor.Location = new System.Drawing.Point(196, 549);
             this.txtBoxPostProcessor.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxPostProcessor.Name = "txtBoxPostProcessor";
             this.txtBoxPostProcessor.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxPostProcessor.TabIndex = 21;
+            this.txtBoxPostProcessor.TabIndex = 23;
             // 
             // txtBoxPostProcessing
             // 
-            this.txtBoxPostProcessing.Location = new System.Drawing.Point(700, 478);
+            this.txtBoxPostProcessing.Location = new System.Drawing.Point(700, 506);
             this.txtBoxPostProcessing.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxPostProcessing.Name = "txtBoxPostProcessing";
             this.txtBoxPostProcessing.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxPostProcessing.TabIndex = 20;
+            this.txtBoxPostProcessing.TabIndex = 22;
             // 
             // txtBoxOBDLocation
             // 
-            this.txtBoxOBDLocation.Location = new System.Drawing.Point(196, 478);
+            this.txtBoxOBDLocation.Location = new System.Drawing.Point(196, 506);
             this.txtBoxOBDLocation.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxOBDLocation.Name = "txtBoxOBDLocation";
             this.txtBoxOBDLocation.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxOBDLocation.TabIndex = 19;
+            this.txtBoxOBDLocation.TabIndex = 21;
             // 
             // txtBoxMaxMass
             // 
-            this.txtBoxMaxMass.Location = new System.Drawing.Point(700, 435);
+            this.txtBoxMaxMass.Location = new System.Drawing.Point(700, 463);
             this.txtBoxMaxMass.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxMaxMass.Name = "txtBoxMaxMass";
             this.txtBoxMaxMass.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxMaxMass.TabIndex = 18;
+            this.txtBoxMaxMass.TabIndex = 20;
             // 
             // txtBoxRefMass
             // 
-            this.txtBoxRefMass.Location = new System.Drawing.Point(196, 435);
+            this.txtBoxRefMass.Location = new System.Drawing.Point(196, 463);
             this.txtBoxRefMass.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxRefMass.Name = "txtBoxRefMass";
             this.txtBoxRefMass.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxRefMass.TabIndex = 17;
+            this.txtBoxRefMass.TabIndex = 19;
             // 
             // txtBoxCatConverter
             // 
-            this.txtBoxCatConverter.Location = new System.Drawing.Point(700, 392);
+            this.txtBoxCatConverter.Location = new System.Drawing.Point(700, 420);
             this.txtBoxCatConverter.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxCatConverter.Name = "txtBoxCatConverter";
             this.txtBoxCatConverter.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxCatConverter.TabIndex = 16;
-            // 
-            // txtBoxTransmission
-            // 
-            this.txtBoxTransmission.Location = new System.Drawing.Point(196, 392);
-            this.txtBoxTransmission.Margin = new System.Windows.Forms.Padding(0);
-            this.txtBoxTransmission.Name = "txtBoxTransmission";
-            this.txtBoxTransmission.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxTransmission.TabIndex = 15;
-            // 
-            // txtBoxEmissionStage
-            // 
-            this.txtBoxEmissionStage.Location = new System.Drawing.Point(700, 349);
-            this.txtBoxEmissionStage.Margin = new System.Windows.Forms.Padding(0);
-            this.txtBoxEmissionStage.Name = "txtBoxEmissionStage";
-            this.txtBoxEmissionStage.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxEmissionStage.TabIndex = 14;
+            this.txtBoxCatConverter.TabIndex = 18;
             // 
             // txtBoxRatedRPM
             // 
             this.txtBoxRatedRPM.BackColor = System.Drawing.SystemColors.Window;
-            this.txtBoxRatedRPM.Location = new System.Drawing.Point(196, 349);
+            this.txtBoxRatedRPM.Location = new System.Drawing.Point(196, 377);
             this.txtBoxRatedRPM.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxRatedRPM.Name = "txtBoxRatedRPM";
             this.txtBoxRatedRPM.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxRatedRPM.TabIndex = 13;
+            this.txtBoxRatedRPM.TabIndex = 15;
             this.txtBoxRatedRPM.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxtBoxRatedRPM_KeyPress);
             // 
             // txtBoxRatedPower
             // 
-            this.txtBoxRatedPower.Location = new System.Drawing.Point(700, 306);
+            this.txtBoxRatedPower.Location = new System.Drawing.Point(700, 334);
             this.txtBoxRatedPower.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxRatedPower.Name = "txtBoxRatedPower";
             this.txtBoxRatedPower.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxRatedPower.TabIndex = 12;
-            // 
-            // txtBoxFuelSupply
-            // 
-            this.txtBoxFuelSupply.Location = new System.Drawing.Point(196, 306);
-            this.txtBoxFuelSupply.Margin = new System.Windows.Forms.Padding(0);
-            this.txtBoxFuelSupply.Name = "txtBoxFuelSupply";
-            this.txtBoxFuelSupply.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxFuelSupply.TabIndex = 11;
+            this.txtBoxRatedPower.TabIndex = 14;
             // 
             // txtBoxCylinderQTY
             // 
-            this.txtBoxCylinderQTY.Location = new System.Drawing.Point(700, 263);
+            this.txtBoxCylinderQTY.Location = new System.Drawing.Point(700, 291);
             this.txtBoxCylinderQTY.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxCylinderQTY.Name = "txtBoxCylinderQTY";
             this.txtBoxCylinderQTY.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxCylinderQTY.TabIndex = 10;
+            this.txtBoxCylinderQTY.TabIndex = 12;
             // 
             // txtBoxEngineVolume
             // 
-            this.txtBoxEngineVolume.Location = new System.Drawing.Point(196, 263);
+            this.txtBoxEngineVolume.Location = new System.Drawing.Point(196, 291);
             this.txtBoxEngineVolume.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxEngineVolume.Name = "txtBoxEngineVolume";
             this.txtBoxEngineVolume.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxEngineVolume.TabIndex = 9;
+            this.txtBoxEngineVolume.TabIndex = 11;
             // 
             // txtBoxEngineMfr
             // 
-            this.txtBoxEngineMfr.Location = new System.Drawing.Point(700, 220);
+            this.txtBoxEngineMfr.Location = new System.Drawing.Point(700, 248);
             this.txtBoxEngineMfr.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxEngineMfr.Name = "txtBoxEngineMfr";
             this.txtBoxEngineMfr.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxEngineMfr.TabIndex = 8;
+            this.txtBoxEngineMfr.TabIndex = 10;
             // 
             // txtBoxEngineSN
             // 
-            this.txtBoxEngineSN.Location = new System.Drawing.Point(196, 220);
+            this.txtBoxEngineSN.Location = new System.Drawing.Point(196, 248);
             this.txtBoxEngineSN.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxEngineSN.Name = "txtBoxEngineSN";
             this.txtBoxEngineSN.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxEngineSN.TabIndex = 7;
+            this.txtBoxEngineSN.TabIndex = 9;
             // 
             // txtBoxEngineModel
             // 
-            this.txtBoxEngineModel.Location = new System.Drawing.Point(700, 177);
+            this.txtBoxEngineModel.Location = new System.Drawing.Point(700, 205);
             this.txtBoxEngineModel.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxEngineModel.Name = "txtBoxEngineModel";
             this.txtBoxEngineModel.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxEngineModel.TabIndex = 6;
+            this.txtBoxEngineModel.TabIndex = 8;
             // 
             // txtBoxVehicleMfr
             // 
-            this.txtBoxVehicleMfr.Location = new System.Drawing.Point(196, 177);
+            this.txtBoxVehicleMfr.Location = new System.Drawing.Point(196, 205);
             this.txtBoxVehicleMfr.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxVehicleMfr.Name = "txtBoxVehicleMfr";
             this.txtBoxVehicleMfr.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxVehicleMfr.TabIndex = 5;
+            this.txtBoxVehicleMfr.TabIndex = 7;
             // 
             // txtBoxOpenInfoSN
             // 
-            this.txtBoxOpenInfoSN.Location = new System.Drawing.Point(700, 134);
+            this.txtBoxOpenInfoSN.Location = new System.Drawing.Point(700, 162);
             this.txtBoxOpenInfoSN.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxOpenInfoSN.Name = "txtBoxOpenInfoSN";
             this.txtBoxOpenInfoSN.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxOpenInfoSN.TabIndex = 4;
+            this.txtBoxOpenInfoSN.TabIndex = 6;
             // 
             // txtBoxVehicleModel
             // 
-            this.txtBoxVehicleModel.Location = new System.Drawing.Point(196, 134);
+            this.txtBoxVehicleModel.Location = new System.Drawing.Point(196, 162);
             this.txtBoxVehicleModel.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxVehicleModel.Name = "txtBoxVehicleModel";
             this.txtBoxVehicleModel.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxVehicleModel.TabIndex = 3;
+            this.txtBoxVehicleModel.TabIndex = 5;
             // 
             // cmbBoxName
             // 
             this.cmbBoxName.FormattingEnabled = true;
-            this.cmbBoxName.Location = new System.Drawing.Point(700, 91);
+            this.cmbBoxName.Location = new System.Drawing.Point(700, 76);
             this.cmbBoxName.Margin = new System.Windows.Forms.Padding(0);
             this.cmbBoxName.Name = "cmbBoxName";
             this.cmbBoxName.Size = new System.Drawing.Size(304, 27);
@@ -339,22 +322,22 @@
             // txtBoxVIN
             // 
             this.txtBoxVIN.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txtBoxVIN.Font = new System.Drawing.Font("宋体", 48F);
+            this.txtBoxVIN.Font = new System.Drawing.Font("宋体", 36F);
             this.txtBoxVIN.Location = new System.Drawing.Point(196, 4);
             this.txtBoxVIN.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxVIN.Name = "txtBoxVIN";
-            this.txtBoxVIN.Size = new System.Drawing.Size(808, 80);
+            this.txtBoxVIN.Size = new System.Drawing.Size(808, 62);
             this.txtBoxVIN.TabIndex = 0;
             this.txtBoxVIN.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxtBoxVIN_KeyPress);
             // 
             // chkBoxAutoStart
             // 
             this.chkBoxAutoStart.AutoSize = true;
-            this.chkBoxAutoStart.Location = new System.Drawing.Point(508, 607);
+            this.chkBoxAutoStart.Location = new System.Drawing.Point(508, 635);
             this.chkBoxAutoStart.Margin = new System.Windows.Forms.Padding(0);
             this.chkBoxAutoStart.Name = "chkBoxAutoStart";
             this.chkBoxAutoStart.Size = new System.Drawing.Size(496, 35);
-            this.chkBoxAutoStart.TabIndex = 26;
+            this.chkBoxAutoStart.TabIndex = 28;
             this.chkBoxAutoStart.Text = "扫描或输入VIN号后自动开始检测";
             this.chkBoxAutoStart.UseVisualStyleBackColor = true;
             // 
@@ -373,11 +356,8 @@
             this.layoutMain.Controls.Add(this.txtBoxEngineMfr);
             this.layoutMain.Controls.Add(this.txtBoxEngineVolume);
             this.layoutMain.Controls.Add(this.txtBoxCylinderQTY);
-            this.layoutMain.Controls.Add(this.txtBoxFuelSupply);
             this.layoutMain.Controls.Add(this.txtBoxRatedPower);
             this.layoutMain.Controls.Add(this.txtBoxRatedRPM);
-            this.layoutMain.Controls.Add(this.txtBoxEmissionStage);
-            this.layoutMain.Controls.Add(this.txtBoxTransmission);
             this.layoutMain.Controls.Add(this.txtBoxCatConverter);
             this.layoutMain.Controls.Add(this.txtBoxRefMass);
             this.layoutMain.Controls.Add(this.txtBoxMaxMass);
@@ -390,6 +370,11 @@
             this.layoutMain.Controls.Add(this.cmbBoxTestMethod);
             this.layoutMain.Controls.Add(this.btnSave);
             this.layoutMain.Controls.Add(this.btnStart);
+            this.layoutMain.Controls.Add(this.cmbBoxFuelSupply);
+            this.layoutMain.Controls.Add(this.cmbBoxEmissionStage);
+            this.layoutMain.Controls.Add(this.cmbBoxTransmission);
+            this.layoutMain.Controls.Add(this.cmbBoxSelectVehicleModel);
+            this.layoutMain.Controls.Add(this.chkBoxNewVehicleModel);
             this.layoutMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutMain.Font = new System.Drawing.Font("宋体", 14F);
             this.layoutMain.Location = new System.Drawing.Point(0, 0);
@@ -401,6 +386,8 @@
             this.layoutControlItem31,
             this.layoutControlItem29,
             this.layoutControlItem32,
+            this.layoutControlItem61,
+            this.layoutControlItem62,
             this.layoutControlItem33,
             this.layoutControlItem34,
             this.layoutControlItem35,
@@ -409,11 +396,11 @@
             this.layoutControlItem38,
             this.layoutControlItem39,
             this.layoutControlItem40,
-            this.layoutControlItem41,
+            this.layoutControlItem58,
             this.layoutControlItem42,
             this.layoutControlItem43,
-            this.layoutControlItem44,
-            this.layoutControlItem45,
+            this.layoutControlItem59,
+            this.layoutControlItem60,
             this.layoutControlItem46,
             this.layoutControlItem47,
             this.layoutControlItem48,
@@ -432,19 +419,76 @@
             // 
             // txtBoxGettedVIN
             // 
-            this.txtBoxGettedVIN.Location = new System.Drawing.Point(196, 91);
+            this.txtBoxGettedVIN.Location = new System.Drawing.Point(196, 76);
             this.txtBoxGettedVIN.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxGettedVIN.Name = "txtBoxGettedVIN";
             this.txtBoxGettedVIN.Size = new System.Drawing.Size(304, 29);
             this.txtBoxGettedVIN.TabIndex = 1;
             // 
+            // cmbBoxFuelSupply
+            // 
+            this.cmbBoxFuelSupply.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbBoxFuelSupply.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmbBoxFuelSupply.FormattingEnabled = true;
+            this.cmbBoxFuelSupply.Location = new System.Drawing.Point(196, 334);
+            this.cmbBoxFuelSupply.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbBoxFuelSupply.Name = "cmbBoxFuelSupply";
+            this.cmbBoxFuelSupply.Size = new System.Drawing.Size(304, 27);
+            this.cmbBoxFuelSupply.TabIndex = 13;
+            // 
+            // cmbBoxEmissionStage
+            // 
+            this.cmbBoxEmissionStage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbBoxEmissionStage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmbBoxEmissionStage.FormattingEnabled = true;
+            this.cmbBoxEmissionStage.Location = new System.Drawing.Point(700, 377);
+            this.cmbBoxEmissionStage.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbBoxEmissionStage.Name = "cmbBoxEmissionStage";
+            this.cmbBoxEmissionStage.Size = new System.Drawing.Size(304, 27);
+            this.cmbBoxEmissionStage.TabIndex = 16;
+            // 
+            // cmbBoxTransmission
+            // 
+            this.cmbBoxTransmission.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbBoxTransmission.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmbBoxTransmission.FormattingEnabled = true;
+            this.cmbBoxTransmission.Location = new System.Drawing.Point(196, 420);
+            this.cmbBoxTransmission.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbBoxTransmission.Name = "cmbBoxTransmission";
+            this.cmbBoxTransmission.Size = new System.Drawing.Size(304, 27);
+            this.cmbBoxTransmission.TabIndex = 17;
+            // 
+            // cmbBoxSelectVehicleModel
+            // 
+            this.cmbBoxSelectVehicleModel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbBoxSelectVehicleModel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmbBoxSelectVehicleModel.FormattingEnabled = true;
+            this.cmbBoxSelectVehicleModel.Location = new System.Drawing.Point(196, 119);
+            this.cmbBoxSelectVehicleModel.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbBoxSelectVehicleModel.Name = "cmbBoxSelectVehicleModel";
+            this.cmbBoxSelectVehicleModel.Size = new System.Drawing.Size(304, 27);
+            this.cmbBoxSelectVehicleModel.TabIndex = 3;
+            this.cmbBoxSelectVehicleModel.SelectedIndexChanged += new System.EventHandler(this.CmbBoxSelectVehicleModel_SelectedIndexChanged);
+            // 
+            // chkBoxNewVehicleModel
+            // 
+            this.chkBoxNewVehicleModel.AutoSize = true;
+            this.chkBoxNewVehicleModel.Location = new System.Drawing.Point(508, 119);
+            this.chkBoxNewVehicleModel.Margin = new System.Windows.Forms.Padding(0);
+            this.chkBoxNewVehicleModel.Name = "chkBoxNewVehicleModel";
+            this.chkBoxNewVehicleModel.Size = new System.Drawing.Size(496, 35);
+            this.chkBoxNewVehicleModel.TabIndex = 4;
+            this.chkBoxNewVehicleModel.Text = "新增或修改车型参数";
+            this.chkBoxNewVehicleModel.UseVisualStyleBackColor = true;
+            this.chkBoxNewVehicleModel.CheckedChanged += new System.EventHandler(this.ChkBoxNewVehicleModel_CheckedChanged);
+            // 
             // layoutControlItem31
             // 
             this.layoutControlItem31.Control = this.txtBoxVIN;
-            this.layoutControlItem31.Height = 12;
+            this.layoutControlItem31.Height = 10;
             this.layoutControlItem31.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             this.layoutControlItem31.Name = "layoutControlItem31";
-            this.layoutControlItem31.Style.Font = new System.Drawing.Font("宋体", 24F);
+            this.layoutControlItem31.Style.Font = new System.Drawing.Font("宋体", 20F);
             this.layoutControlItem31.Text = "扫描或\r\n输入VIN:";
             this.layoutControlItem31.TextAlignment = DevComponents.DotNetBar.Layout.eTextAlignment.Center;
             this.layoutControlItem31.TextBaseLineEnabled = false;
@@ -474,6 +518,27 @@
             this.layoutControlItem32.Text = "检验员:";
             this.layoutControlItem32.Width = 50;
             this.layoutControlItem32.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
+            // layoutControlItem61
+            // 
+            this.layoutControlItem61.Control = this.cmbBoxSelectVehicleModel;
+            this.layoutControlItem61.Height = 6;
+            this.layoutControlItem61.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem61.MinSize = new System.Drawing.Size(64, 18);
+            this.layoutControlItem61.Name = "layoutControlItem61";
+            this.layoutControlItem61.Text = "选择车型:";
+            this.layoutControlItem61.Width = 50;
+            this.layoutControlItem61.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
+            // layoutControlItem62
+            // 
+            this.layoutControlItem62.Control = this.chkBoxNewVehicleModel;
+            this.layoutControlItem62.Height = 6;
+            this.layoutControlItem62.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem62.MinSize = new System.Drawing.Size(32, 20);
+            this.layoutControlItem62.Name = "layoutControlItem62";
+            this.layoutControlItem62.Width = 50;
+            this.layoutControlItem62.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
             // layoutControlItem33
             // 
@@ -563,16 +628,16 @@
             this.layoutControlItem40.Width = 50;
             this.layoutControlItem40.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
-            // layoutControlItem41
+            // layoutControlItem58
             // 
-            this.layoutControlItem41.Control = this.txtBoxFuelSupply;
-            this.layoutControlItem41.Height = 6;
-            this.layoutControlItem41.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem41.MinSize = new System.Drawing.Size(300, 0);
-            this.layoutControlItem41.Name = "layoutControlItem41";
-            this.layoutControlItem41.Text = "燃油供给方式:";
-            this.layoutControlItem41.Width = 50;
-            this.layoutControlItem41.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem58.Control = this.cmbBoxFuelSupply;
+            this.layoutControlItem58.Height = 6;
+            this.layoutControlItem58.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem58.MinSize = new System.Drawing.Size(64, 18);
+            this.layoutControlItem58.Name = "layoutControlItem58";
+            this.layoutControlItem58.Text = "燃油供给方式:";
+            this.layoutControlItem58.Width = 50;
+            this.layoutControlItem58.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
             // layoutControlItem42
             // 
@@ -596,27 +661,27 @@
             this.layoutControlItem43.Width = 50;
             this.layoutControlItem43.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
-            // layoutControlItem44
+            // layoutControlItem59
             // 
-            this.layoutControlItem44.Control = this.txtBoxEmissionStage;
-            this.layoutControlItem44.Height = 6;
-            this.layoutControlItem44.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem44.MinSize = new System.Drawing.Size(300, 0);
-            this.layoutControlItem44.Name = "layoutControlItem44";
-            this.layoutControlItem44.Text = "车辆排放阶段:";
-            this.layoutControlItem44.Width = 50;
-            this.layoutControlItem44.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem59.Control = this.cmbBoxEmissionStage;
+            this.layoutControlItem59.Height = 6;
+            this.layoutControlItem59.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem59.MinSize = new System.Drawing.Size(64, 18);
+            this.layoutControlItem59.Name = "layoutControlItem59";
+            this.layoutControlItem59.Text = "车辆排放阶段:";
+            this.layoutControlItem59.Width = 50;
+            this.layoutControlItem59.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
-            // layoutControlItem45
+            // layoutControlItem60
             // 
-            this.layoutControlItem45.Control = this.txtBoxTransmission;
-            this.layoutControlItem45.Height = 6;
-            this.layoutControlItem45.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem45.MinSize = new System.Drawing.Size(300, 0);
-            this.layoutControlItem45.Name = "layoutControlItem45";
-            this.layoutControlItem45.Text = "变速器形式:";
-            this.layoutControlItem45.Width = 50;
-            this.layoutControlItem45.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem60.Control = this.cmbBoxTransmission;
+            this.layoutControlItem60.Height = 6;
+            this.layoutControlItem60.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem60.MinSize = new System.Drawing.Size(64, 18);
+            this.layoutControlItem60.Name = "layoutControlItem60";
+            this.layoutControlItem60.Text = "变速器形式:";
+            this.layoutControlItem60.Width = 50;
+            this.layoutControlItem60.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
             // layoutControlItem46
             // 
@@ -740,15 +805,6 @@
             this.layoutControlItem30.Width = 50;
             this.layoutControlItem30.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
-            // layoutControlItem56
-            // 
-            this.layoutControlItem56.Control = this.btnSave;
-            this.layoutControlItem56.Height = 8;
-            this.layoutControlItem56.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem56.Name = "layoutControlItem56";
-            this.layoutControlItem56.Width = 50;
-            this.layoutControlItem56.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            // 
             // layoutControlItem57
             // 
             this.layoutControlItem57.Control = this.btnStart;
@@ -757,6 +813,15 @@
             this.layoutControlItem57.Name = "layoutControlItem57";
             this.layoutControlItem57.Width = 50;
             this.layoutControlItem57.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
+            // layoutControlItem56
+            // 
+            this.layoutControlItem56.Control = this.btnSave;
+            this.layoutControlItem56.Height = 6;
+            this.layoutControlItem56.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem56.Name = "layoutControlItem56";
+            this.layoutControlItem56.Width = 50;
+            this.layoutControlItem56.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
             // layoutGroup1
             // 
@@ -913,7 +978,6 @@
             // 
             // layoutControlItem16
             // 
-            this.layoutControlItem16.Control = this.txtBoxTransmission;
             this.layoutControlItem16.Height = 37;
             this.layoutControlItem16.MinSize = new System.Drawing.Size(120, 0);
             this.layoutControlItem16.Name = "layoutControlItem16";
@@ -924,7 +988,6 @@
             // 
             // layoutControlItem15
             // 
-            this.layoutControlItem15.Control = this.txtBoxEmissionStage;
             this.layoutControlItem15.Height = 37;
             this.layoutControlItem15.MinSize = new System.Drawing.Size(120, 0);
             this.layoutControlItem15.Name = "layoutControlItem15";
@@ -957,7 +1020,6 @@
             // 
             // layoutControlItem12
             // 
-            this.layoutControlItem12.Control = this.txtBoxFuelSupply;
             this.layoutControlItem12.Height = 37;
             this.layoutControlItem12.MinSize = new System.Drawing.Size(120, 0);
             this.layoutControlItem12.Name = "layoutControlItem12";
@@ -1083,6 +1145,39 @@
             this.layoutControlItem1.Width = 100;
             this.layoutControlItem1.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
+            // layoutControlItem41
+            // 
+            this.layoutControlItem41.Control = this.cmbBoxEmissionStage;
+            this.layoutControlItem41.Height = 6;
+            this.layoutControlItem41.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem41.MinSize = new System.Drawing.Size(64, 18);
+            this.layoutControlItem41.Name = "layoutControlItem41";
+            this.layoutControlItem41.Text = "燃油供给方式:";
+            this.layoutControlItem41.Width = 50;
+            this.layoutControlItem41.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
+            // layoutControlItem44
+            // 
+            this.layoutControlItem44.Control = this.cmbBoxTransmission;
+            this.layoutControlItem44.Height = 6;
+            this.layoutControlItem44.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem44.MinSize = new System.Drawing.Size(64, 18);
+            this.layoutControlItem44.Name = "layoutControlItem44";
+            this.layoutControlItem44.Text = "车辆排放阶段:";
+            this.layoutControlItem44.Width = 50;
+            this.layoutControlItem44.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
+            // layoutControlItem45
+            // 
+            this.layoutControlItem45.Control = this.cmbBoxSelectVehicleModel;
+            this.layoutControlItem45.Height = 6;
+            this.layoutControlItem45.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem45.MinSize = new System.Drawing.Size(64, 18);
+            this.layoutControlItem45.Name = "layoutControlItem45";
+            this.layoutControlItem45.Text = "燃油供给方式:";
+            this.layoutControlItem45.Width = 50;
+            this.layoutControlItem45.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
             // VehicleLoginForm
             // 
             this.AcceptButton = this.btnStart;
@@ -1120,11 +1215,8 @@
         private System.Windows.Forms.TextBox txtBoxMaxMass;
         private System.Windows.Forms.TextBox txtBoxRefMass;
         private System.Windows.Forms.TextBox txtBoxCatConverter;
-        private System.Windows.Forms.TextBox txtBoxTransmission;
-        private System.Windows.Forms.TextBox txtBoxEmissionStage;
         private System.Windows.Forms.TextBox txtBoxRatedRPM;
         private System.Windows.Forms.TextBox txtBoxRatedPower;
-        private System.Windows.Forms.TextBox txtBoxFuelSupply;
         private System.Windows.Forms.TextBox txtBoxCylinderQTY;
         private System.Windows.Forms.TextBox txtBoxEngineVolume;
         private System.Windows.Forms.TextBox txtBoxEngineMfr;
@@ -1178,11 +1270,8 @@
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem38;
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem39;
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem40;
-        private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem41;
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem42;
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem43;
-        private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem44;
-        private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem45;
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem46;
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem47;
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem48;
@@ -1197,5 +1286,18 @@
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem57;
         private System.Windows.Forms.TextBox txtBoxGettedVIN;
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem29;
+        private System.Windows.Forms.ComboBox cmbBoxFuelSupply;
+        private System.Windows.Forms.ComboBox cmbBoxEmissionStage;
+        private System.Windows.Forms.ComboBox cmbBoxTransmission;
+        private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem58;
+        private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem59;
+        private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem60;
+        private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem41;
+        private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem44;
+        private System.Windows.Forms.ComboBox cmbBoxSelectVehicleModel;
+        private System.Windows.Forms.CheckBox chkBoxNewVehicleModel;
+        private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem61;
+        private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem62;
+        private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem45;
     }
 }

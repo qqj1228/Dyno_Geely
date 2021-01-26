@@ -15,6 +15,7 @@ namespace Dyno_Geely {
         private readonly MainSetting _mainCfg;
         private readonly Dictionary<Form, bool> _dicResults;
         private readonly Dictionary<Form, bool> _dicStops;
+        private readonly string[] _strStep;
         private readonly System.Timers.Timer _timer;
         public event EventHandler<SelfcheckDoneEventArgs> SelfcheckDone;
 
@@ -25,6 +26,7 @@ namespace Dyno_Geely {
             _mainCfg = mainCfg;
             _dicResults = dicResults;
             _dicStops = dicStops;
+            _strStep = new string[] { "启动", "清零", "实时测量", "量距校准", "完成" };
             _timer = new System.Timers.Timer(_mainCfg.RealtimeInterval);
             _timer.Elapsed += OnTimer;
             _timer.AutoReset = true;
@@ -39,7 +41,11 @@ namespace Dyno_Geely {
                             if (ackParams.msg != null && ackParams.msg.Length > 0) {
                                 lblMsg.Text = ackParams.msg;
                             }
-                            lblStep.Text = ackParams.step.ToString();
+                            if (ackParams.step >= 0 && ackParams.step < 5) {
+                                lblStep.Text = _strStep[ackParams.step];
+                            } else {
+                                lblStep.Text = "--";
+                            }
                             lblNs.Text = ackParams.Ns;
                             lblK.Text = ackParams.K;
                             lblCO2.Text = ackParams.CO2.ToString("F");
@@ -49,7 +55,7 @@ namespace Dyno_Geely {
                             if (lblDistancepointCheck.Text != "成功") {
                                 lblDistancepointCheck.Text = ackParams.DistancepointCheck ? "成功" : "失败";
                             }
-                            if (ackParams.step >= 4 && lblMsg.Text == "请将取样探头插入排气管" || _dicStops[this]) {
+                            if (ackParams.step >= 4 || _dicStops[this]) {
                                 _timer.Enabled = false;
                                 bool bResult = lblZero.Text == "完成";
                                 bResult = bResult && lblDistancepointCheck.Text == "成功";
@@ -72,13 +78,13 @@ namespace Dyno_Geely {
 
         public void StartSelfcheck(bool bStart) {
             if (bStart) {
-                if (!_dynoCmd.StartSmokePrepareCmd(false)) {
+                if (!_dynoCmd.StartSmokePrepareCmd(false, false)) {
                     MessageBox.Show("执行开始烟度计准备命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _timer.Enabled = true;
                 }
             } else {
-                if (!_dynoCmd.StartSmokePrepareCmd(true)) {
+                if (!_dynoCmd.StartSmokePrepareCmd(true, true)) {
                     MessageBox.Show("执行停止烟度计准备命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _timer.Enabled = false;

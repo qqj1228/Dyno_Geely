@@ -22,7 +22,7 @@ namespace Dyno_Geely {
 
         public OilTempSelfcheckSubForm(DynoCmd dynoCmd, MainSetting mainCfg, Dictionary<Form, bool> dicResults, Dictionary<Form, bool> dicStops) {
             InitializeComponent();
-            _lastHeight = this.Height;
+            _lastHeight = Height;
             _dynoCmd = dynoCmd;
             _mainCfg = mainCfg;
             _dicResults = dicResults;
@@ -38,11 +38,15 @@ namespace Dyno_Geely {
                 if (_timer != null && _timer.Enabled) {
                     try {
                         Invoke((EventHandler)delegate {
-                            if (ackParams.oilTitle != null && ackParams.oilTitle.Length > 0) {
-                                lblMsg.Text = ackParams.oilTitle;
-                            }
                             lblOilTemp.Text = ackParams.oilTemp.ToString("F");
-                            if (ackParams.oilTemp > 0 || _dicStops[this]) {
+                            lblOilTempCY.Text = ackParams.oilTempCY.ToString("F");
+                            lblOilTempOBD.Text = ackParams.oilTempOBD.ToString("F");
+                            lblLQYTempOBD.Text = ackParams.LQYTempOBD.ToString("F");
+                            bool tempOK = ackParams.oilTemp > 0;
+                            tempOK = tempOK && ackParams.oilTempCY > 0;
+                            tempOK = tempOK && ackParams.oilTempOBD > 0;
+                            tempOK = tempOK && ackParams.LQYTempOBD > 0;
+                            if (tempOK && _dicStops[this]) {
                                 if (++_counter >= OK_COUNTER || _dicStops[this]) {
                                     _timer.Enabled = false;
                                     _dicResults[this] = true;
@@ -89,10 +93,10 @@ namespace Dyno_Geely {
             if (_lastHeight == 0) {
                 return;
             }
-            float scale = this.Height / _lastHeight;
+            float scale = Height / _lastHeight;
             layoutMain.Font = new Font(layoutMain.Font.FontFamily, layoutMain.Font.Size * scale, layoutMain.Font.Style);
             lblMsg.Font = new Font(lblMsg.Font.FontFamily, lblMsg.Font.Size * scale, lblMsg.Font.Style);
-            _lastHeight = this.Height;
+            _lastHeight = Height;
         }
 
         private void OilTempSelfcheckSubForm_FormClosing(object sender, FormClosingEventArgs e) {

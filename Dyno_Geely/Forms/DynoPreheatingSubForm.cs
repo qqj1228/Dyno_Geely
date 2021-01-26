@@ -21,7 +21,7 @@ namespace Dyno_Geely {
 
         public DynoPreheatingSubForm(DynoCmd dynoCmd, MainSetting mainCfg, Dictionary<Form, bool> dicResults) {
             InitializeComponent();
-            _lastHeight = this.Height;
+            _lastHeight = Height;
             _dynoCmd = dynoCmd;
             _mainCfg = mainCfg;
             _dicResults = dicResults;
@@ -119,7 +119,7 @@ namespace Dyno_Geely {
             _bCanStop = false;
             _startTime = DateTime.Now;
             if (!_dynoCmd.StartDynoPreheatCmd(false, out string msg)) {
-                MessageBox.Show("执行开始预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("执行开始测功机预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if (msg.Length > 0) {
@@ -129,19 +129,20 @@ namespace Dyno_Geely {
         }
 
         private void BtnStop_Click(object sender, EventArgs e) {
-            _dynoCmd.ReconnectServer();
+            _timer.Enabled = false;
+            System.Threading.Thread.Sleep(_mainCfg.RealtimeInterval);
+            //_dynoCmd.ReconnectServer();
             btnBeamDown.Enabled = false;
             btnBeamUp.Enabled = true;
             btnStart.Enabled = true;
             btnStop.Enabled = false;
             if (!_dynoCmd.StartDynoPreheatCmd(true, out string msg)) {
-                MessageBox.Show("执行停止预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("执行停止测功机预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if (msg.Length > 0) {
                 lblMsg.Text = msg;
             }
-            _timer.Enabled = false;
             lblSpeed.Text = "--";
         }
 
@@ -154,10 +155,10 @@ namespace Dyno_Geely {
             if (_lastHeight == 0) {
                 return;
             }
-            float scale = this.Height / _lastHeight;
+            float scale = Height / _lastHeight;
             layoutMain.Font = new Font(layoutMain.Font.FontFamily, layoutMain.Font.Size * scale, layoutMain.Font.Style);
             lblMsg.Font = new Font(lblMsg.Font.FontFamily, lblMsg.Font.Size * scale, lblMsg.Font.Style);
-            _lastHeight = this.Height;
+            _lastHeight = Height;
         }
     }
 }

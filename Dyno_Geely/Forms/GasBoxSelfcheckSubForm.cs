@@ -15,16 +15,18 @@ namespace Dyno_Geely {
         private readonly MainSetting _mainCfg;
         private readonly Dictionary<Form, bool> _dicResults;
         private readonly Dictionary<Form, bool> _dicStops;
+        private readonly bool _bDiesel;
         private readonly System.Timers.Timer _timer;
         public event EventHandler<SelfcheckDoneEventArgs> SelfcheckDone;
 
-        public GasBoxSelfcheckSubForm(DynoCmd dynoCmd, MainSetting mainCfg, Dictionary<Form, bool> dicResults, Dictionary<Form, bool> dicStops) {
+        public GasBoxSelfcheckSubForm(DynoCmd dynoCmd, MainSetting mainCfg, Dictionary<Form, bool> dicResults, Dictionary<Form, bool> dicStops, bool bDiesel) {
             InitializeComponent();
-            _lastHeight = this.Height;
+            _lastHeight = Height;
             _dynoCmd = dynoCmd;
             _mainCfg = mainCfg;
             _dicResults = dicResults;
             _dicStops = dicStops;
+            _bDiesel = bDiesel;
             _timer = new System.Timers.Timer(_mainCfg.RealtimeInterval);
             _timer.Elapsed += OnTimer;
             _timer.AutoReset = true;
@@ -37,7 +39,9 @@ namespace Dyno_Geely {
                     try {
                         Invoke((EventHandler)delegate {
                             if (ackParams.msg != null && ackParams.msg.Length > 0) {
-                                lblMsg.Text = ackParams.msg;
+                                lblMsg.Text = ackParams.msg + ", 剩余" + ackParams.NowOperationTimeRemaining + "秒";
+                            } else {
+                                lblMsg.Text = "尾气分析仪自检, 剩余" + ackParams.NowOperationTimeRemaining + "秒";
                             }
                             lblAmibientHC.Text = ackParams.AmibientHC;
                             lblAmibientCO.Text = ackParams.AmibientCO;
@@ -51,27 +55,15 @@ namespace Dyno_Geely {
                             lblBackO2.Text = ackParams.BackO2;
                             lblStep.Text = ackParams.step.ToString();
                             lblResidualHC.Text = ackParams.ResidualHC ?? "--";
-                            lblRestTime.Text = ackParams.NowOperationTimeRemaining;
-                            lblHCRestTime.Text = ackParams.HCOperationTimeRemaining ?? "--";
+                            lblCO2COGas.Text = ackParams.QYSumCO2COLimit.ToString("F");
+                            lblCO2CODiesel.Text = ackParams.CYSumCO2COLimit.ToString("F");
                             lblCO2CO.Text = ackParams.SumCO2CO.ToString("F");
-                            if (lblZero.Text != "成功") {
-                                lblZero.Text = ackParams.Zero ? "成功" : "--";
-                            }
-                            if (lblAmibientCheck.Text != "成功") {
-                                lblAmibientCheck.Text = ackParams.AmibientCheck ? "成功" : "--";
-                            }
-                            if (lblBackGroundCheck.Text != "成功") {
-                                lblBackGroundCheck.Text = ackParams.BackGroundCheck ? "成功" : "--";
-                            }
-                            if (lblHCResidualCheck.Text != "成功") {
-                                lblHCResidualCheck.Text = ackParams.HCResidualCheck ? "成功" : "--";
-                            }
-                            if (lblO2SpanCheck.Text != "成功") {
-                                lblO2SpanCheck.Text = ackParams.O2SpanCheck ? "成功" : "--";
-                            }
-                            if (lblLowFlowCheck.Text != "成功") {
-                                lblLowFlowCheck.Text = ackParams.TestGasInLowFlowCheck ? "成功" : "--";
-                            }
+                            lblZero.Text = ackParams.Zero ? "成功" : "失败";
+                            lblAmibientCheck.Text = ackParams.AmibientCheck ? "成功" : "失败";
+                            lblBackGroundCheck.Text = ackParams.BackGroundCheck ? "成功" : "失败";
+                            lblHCResidualCheck.Text = ackParams.HCResidualCheck ? "成功" : "失败";
+                            lblO2SpanCheck.Text = ackParams.O2SpanCheck ? "成功" : "失败";
+                            lblLowFlowCheck.Text = ackParams.TestGasInLowFlowCheck ? "成功" : "失败";
                             if (ackParams.step >= 8 || _dicStops[this]) {
                                 _timer.Enabled = false;
                                 bool bResult = lblZero.Text == "成功";
@@ -80,7 +72,13 @@ namespace Dyno_Geely {
                                 bResult = bResult && lblHCResidualCheck.Text == "成功";
                                 bResult = bResult && lblO2SpanCheck.Text == "成功";
                                 bResult = bResult && lblLowFlowCheck.Text == "成功";
-                                bResult = bResult && ackParams.SumCO2CO > 6;
+                                if (_bDiesel) {
+                                    //bResult = bResult && ackParams.SumCO2CO > ackParams.CYSumCO2COLimit;
+                                    bResult = ackParams.SumCO2CO > ackParams.CYSumCO2COLimit;
+                                } else {
+                                    //bResult = bResult && ackParams.SumCO2CO > ackParams.QYSumCO2COLimit;
+                                    bResult = ackParams.SumCO2CO > ackParams.QYSumCO2COLimit;
+                                }
                                 _dicResults[this] = bResult;
                                 lblResult.Text = _dicResults[this] ? "成功" : "失败";
                                 ackParams = new GetGasboxPrepareRealTimeDataAckParams();
@@ -99,14 +97,18 @@ namespace Dyno_Geely {
         }
 
         public void StartSelfcheck(bool bStart) {
+            string fuel = "汽油";
+            if (_bDiesel) {
+                fuel = "柴油";
+            }
             if (bStart) {
-                if (!_dynoCmd.StartGasboxPrepareCmd(false, false)) {
+                if (!_dynoCmd.StartGasboxPrepareCmd(false, false, fuel)) {
                     MessageBox.Show("执行开始分析仪准备命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _timer.Enabled = true;
                 }
             } else {
-                if (!_dynoCmd.StartGasboxPrepareCmd(true, false)) {
+                if (!_dynoCmd.StartGasboxPrepareCmd(true, false, fuel)) {
                     MessageBox.Show("执行停止分析仪准备命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _timer.Enabled = false;
@@ -123,10 +125,10 @@ namespace Dyno_Geely {
             if (_lastHeight == 0) {
                 return;
             }
-            float scale = this.Height / _lastHeight;
+            float scale = Height / _lastHeight;
             layoutMain.Font = new Font(layoutMain.Font.FontFamily, layoutMain.Font.Size * scale, layoutMain.Font.Style);
             lblMsg.Font = new Font(lblMsg.Font.FontFamily, lblMsg.Font.Size * scale, lblMsg.Font.Style);
-            _lastHeight = this.Height;
+            _lastHeight = Height;
         }
 
         private void BtnStart_Click(object sender, EventArgs e) {

@@ -15,16 +15,18 @@ namespace Dyno_Geely {
         private readonly MainSetting _mainCfg;
         private readonly Dictionary<Form, bool> _dicResults;
         private readonly Dictionary<Form, bool> _dicStops;
+        private readonly string[] _strStep;
         private readonly System.Timers.Timer _timer;
         public event EventHandler<SelfcheckDoneEventArgs> SelfcheckDone;
 
         public FlowmeterSelfcheckSubForm(DynoCmd dynoCmd, MainSetting mainCfg, Dictionary<Form, bool> dicResults, Dictionary<Form, bool> dicStops) {
             InitializeComponent();
-            _lastHeight = this.Height;
+            _lastHeight = Height;
             _dynoCmd = dynoCmd;
             _mainCfg = mainCfg;
             _dicResults = dicResults;
             _dicStops = dicStops;
+            _strStep = new string[] { "清零", "清零结果", "氧量程检查", "流量检查", "准备完成" };
             _timer = new System.Timers.Timer(_mainCfg.RealtimeInterval);
             _timer.Elapsed += OnTimer;
             _timer.AutoReset = true;
@@ -37,28 +39,37 @@ namespace Dyno_Geely {
                     try {
                         Invoke((EventHandler)delegate {
                             if (ackParams.msg != null && ackParams.msg.Length > 0) {
-                                lblMsg.Text = ackParams.msg;
+                                lblMsg.Text = ackParams.msg + ", 剩余" + ackParams.time + "秒";
+                            } else {
+                                lblMsg.Text = "流量计自检, 剩余" + ackParams.time + "秒";
                             }
-                            lblStep.Text = ackParams.step.ToString();
+                            if (ackParams.step >= 0 && ackParams.step < 5) {
+                                lblStep.Text = _strStep[ackParams.step];
+                            } else {
+                                lblStep.Text = "--";
+                            }
                             lblFlow.Text = ackParams.flow;
                             lblO2.Text = ackParams.O2;
                             lblRestTime.Text = ackParams.time;
-                            if (lblZero.Text != "成功") {
+                            if (lblZero.Text != "合格") {
                                 lblZero.Text = ackParams.ZeroResult ?? "--";
                             }
-                            if (lblFlowCheck.Text != "成功") {
+                            if (lblFlowCheck.Text != "合格") {
                                 lblFlowCheck.Text = ackParams.FlowCheckResult ?? "--";
                             }
-                            if (lblO2SpanCheck.Text != "成功") {
+                            if (lblO2SpanCheck.Text != "合格") {
                                 lblO2SpanCheck.Text = ackParams.O2SpanCheckResult ?? "--";
                             }
-                            if ((ackParams.step >= 5 && lblMsg.Text == "流量计检查完毕,可进行车辆试验") || _dicStops[this]) {
+                            if (lblResult.Text != "合格") {
+                                lblResult.Text = ackParams.FlowmeterPrepareResult ?? "--";
+                            }
+                            if ((ackParams.step >= 4) || _dicStops[this]) {
                                 _timer.Enabled = false;
-                                bool bResult = lblZero.Text == "成功";
-                                bResult = bResult && lblFlowCheck.Text == "成功";
-                                bResult = bResult && lblO2SpanCheck.Text == "成功";
+                                bool bResult = lblZero.Text == "合格";
+                                //bResult = bResult && lblFlowCheck.Text == "合格";
+                                //bResult = bResult && lblO2SpanCheck.Text == "合格";
                                 _dicResults[this] = bResult;
-                                lblResult.Text = _dicResults[this] ? "成功" : "失败";
+                                //lblResult.Text = _dicResults[this] ? "合格" : "不合格";
                                 ackParams = new GetFlowmeterPrepareRealTimeDataAckParams();
                                 _dynoCmd.GetFlowmeterPrepareRealTimeDataCmd(false, true, ref ackParams);
                                 SelfcheckDoneEventArgs args = new SelfcheckDoneEventArgs {
@@ -76,13 +87,24 @@ namespace Dyno_Geely {
 
         public void StartSelfcheck(bool bStart) {
             if (bStart) {
-                if (!_dynoCmd.StartFlowmeterPrepareCmd(false)) {
+                // 现在的测功机服务端软件需要发两次开始命令才能接收实时数据
+                if (!_dynoCmd.StartFlowmeterPrepareCmd(false, false)) {
                     MessageBox.Show("执行开始流量计准备命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
-                    _timer.Enabled = true;
+                    System.Threading.Thread.Sleep(_mainCfg.RealtimeInterval);
+                    GetFlowmeterPrepareRealTimeDataAckParams ackParams = new GetFlowmeterPrepareRealTimeDataAckParams();
+                    if (_dynoCmd.GetFlowmeterPrepareRealTimeDataCmd(true, false, ref ackParams) && ackParams != null && ackParams.step >= 0) {
+                        _timer.Enabled = true;
+                    } else {
+                        if (!_dynoCmd.StartFlowmeterPrepareCmd(false, false)) {
+                            MessageBox.Show("执行开始流量计准备命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        } else {
+                            _timer.Enabled = true;
+                        }
+                    }
                 }
             } else {
-                if (!_dynoCmd.StartFlowmeterPrepareCmd(true)) {
+                if (!_dynoCmd.StartFlowmeterPrepareCmd(true, true)) {
                     MessageBox.Show("执行停止流量计准备命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _timer.Enabled = false;
@@ -99,10 +121,10 @@ namespace Dyno_Geely {
             if (_lastHeight == 0) {
                 return;
             }
-            float scale = this.Height / _lastHeight;
+            float scale = Height / _lastHeight;
             layoutMain.Font = new Font(layoutMain.Font.FontFamily, layoutMain.Font.Size * scale, layoutMain.Font.Style);
             lblMsg.Font = new Font(lblMsg.Font.FontFamily, lblMsg.Font.Size * scale, lblMsg.Font.Style);
-            _lastHeight = this.Height;
+            _lastHeight = Height;
         }
 
         private void BtnStart_Click(object sender, EventArgs e) {

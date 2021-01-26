@@ -24,7 +24,7 @@ namespace Dyno_Geely {
 
         public FlowmeterPreheatingSubForm(DynoCmd dynoCmd, MainSetting mainCfg, Dictionary<Form, bool> dicResults) {
             InitializeComponent();
-            _lastHeight = this.Height;
+            _lastHeight = Height;
             _dynoCmd = dynoCmd;
             _mainCfg = mainCfg;
             _dicResults = dicResults;
@@ -35,25 +35,46 @@ namespace Dyno_Geely {
             _iResults = new int[] { 0, 0, 0, 0 };
         }
 
-        private void DoStep(string strResult, ref GetFlowmeterCheckRealTimeDataAckParams ackParams, ref int iResult) {
-            if (strResult == "成功") {
-                iResult = 1;
+        private void DoStep(ref GetFlowmeterCheckRealTimeDataAckParams ackParams) {
+            if (lblFlowCheck.Text == "成功") {
+                _iResults[0] = 1;
+            } else if (lblFlowCheck.Text == "失败") {
+                _iResults[0] = -1;
+            }
+            if (lblO2SpanCheck.Text == "成功") {
+                _iResults[1] = 1;
+            } else if (lblO2SpanCheck.Text == "失败") {
+                _iResults[1] = -1;
+            }
+            if (lblTempeCheck.Text == "成功") {
+                _iResults[2] = 1;
+            } else if (lblTempeCheck.Text == "失败") {
+                _iResults[2] = -1;
+            }
+            if (lblPressureCheck.Text == "成功") {
+                _iResults[3] = 1;
+            } else if (lblPressureCheck.Text == "失败") {
+                _iResults[3] = -1;
+            }
+
+            if (_iResults[_step] == 1) {
                 _timer.Enabled = false;
                 _dynoCmd.GetFlowmeterCheckRealTimeDataCmd(true, ref ackParams);
-                _step++;
-                StartFlowmeterCheckAckParams startAckParams = new StartFlowmeterCheckAckParams();
-                if (!_dynoCmd.StartFlowmeterCheckCmd(false, _step, _mainCfg.Flowmeter.TargetTempe, _mainCfg.Flowmeter.TargetPressure, ref startAckParams)) {
-                    MessageBox.Show("执行开始流量计预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (_step < _iResults.Length - 1) {
+                    StartFlowmeterCheckAckParams startAckParams = new StartFlowmeterCheckAckParams();
+                    if (!_dynoCmd.StartFlowmeterCheckCmd(false, ++_step, _mainCfg.Flowmeter.TargetTempe, _mainCfg.Flowmeter.TargetPressure, ref startAckParams)) {
+                        MessageBox.Show("执行开始流量计预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    } else {
+                        _timer.Enabled = true;
+                        Invoke((EventHandler)delegate {
+                            lblLowFlowSpan.Text = startAckParams.FlowmeterLowFlowSpan.ToString("F");
+                            lblO2Span.Text = startAckParams.FlowmeterO2SpanLow.ToString("F");
+                            lblO2Span.Text += "/" + startAckParams.FlowmeterO2SpanHight.ToString("F");
+                        });
+                    }
                 } else {
-                    _timer.Enabled = true;
-                    Invoke((EventHandler)delegate {
-                        lblLowFlowSpan.Text = startAckParams.FlowmeterLowFlowSpan.ToString("F");
-                        lblO2Span.Text = startAckParams.FlowmeterO2SpanLow.ToString("F");
-                        lblO2Span.Text += "/" + startAckParams.FlowmeterO2SpanHight.ToString("F");
-                    });
+                    ++_step;
                 }
-            } else if (strResult == "失败") {
-                iResult = -1;
             }
         }
 
@@ -91,21 +112,16 @@ namespace Dyno_Geely {
                     }
                     switch (_step) {
                     case 0:
-                        DoStep(ackParams.FlowCheckResult, ref ackParams, ref _iResults[_step]);
+                        DoStep(ref ackParams);
                         break;
                     case 1:
-                        DoStep(ackParams.O2SpanCheckResult, ref ackParams, ref _iResults[_step]);
+                        DoStep(ref ackParams);
                         break;
                     case 2:
-                        DoStep(ackParams.TempeCheckResult, ref ackParams, ref _iResults[_step]);
+                        DoStep(ref ackParams);
                         break;
                     case 3:
-                        if (ackParams.PressureCheckResult == "成功") {
-                            _iResults[_step] = 1;
-                            _step++;
-                        } else if (ackParams.PressureCheckResult == "失败") {
-                            _iResults[_step] = -1;
-                        }
+                        DoStep(ref ackParams);
                         break;
                     }
                     foreach (int item in _iResults) {
@@ -177,20 +193,17 @@ namespace Dyno_Geely {
         }
 
         private void BtnStop_Click(object sender, EventArgs e) {
-            _dynoCmd.ReconnectServer();
+            _timer.Enabled = false;
+            lblMsg.Text = "手动停止流量计预热";
+            lblFlow.Text = "--";
+            lblDiluteO2.Text = "--";
+            lblTemperature.Text = "--";
+            lblPressure.Text = "--";
+            System.Threading.Thread.Sleep(_mainCfg.RealtimeInterval);
+            //_dynoCmd.ReconnectServer();
             StartFlowmeterCheckAckParams ackParams = new StartFlowmeterCheckAckParams();
             if (!_dynoCmd.StartFlowmeterCheckCmd(true, _step, _mainCfg.Flowmeter.TargetTempe, _mainCfg.Flowmeter.TargetPressure, ref ackParams)) {
                 MessageBox.Show("执行停止流量计预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            } else {
-                _timer.Enabled = false;
-                lblMsg.Text = "停止流量计预热";
-                lblLowFlowSpan.Text = ackParams.FlowmeterLowFlowSpan.ToString("F");
-                lblO2Span.Text = ackParams.FlowmeterO2SpanLow.ToString("F");
-                lblO2Span.Text += "/" + ackParams.FlowmeterO2SpanHight.ToString("F");
-                lblFlow.Text = "--";
-                lblDiluteO2.Text = "--";
-                lblTemperature.Text = "--";
-                lblPressure.Text = "--";
             }
         }
 
@@ -203,10 +216,10 @@ namespace Dyno_Geely {
             if (_lastHeight == 0) {
                 return;
             }
-            float scale = this.Height / _lastHeight;
+            float scale = Height / _lastHeight;
             layoutMain.Font = new Font(layoutMain.Font.FontFamily, layoutMain.Font.Size * scale, layoutMain.Font.Style);
             lblMsg.Font = new Font(lblMsg.Font.FontFamily, lblMsg.Font.Size * scale, lblMsg.Font.Style);
-            _lastHeight = this.Height;
+            _lastHeight = Height;
         }
     }
 }

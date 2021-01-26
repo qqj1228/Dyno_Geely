@@ -12,7 +12,7 @@ CREATE TABLE ProAsm_G4.dbo.SH_VehicleInfo (
     ID INT IDENTITY PRIMARY KEY NOT NULL,
     VIN VARCHAR(17) NOT NULL,
     VehicleModel VARCHAR(100) NOT NULL, -- 车型
-    OpenInfoSN VARCHAR(29) NOT NULL, -- 信息公开号
+    OpenInfoSN VARCHAR(29), -- 信息公开号
     TestQTY INT NOT NULL DEFAULT(0), -- 检测次数
 )
 GO
@@ -20,29 +20,29 @@ GO
 -- 车型排放信息表
 CREATE TABLE ProAsm_G4.dbo.SH_EmissionInfo (
     ID INT IDENTITY PRIMARY KEY NOT NULL,
-    VehicleModel VARCHAR(100) NOT NULL, -- 车型
-    OpenInfoSN VARCHAR(29) NOT NULL, -- 信息公开号
+    VehicleModel VARCHAR(100) NOT NULL UNIQUE, -- 车型
+    OpenInfoSN VARCHAR(29), -- 信息公开号
     VehicleMfr VARCHAR(200), -- 车辆生产企业
     EngineModel VARCHAR(100), -- 发动机型号
     EngineSN VARCHAR(50), -- 发动机编号
     EngineMfr VARCHAR(100), -- 发动机生产企业
-    EngineVolume VARCHAR(50), -- 发动机排量(L)
-    CylinderQTY VARCHAR(50), -- 气缸数
-    FuelSupply VARCHAR(50), -- 燃油供给方式
-    RatedPower VARCHAR(50), -- 发动机额定功率(kW)
-    RatedRPM NUMERIC(5) NOT NULL, -- 额定转速(r/min)
-    EmissionStage VARCHAR(50), -- 车辆排放阶段
-    Transmission VARCHAR(50), -- 变速器形式
+    EngineVolume FLOAT, -- 发动机排量(L)
+    CylinderQTY INT, -- 气缸数
+    FuelSupply INT, -- 燃油供给方式
+    RatedPower FLOAT NOT NULL, -- 发动机额定功率(kW)
+    RatedRPM INT NOT NULL, -- 额定转速(r/min)
+    EmissionStage INT NOT NULL, -- 车辆排放阶段
+    Transmission INT, -- 变速器形式
     CatConverter VARCHAR(100), -- 催化转化器型号
-    RefMass VARCHAR(50), -- 基准质量(kg)
-    MaxMass VARCHAR(50), -- 最大设计总质量(kg)
+    RefMass INT NOT NULL, -- 基准质量(kg)
+    MaxMass INT NOT NULL, -- 最大设计总质量(kg)
     OBDLocation VARCHAR(50), -- OBD接口位置
     PostProcessing VARCHAR(100), -- 后处理类型
     PostProcessor VARCHAR(100), -- 后处理型号
     MotorModel VARCHAR(100), -- 电动机型号
     EnergyStorage VARCHAR(100), -- 储能装置型号
     BatteryCap VARCHAR(50), -- 电池容量
-    TestMethod NUMERIC(1) NOT NULL, -- 检测方法
+    TestMethod INT NOT NULL DEFAULT(5), -- 检测方法
     Name VARCHAR(10), -- 检验员名字
 )
 GO

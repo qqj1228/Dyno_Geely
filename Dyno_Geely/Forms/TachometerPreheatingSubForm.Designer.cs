@@ -236,7 +236,7 @@ namespace Dyno_Geely {
             borderPattern1.Top = DevComponents.DotNetBar.Layout.LinePattern.Solid;
             this.layoutGroup1.Style.BorderPattern = borderPattern1;
             this.layoutGroup1.Style.BorderThickness = new DevComponents.DotNetBar.Layout.Thickness(1D, 1D, 1D, 1D);
-            this.layoutGroup1.Text = "汽油转速";
+            this.layoutGroup1.Text = "汽油转速(r/min)";
             this.layoutGroup1.TextAlignment = DevComponents.DotNetBar.Layout.eTextAlignment.Center;
             this.layoutGroup1.TextPadding = new System.Windows.Forms.Padding(0, 10, 0, 0);
             this.layoutGroup1.TextPosition = DevComponents.DotNetBar.Layout.eLayoutPosition.Top;
@@ -298,7 +298,7 @@ namespace Dyno_Geely {
             borderPattern2.Top = DevComponents.DotNetBar.Layout.LinePattern.Solid;
             this.layoutGroup2.Style.BorderPattern = borderPattern2;
             this.layoutGroup2.Style.BorderThickness = new DevComponents.DotNetBar.Layout.Thickness(0D, 1D, 1D, 1D);
-            this.layoutGroup2.Text = "柴油转速";
+            this.layoutGroup2.Text = "柴油转速(r/min)";
             this.layoutGroup2.TextAlignment = DevComponents.DotNetBar.Layout.eTextAlignment.Center;
             this.layoutGroup2.TextPadding = new System.Windows.Forms.Padding(0, 10, 0, 0);
             this.layoutGroup2.TextPosition = DevComponents.DotNetBar.Layout.eLayoutPosition.Top;

@@ -43,8 +43,8 @@
             this.lblBackO2 = new System.Windows.Forms.Label();
             this.lblStep = new System.Windows.Forms.Label();
             this.lblResidualHC = new System.Windows.Forms.Label();
-            this.lblRestTime = new System.Windows.Forms.Label();
-            this.lblHCRestTime = new System.Windows.Forms.Label();
+            this.lblCO2COGas = new System.Windows.Forms.Label();
+            this.lblCO2CODiesel = new System.Windows.Forms.Label();
             this.lblCO2CO = new System.Windows.Forms.Label();
             this.lblZero = new System.Windows.Forms.Label();
             this.lblAmibientCheck = new System.Windows.Forms.Label();
@@ -105,8 +105,8 @@
             this.layoutMain.Controls.Add(this.lblBackO2);
             this.layoutMain.Controls.Add(this.lblStep);
             this.layoutMain.Controls.Add(this.lblResidualHC);
-            this.layoutMain.Controls.Add(this.lblRestTime);
-            this.layoutMain.Controls.Add(this.lblHCRestTime);
+            this.layoutMain.Controls.Add(this.lblCO2COGas);
+            this.layoutMain.Controls.Add(this.lblCO2CODiesel);
             this.layoutMain.Controls.Add(this.lblCO2CO);
             this.layoutMain.Controls.Add(this.lblZero);
             this.layoutMain.Controls.Add(this.lblAmibientCheck);
@@ -325,31 +325,31 @@
             this.lblResidualHC.Text = "--";
             this.lblResidualHC.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // lblRestTime
+            // lblCO2COGas
             // 
-            this.lblRestTime.AutoSize = true;
-            this.lblRestTime.BackColor = System.Drawing.Color.Black;
-            this.lblRestTime.ForeColor = System.Drawing.Color.Gold;
-            this.lblRestTime.Location = new System.Drawing.Point(496, 209);
-            this.lblRestTime.Margin = new System.Windows.Forms.Padding(0);
-            this.lblRestTime.Name = "lblRestTime";
-            this.lblRestTime.Size = new System.Drawing.Size(84, 41);
-            this.lblRestTime.TabIndex = 15;
-            this.lblRestTime.Text = "--";
-            this.lblRestTime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblCO2COGas.AutoSize = true;
+            this.lblCO2COGas.BackColor = System.Drawing.Color.Black;
+            this.lblCO2COGas.ForeColor = System.Drawing.Color.Gold;
+            this.lblCO2COGas.Location = new System.Drawing.Point(496, 209);
+            this.lblCO2COGas.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCO2COGas.Name = "lblCO2COGas";
+            this.lblCO2COGas.Size = new System.Drawing.Size(84, 41);
+            this.lblCO2COGas.TabIndex = 15;
+            this.lblCO2COGas.Text = "--";
+            this.lblCO2COGas.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // lblHCRestTime
+            // lblCO2CODiesel
             // 
-            this.lblHCRestTime.AutoSize = true;
-            this.lblHCRestTime.BackColor = System.Drawing.Color.Black;
-            this.lblHCRestTime.ForeColor = System.Drawing.Color.Gold;
-            this.lblHCRestTime.Location = new System.Drawing.Point(496, 258);
-            this.lblHCRestTime.Margin = new System.Windows.Forms.Padding(0);
-            this.lblHCRestTime.Name = "lblHCRestTime";
-            this.lblHCRestTime.Size = new System.Drawing.Size(84, 41);
-            this.lblHCRestTime.TabIndex = 16;
-            this.lblHCRestTime.Text = "--";
-            this.lblHCRestTime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblCO2CODiesel.AutoSize = true;
+            this.lblCO2CODiesel.BackColor = System.Drawing.Color.Black;
+            this.lblCO2CODiesel.ForeColor = System.Drawing.Color.Gold;
+            this.lblCO2CODiesel.Location = new System.Drawing.Point(496, 258);
+            this.lblCO2CODiesel.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCO2CODiesel.Name = "lblCO2CODiesel";
+            this.lblCO2CODiesel.Size = new System.Drawing.Size(84, 41);
+            this.lblCO2CODiesel.TabIndex = 16;
+            this.lblCO2CODiesel.Text = "--";
+            this.lblCO2CODiesel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblCO2CO
             // 
@@ -688,11 +688,11 @@
             // 
             // layoutControlItem16
             // 
-            this.layoutControlItem16.Control = this.lblRestTime;
+            this.layoutControlItem16.Control = this.lblCO2COGas;
             this.layoutControlItem16.Height = 20;
             this.layoutControlItem16.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             this.layoutControlItem16.Name = "layoutControlItem16";
-            this.layoutControlItem16.Text = "当前剩余\r\n时间(s):";
+            this.layoutControlItem16.Text = "CO2+CO(%)\r\n汽油限值:";
             this.layoutControlItem16.TextAlignment = DevComponents.DotNetBar.Layout.eTextAlignment.Center;
             this.layoutControlItem16.TextLineAlignment = DevComponents.DotNetBar.Layout.eTextLineAlignment.Middle;
             this.layoutControlItem16.Width = 100;
@@ -700,11 +700,11 @@
             // 
             // layoutControlItem17
             // 
-            this.layoutControlItem17.Control = this.lblHCRestTime;
+            this.layoutControlItem17.Control = this.lblCO2CODiesel;
             this.layoutControlItem17.Height = 20;
             this.layoutControlItem17.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             this.layoutControlItem17.Name = "layoutControlItem17";
-            this.layoutControlItem17.Text = "HC剩余\r\n时间(s):";
+            this.layoutControlItem17.Text = "CO2+CO(%)\r\n柴油限值:";
             this.layoutControlItem17.TextAlignment = DevComponents.DotNetBar.Layout.eTextAlignment.Center;
             this.layoutControlItem17.TextLineAlignment = DevComponents.DotNetBar.Layout.eTextLineAlignment.Middle;
             this.layoutControlItem17.Width = 100;
@@ -917,8 +917,8 @@
         private System.Windows.Forms.Label lblBackO2;
         private System.Windows.Forms.Label lblStep;
         private System.Windows.Forms.Label lblResidualHC;
-        private System.Windows.Forms.Label lblRestTime;
-        private System.Windows.Forms.Label lblHCRestTime;
+        private System.Windows.Forms.Label lblCO2COGas;
+        private System.Windows.Forms.Label lblCO2CODiesel;
         private System.Windows.Forms.Label lblCO2CO;
         private System.Windows.Forms.Label lblZero;
         private System.Windows.Forms.Label lblAmibientCheck;

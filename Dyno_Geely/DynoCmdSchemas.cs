@@ -21,6 +21,19 @@ namespace Dyno_Geely {
         public object Params { get; set; }
     }
 
+    public class SocketLongConnectionParams {
+        public string ClientID { get; set; }
+    }
+
+    public class SocketLongConnectionAckParams {
+        public string threadType { get; set; }
+        public int step { get; set; }
+        public string msg { get; set; }
+        public string NetthreadType { get; set; }
+        public int Netstep { get; set; }
+        public string NetMsg { get; set; }
+    }
+
     public class LoginParams {
         public string ClientID { get; set; }
     }
@@ -63,7 +76,6 @@ namespace Dyno_Geely {
 
     public class GetGasBoxPreheatSelfCheckRealTimeDataParams {
         public string ClientID { get; set; }
-        public bool Abandon { get; set; }
     }
     public class GetGasBoxPreheatSelfCheckRealTimeDataAckParams {
         public string msg { get; set; }
@@ -199,78 +211,70 @@ namespace Dyno_Geely {
         public string Result { get; set; }
     }
 
-    public class GetEquipmentPreheatTimeAndCheckTimeParams {
+    public class GetPreheatStatusAndTimeAndSurplusTimeParams {
         public string ClientID { get; set; }
     }
-    public class GetEquipmentPreheatTimeAndCheckTimeAckParams {
+    public class GetPreheatStatusAndTimeAndSurplusTimeAckParams {
         public string QYGasBoxRemindInfo { get; set; }
-        public double dynoPreheatCheckPeriodHour { get; set; }
-        public DateTime dynoPreheatCheckTime { get; set; }
-        public double gasBosQYPreheatCheckPeriodHour { get; set; }
-        public DateTime gasBosQYPreheatCheckTime { get; set; }
-        public double gasBosCYPreheatCheckPeriodHour { get; set; }
-        public DateTime gasBosCYPreheatCheckTime { get; set; }
-        public double flowmeterPreheatCheckPeriodHour { get; set; }
-        public DateTime flowmeterPreheatCheckTime { get; set; }
-        public double lightSmokeCheckPeriodHour { get; set; }
-        public DateTime lightSmokePreheatCheckTime { get; set; }
-        public double filterSmokePreheatCheckPeriodHour { get; set; }
-        public DateTime filterSmokePreheatCheckTime { get; set; }
-        public double weatherPreheatCheckPeriodHour { get; set; }
-        public DateTime weatherPreheatCheckTime { get; set; }
-        public double dynoTaxiCheckPeriodHour { get; set; }
-        public DateTime dynoTaxiCheckTime { get; set; }
-        public double dynoSpeedCheckPeriodHour { get; set; }
-        public DateTime dynoSpeedCheckTime { get; set; }
-        public double dynoTorqueFCheckPeriodHour { get; set; }
-        public DateTime dynoTorqueFCheckTime { get; set; }
-        public double dynoDIWCheckPeriodHour { get; set; }
-        public DateTime dynoDIWCheckTime { get; set; }
-        public double dynoPLHPCheckPeriodHour { get; set; }
-        public DateTime dynoPLHPCheckTime { get; set; }
-        public double gasBoxLowGasCheckPeriodHour { get; set; }
-        public DateTime gasBoxLowGasCheckTime { get; set; }
-        public double gasBoxLeakCheckPeriodHour { get; set; }
-        public DateTime gasBoxLeakCheckTime { get; set; }
-        public double gasBoxNOxConvertRatioCheckPeriodHour { get; set; }
-        public DateTime gasBoxNOxConvertRatioCheckTime { get; set; }
-        public double gasBoxSinglePointCalibrationCheckPeriodHour { get; set; }
-        public DateTime gasBoxSinglePointCalibrationCheckTime { get; set; }
-        public double flowmeterFlowCheckPeriodHour { get; set; }
-        public DateTime flowmeterFlowCheckTime { get; set; }
-        public double flowmeterO2CheckPeriodHour { get; set; }
-        public DateTime flowmeterO2CheckTime { get; set; }
-        public double tachometerQYCheckPeriodHour { get; set; }
-        public DateTime tachometerQYCheckTime { get; set; }
-        public double tachometerCYCheckPeriodHour { get; set; }
-        public DateTime tachometerCYCheckTime { get; set; }
-        public double oiltempCheckPeriodHour { get; set; }
-        public DateTime oiltempCheckTime { get; set; }
         public DateTime lastCarCheckTime { get; set; }
+        public bool dynoPreheatStatus { get; set; }
+        public bool gasBoxQYPreheatStatus { get; set; }
+        public bool gasBoxCYPreheatStatus { get; set; }
+        public bool weatherPreheatStatus { get; set; }
+        public bool flowmeterPreheatStatus { get; set; }
+        public bool smokePreheatStatus { get; set; }
+        public double GasBosQYPreheatCheckSurplusTimeTip { get; set; }
+        public double DynoTaxiCheckSurplusTimeTip { get; set; }
+        public double GasBoxSinglePointCalibrationCheckTime { get; set; }
+        public double FlowmeterFlowSurplusTimeTip { get; set; }
+        public double FlowmeterO2SurplusTimeTip { get; set; }
+        public double DynoSpeedCheckSurplusTimeTip { get; set; }
+        public double DynoTorqueFCheckSurplusTimeTip { get; set; }
+        public double DynoDIWCheckSurplusTimeTip { get; set; }
+        public double DynoPLHPCheckSurplusTimeTip { get; set; }
+        public double GasBoxLowGasCheckSurplusTimeTip { get; set; }
+        public double GasBoxLeakCheckSurplusTimeTip { get; set; }
+        public double GasBoxNOxConvertRatioCheckSurplusTimeTip { get; set; }
+        public double TachometerQYCheckSurplusTimeTip { get; set; }
+        public double TachometerCYCheckSurplusTimeTip { get; set; }
+        public double OiltempCheckSurplusTimeTip { get; set; }
+        public double temperature { get; set; }
+        public double humidity { get; set; }
+        public double amibientPressure { get; set; }
     }
 
-    public class SetEquipmentPreheatTimeAndCheckTimeParams {
-        public string QYGasBoxRemindInfo { get; set; }
-        public double dynoPreheatCheckPeriodHour { get; set; }
-        public DateTime dynoPreheatCheckTime { get; set; }
-        public double gasBosQYPreheatCheckPeriodHour { get; set; }
-        public DateTime gasBosQYPreheatCheckTime { get; set; }
-        public double gasBosCYPreheatCheckPeriodHour { get; set; }
-        public DateTime gasBosCYPreheatCheckTime { get; set; }
-        public double flowmeterPreheatCheckPeriodHour { get; set; }
-        public DateTime flowmeterPreheatCheckTime { get; set; }
-        public double lightSmokeCheckPeriodHour { get; set; }
-        public DateTime lightSmokePreheatCheckTime { get; set; }
-        public double filterSmokePreheatCheckPeriodHour { get; set; }
-        public DateTime filterSmokePreheatCheckTime { get; set; }
-        public double weatherPreheatCheckPeriodHour { get; set; }
-        public DateTime weatherPreheatCheckTime { get; set; }
+    public class GetOneFinishCheckVehiclesInfoParams {
+        public string ClientID { get; set; }
+        public string WJBGBH { get; set; }
+    }
+    public class GetOneFinishCheckVehiclesInfoAckParams {
+        public string oneFinishCheckVehiclesInfo { get; set; }
+    }
+
+    public class GetFinishCheckVehiclesInfoParams {
+        public string ClientID { get; set; }
+        public DateTime queryStartTime { get; set; }
+        public DateTime queryEndTime { get; set; }
+        public string HPHM { get; set; }
+        public string JCFF { get; set; }
+        public bool useHPHM { get; set; }
+        public bool useJCFF { get; set; }
+        public bool useDate { get; set; }
+    }
+    public class GetFinishCheckVehiclesInfoAckParams {
+        public string finishCheckVehiclesInfo { get; set; }
+    }
+
+    public class SaveNewVehicleInfoParams {
+        public string ClientID { get; set; }
+        public NewVehicle Newvehicle { get; set; }
     }
 
     public class StartGasboxPrepareParams {
         public string ClientID { get; set; }
         public bool IsStopGasboxPrepare { get; set; }
         public bool Abandon { get; set; }
+        public string rylx { get; set; }
     }
     public class StartGasboxPrepareAckParams {
         public string ClientID { get; set; }
@@ -304,11 +308,14 @@ namespace Dyno_Geely {
         public string NowOperationTimeRemaining { get; set; }
         public string HCOperationTimeRemaining { get; set; }
         public double SumCO2CO { get; set; }
+        public double QYSumCO2COLimit { get; set; }
+        public double CYSumCO2COLimit { get; set; }
     }
 
     public class StartFlowmeterPrepareParams {
         public string ClientID { get; set; }
         public bool IsStopFlowmeterPrepare { get; set; }
+        public bool stopCheck { get; set; }
     }
 
     public class GetFlowmeterPrepareRealTimeDataParams {
@@ -325,11 +332,13 @@ namespace Dyno_Geely {
         public string ZeroResult { get; set; }
         public string FlowCheckResult { get; set; }
         public string O2SpanCheckResult { get; set; }
+        public string FlowmeterPrepareResult { get; set; }
     }
 
     public class StartSmokePrepareParams {
         public string ClientID { get; set; }
         public bool IsStopSmokePrepare { get; set; }
+        public bool stopCheck { get; set; }
     }
 
     public class GetSmokePrepareRealTimeDataParams {
@@ -355,15 +364,26 @@ namespace Dyno_Geely {
     public class GetOilTempPrepareRealTimeDataAckParams {
         public double oilTemp { get; set; }
         public string oilTitle { get; set; }
+        public double oilTempCY { get; set; }
+        public string oilTitleCY { get; set; }
+        public double oilTempOBD { get; set; }
+        public double LQYTempOBD { get; set; }
     }
 
     public class GetTachometerPrepareRealTimeDataParams {
         public string ClientID { get; set; }
         public bool IsStartCheck { get; set; }
         public bool Abandon { get; set; }
+        public bool IgnoreRpm { get; set; }
     }
     public class GetTachometerPrepareRealTimeDataAckParams {
-        public string RPM { get; set; }
+        public int QYRPMHigt { get; set; }
+        public int QYRPMLow { get; set; }
+        public int CYRPMHigt { get; set; }
+        public int CYRPMLow { get; set; }
+        public int RPM { get; set; }
+        public int CYRPM { get; set; }
+        public int OBDRPM { get; set; }
     }
 
     public class GetWeatherPrepareRealTimeDataParams {
@@ -671,32 +691,109 @@ namespace Dyno_Geely {
     }
 
     public class DeviceCtrlParams {
-        public string CtrlIDStr { get; set; }
-        //public string RYLX { get; set; }
-        //public double startspeed { get; set; }
-        //public double endspeed { get; set; }
-        //public double targetspeed { get; set; }
-        //public double targetacce { get; set; }
-        //public double eddycurrentcount { get; set; }
-        //public double targetihp { get; set; }
-        //public bool bco2 { get; set; }
-        //public double co2 { get; set; }
-        //public bool bco { get; set; }
-        //public double co { get; set; }
-        //public bool bhc { get; set; }
-        //public double chc { get; set; }
-        //public bool bno { get; set; }
-        //public double no { get; set; }
-        //public bool bo2 { get; set; }
-        //public double o2 { get; set; }
-        //public bool bno2 { get; set; }
-        //public double no2 { get; set; }
-        //public double tempeCali { get; set; }
-        //public double humidityCali { get; set; }
-        //public double atmosCali { get; set; }
-        //public double freq { get; set; }
-        //public double targetfreq { get; set; }
-        //public double realfreq { get; set; }
+        public CtrlIDStr ctrlid { get; set; }
+        public string RYLX = "";
+        public double startspeed = 0.0;
+        public double endspeed = 0.0;
+        public double targetspeed = 0.0;
+        public double targetacce = 0.0;
+        public int eddycurrentcount = 0;
+        public double targetihp = 0.0;
+        public bool bco2 { get; set; }
+        public double co2 { get; set; }
+        public bool bco { get; set; }
+        public double co { get; set; }
+        public bool bhc { get; set; }
+        public int hc { get; set; }
+        public bool bno { get; set; }
+        public double no { get; set; }
+        public bool bo2 { get; set; }
+        public double o2 { get; set; }
+        public bool bno2 { get; set; }
+        public double no2 { get; set; }
+        public int calibrationmodel { get; set; }
+        public int gastype { get; set; }
+        public double oiltemp { get; set; }
+        public double tempeCali { get; set; }
+        public double humidityCali { get; set; }
+        public double atmosCali { get; set; }
+        public double freq { get; set; }
+        public double targetfreq { get; set; }
+        public double realfreq { get; set; }
+        public double o2hight { get; set; }
+        public double o2low { get; set; }
+        public double presshight { get; set; }
+        public double presslow { get; set; }
+        public double flowhight { get; set; }
+        public double flowlow { get; set; }
+        public double temphight { get; set; }
+        public double templow { get; set; }
+        public double press { get; set; }
+        public double temp { get; set; }
+        public double flow { get; set; }
+        public double ZirconiaZero { get; set; }
+        public double diluteO2 { get; set; }
+        public enum CtrlIDStr {
+            CTRLID_DYNO_MOTOR_ON = 41001,
+            CTRLID_DYNO_MOTOR_OFF,
+            CTRLID_DYNO_BEAM_UP,
+            CTRLID_DYNO_BEAM_DOWN,
+            CTRLID_DYNO_START_TIMER,
+            CTRLID_DYNO_STOP_TIMER,
+            CTRLID_DYNO_SENSORZERO,
+            CTRLID_DYNO_PAU_ON_SPEED,
+            CTRLID_DYNO_PAU_ON_TORQUE,
+            CTRLID_DYNO_PAU_ON_POWER,
+            CTRLID_DYNO_PAU_ON_ACCE,
+            CTRLID_DYNO_PAU_ON_PWM,
+            CTRLID_DYNO_PAU_OFF_ASM,
+            CTRLID_DYNO_PAU_OFF,
+            CTRLID_DYNO_PAU_RESTART,
+            CTRLID_DYNO_PAU_PARAMSETTING,
+            CTRLID_GASBOX_ZEROGASSTARTIN = 42001,
+            CTRLID_GASBOX_ZEROGASENDIN,
+            CTRLID_GASBOX_CHECKGASSTARTIN,
+            CTRLID_GASBOX_CHECKGASENDIN,
+            CTRLID_GASBOX_CALIBGASSTARTIN,
+            CTRLID_GASBOX_CALIBGASENDIN,
+            CTRLID_GASBOX_STARTZERO,
+            CTRLID_GASBOX_LEAKCHECK,
+            CTRLID_GASBOX_TESTGASSTARTIN,
+            CTRLID_GASBOX_AMBIENTGASSTARTIN,
+            CTRLID_GASBOX_PURGEON,
+            CTRLID_GASBOX_PURGEOFF,
+            CTRLID_GASBOX_STARTCALIBRATING,
+            CTRLID_GASBOX_QUIT,
+            CTRLID_GASBOX_CALIBRATINGING,
+            CTRLID_GASBOX_CALIBRATINGRESULT,
+            CTRLID_GASBOX_CALIBRATINGOILTEMP,
+            CTRLID_FLOWMETER_ZERO = 43001,
+            CTRLID_FLOWMETER_QUIT,
+            CTRLID_FLOWMETER_ZirconiaZero,
+            CTRLID_FLOWMETER_PressureCalibrationHight,
+            CTRLID_FLOWMETER_PressureCalibrationLow,
+            CTRLID_FLOWMETER_TemperatureCalibrationHight,
+            CTRLID_FLOWMETER_TemperatureCalibrationLow,
+            CTRLID_FLOWMETER_O2CalibrationHight,
+            CTRLID_FLOWMETER_O2CalibrationLow,
+            CTRLID_FLOWMETER_FlowCalibrationHight,
+            CTRLID_FLOWMETER_FlowCalibrationLow,
+            CTRLID_FLOWMETER_TemperatureCalibration,
+            CTRLID_FLOWMETER_PressureCalibration,
+            CTRLID_FLOWMETER_FlowCalibration,
+            CTRLID_FLOWMETER_DiluteO2Calibration,
+            CTRLID_LIGHTSMOKE_ADJUST = 44001,
+            CTRLID_LIGHTSMOKE_REALTIME,
+            CTRLID_LIGHTSMOKE_QUIT,
+            CTRLID_LIGHTSMOKE_SpanPointCalibrationEnd,
+            CTRLID_LIGHTSMOKE_SpanPointCalibrationStart,
+            CTRLID_SETTARGETFREQ = 45001,
+            CTRLID_GETTARGETFREQ,
+            CTRLID_GETREALFREQ,
+            CTRLID_CALIBTREMPE = 46001,
+            CTRLID_CALIBHUMIDITY,
+            CTRLID_CALIBATMOS
+        }
     }
 
     public class DeviceCtrlAckParams {

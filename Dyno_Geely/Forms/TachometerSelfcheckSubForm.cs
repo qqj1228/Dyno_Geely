@@ -16,8 +16,7 @@ namespace Dyno_Geely {
         private readonly Dictionary<Form, bool> _dicResults;
         private readonly Dictionary<Form, bool> _dicStops;
         private readonly System.Timers.Timer _timer;
-        private const int OK_COUNTER = 3;
-        private int _counter;
+        private const int RPM_Tolerance = 10;
         public event EventHandler<SelfcheckDoneEventArgs> SelfcheckDone;
 
         public TachometerSelfcheckSubForm(DynoCmd dynoCmd, MainSetting mainCfg, Dictionary<Form, bool> dicResults, Dictionary<Form, bool> dicStops) {
@@ -38,18 +37,26 @@ namespace Dyno_Geely {
                 if (_timer != null && _timer.Enabled) {
                     try {
                         Invoke((EventHandler)delegate {
-                            lblRPM.Text = ackParams.RPM;
-                            if ((ackParams.RPM != null && ackParams.RPM.Length > 0) || _dicStops[this]) {
-                                if (++_counter >= OK_COUNTER || _dicStops[this]) {
-                                    _timer.Enabled = false;
-                                    _dicResults[this] = true;
-                                    ackParams = new GetTachometerPrepareRealTimeDataAckParams();
-                                    _dynoCmd.GetTachometerPrepareRealTimeDataCmd(false, true, ref ackParams);
-                                    SelfcheckDoneEventArgs args = new SelfcheckDoneEventArgs {
-                                        Result = _dicResults[this]
-                                    };
-                                    SelfcheckDone?.Invoke(this, args);
-                                }
+                            lblGasRPMLow.Text = ackParams.QYRPMLow.ToString();
+                            lblGasRPMHigh.Text = ackParams.QYRPMHigt.ToString();
+                            lblGasRPM.Text = ackParams.RPM.ToString();
+                            lblDieselRPMLow.Text = ackParams.CYRPMLow.ToString();
+                            lblDieselRPMHigh.Text = ackParams.CYRPMHigt.ToString();
+                            lblDieselRPM.Text = ackParams.CYRPM.ToString();
+                            lblOBDRPM.Text = ackParams.OBDRPM.ToString();
+                            bool RPMOK = (ackParams.RPM >= ackParams.QYRPMLow) && (ackParams.RPM <= ackParams.QYRPMHigt);
+                            RPMOK = RPMOK || ((ackParams.CYRPM >= ackParams.CYRPMLow) && (ackParams.CYRPM <= ackParams.CYRPMHigt));
+                            bool OBDOK = Math.Abs(ackParams.OBDRPM - ackParams.RPM) <= RPM_Tolerance;
+                            OBDOK = OBDOK || Math.Abs(ackParams.OBDRPM - ackParams.CYRPM) <= RPM_Tolerance;
+                            if ((RPMOK && OBDOK) || _dicStops[this]) {
+                                _timer.Enabled = false;
+                                _dicResults[this] = true;
+                                ackParams = new GetTachometerPrepareRealTimeDataAckParams();
+                                _dynoCmd.GetTachometerPrepareRealTimeDataCmd(false, true, ref ackParams);
+                                SelfcheckDoneEventArgs args = new SelfcheckDoneEventArgs {
+                                    Result = _dicResults[this]
+                                };
+                                SelfcheckDone?.Invoke(this, args);
                             }
                         });
                     } catch (ObjectDisposedException) {
@@ -66,7 +73,6 @@ namespace Dyno_Geely {
                     MessageBox.Show("执行开始获取转速计实时数据命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _timer.Enabled = true;
-                    _counter = 0;
                 }
             } else {
                 if (!_dynoCmd.GetTachometerPrepareRealTimeDataCmd(false, true, ref ackParams)) {
@@ -98,7 +104,7 @@ namespace Dyno_Geely {
         }
 
         private void BtnStart_Click(object sender, EventArgs e) {
-            lblRPM.Text = "--";
+            lblGasRPM.Text = "--";
             StartSelfcheck(true);
         }
 

@@ -240,6 +240,23 @@ namespace Dyno_Geely {
             }
         }
 
+        public bool SocketLongConnection(ref SocketLongConnectionAckParams ackParams) {
+            SocketLongConnectionParams cmdParams = new SocketLongConnectionParams {
+                ClientID = ClientID
+            };
+            if (!DoCmd("SocketLongConnection", cmdParams, false)) {
+                _log.TraceError("DoCmd(\"SocketLongConnection\") return false");
+                return false;
+            }
+            if (_msgAckRecv != null && _msgAckRecv.Cmd == "SocketLongConnectionAck" && _msgAckRecv.Params != null) {
+                ackParams = JsonConvert.DeserializeObject<SocketLongConnectionAckParams>(((JObject)_msgAckRecv.Params).ToString(), _dateTimeConverter);
+                return true;
+            } else {
+                _log.TraceError("_msgAckRecv.Cmd[\"SocketLongConnectionAck\"] is wrong");
+                return false;
+            }
+        }
+
         public bool LoginCmd() {
             LoginParams cmdParams = new LoginParams {
                 ClientID = ClientID
@@ -272,14 +289,14 @@ namespace Dyno_Geely {
             }
         }
 
-        private bool DeviceCtrlCmd(string strCtrlID) {
+        private bool DeviceCtrlCmd(DeviceCtrlParams.CtrlIDStr strCtrlID) {
             MsgBaseStr msgCmd = new MsgBaseStr {
                 Cmd = "DeviceCtrl",
                 MsgID = MsgID,
                 ServiceID = ServiceID
             };
             DeviceCtrlParams cmdParams = new DeviceCtrlParams {
-                CtrlIDStr = strCtrlID
+                ctrlid = strCtrlID
             };
             msgCmd.Params = cmdParams;
             try {
@@ -297,11 +314,11 @@ namespace Dyno_Geely {
         }
 
         public bool DynoBeamDownCmd() {
-            return DeviceCtrlCmd("CTRLID_DYNO_BEAM_DOWN");
+            return DeviceCtrlCmd(DeviceCtrlParams.CtrlIDStr.CTRLID_DYNO_BEAM_DOWN);
         }
 
         public bool DynoBeamUpCmd() {
-            return DeviceCtrlCmd("CTRLID_DYNO_BEAM_UP");
+            return DeviceCtrlCmd(DeviceCtrlParams.CtrlIDStr.CTRLID_DYNO_BEAM_UP);
         }
 
         public bool StartDynoPreheatCmd(bool stopCheck, out string msg) {
@@ -374,10 +391,9 @@ namespace Dyno_Geely {
             }
         }
 
-        public bool GetGasBoxPreheatSelfCheckRealTimeDataCmd(bool Abandon, ref GetGasBoxPreheatSelfCheckRealTimeDataAckParams ackParams) {
+        public bool GetGasBoxPreheatSelfCheckRealTimeDataCmd(ref GetGasBoxPreheatSelfCheckRealTimeDataAckParams ackParams) {
             GetGasBoxPreheatSelfCheckRealTimeDataParams cmdParams = new GetGasBoxPreheatSelfCheckRealTimeDataParams {
-                ClientID = ClientID,
-                Abandon = Abandon
+                ClientID = ClientID
             };
             if (!DoCmd("GetGasBoxPreheatSelfCheckRealTimeData", cmdParams, false)) {
                 _log.TraceError("DoCmd(\"GetGasBoxPreheatSelfCheckRealTimeData\") return false");
@@ -568,11 +584,74 @@ namespace Dyno_Geely {
             }
         }
 
-        public bool StartGasboxPrepareCmd(bool stop, bool Abandon) {
+        public bool GetPreheatStatusAndTimeAndSurplusTimeCmd(ref GetPreheatStatusAndTimeAndSurplusTimeAckParams ackParams) {
+            GetPreheatStatusAndTimeAndSurplusTimeParams cmdParams = new GetPreheatStatusAndTimeAndSurplusTimeParams {
+                ClientID = ClientID
+            };
+            if (!DoCmd("GetPreheatStatusAndTimeAndSurplusTime", cmdParams, false)) {
+                _log.TraceError("DoCmd(\"GetPreheatStatusAndTimeAndSurplusTime\") return false");
+                return false;
+            }
+            if (_msgAckRecv != null && _msgAckRecv.Cmd == "GetPreheatStatusAndTimeAndSurplusTimeAck" && _msgAckRecv.Params != null) {
+                ackParams = JsonConvert.DeserializeObject<GetPreheatStatusAndTimeAndSurplusTimeAckParams>(((JObject)_msgAckRecv.Params).ToString(), _dateTimeConverter);
+                return true;
+            } else {
+                _log.TraceError("_msgAckRecv.Cmd[\"GetPreheatStatusAndTimeAndSurplusTimeAck\"] is wrong");
+                return false;
+            }
+        }
+
+        public bool GetOneFinishCheckVehiclesInfo(string WJBGBH, ref GetOneFinishCheckVehiclesInfoAckParams ackParams) {
+            GetOneFinishCheckVehiclesInfoParams cmdParams = new GetOneFinishCheckVehiclesInfoParams {
+                ClientID = ClientID,
+                WJBGBH = WJBGBH
+            };
+            if (!DoCmd("GetOneFinishCheckVehiclesInfo", cmdParams, false)) {
+                _log.TraceError("DoCmd(\"GetOneFinishCheckVehiclesInfo\") return false");
+                return false;
+            }
+            if (_msgAckRecv != null && _msgAckRecv.Cmd == "GetOneFinishCheckVehiclesInfoAck" && _msgAckRecv.Params != null) {
+                ackParams = JsonConvert.DeserializeObject<GetOneFinishCheckVehiclesInfoAckParams>(((JObject)_msgAckRecv.Params).ToString(), _dateTimeConverter);
+                return true;
+            } else {
+                _log.TraceError("_msgAckRecv.Cmd[\"GetOneFinishCheckVehiclesInfoAck\"] is wrong");
+                return false;
+            }
+        }
+
+        public bool GetFinishCheckVehiclesInfoCmd(GetFinishCheckVehiclesInfoParams cmdParams, ref GetFinishCheckVehiclesInfoAckParams ackParams) {
+            if (!DoCmd("GetFinishCheckVehiclesInfo", cmdParams, false)) {
+                _log.TraceError("DoCmd(\"GetFinishCheckVehiclesInfo\") return false");
+                return false;
+            }
+            if (_msgAckRecv != null && _msgAckRecv.Cmd == "GetFinishCheckVehiclesInfoAck" && _msgAckRecv.Params != null) {
+                ackParams = JsonConvert.DeserializeObject<GetFinishCheckVehiclesInfoAckParams>(((JObject)_msgAckRecv.Params).ToString(), _dateTimeConverter);
+                return true;
+            } else {
+                _log.TraceError("_msgAckRecv.Cmd[\"GetFinishCheckVehiclesInfoAck\"] is wrong");
+                return false;
+            }
+        }
+
+        public bool SaveNewVehicleInfoCmd(SaveNewVehicleInfoParams cmdParams) {
+            if (!DoCmd("SaveNewVehicleInfo", cmdParams, true)) {
+                _log.TraceError("DoCmd(\"SaveNewVehicleInfo\") return false");
+                return false;
+            }
+            if (_msgAckRecv != null && _msgAckRecv.Cmd == "SaveNewVehicleInfoAck") {
+                return true;
+            } else {
+                _log.TraceError("_msgAckRecv.Cmd[\"SaveNewVehicleInfoAck\"] is wrong");
+                return false;
+            }
+        }
+
+        public bool StartGasboxPrepareCmd(bool stop, bool Abandon, string rylx) {
             StartGasboxPrepareParams cmdParams = new StartGasboxPrepareParams {
                 ClientID = ClientID,
                 IsStopGasboxPrepare = stop,
-                Abandon = Abandon
+                Abandon = Abandon,
+                rylx = rylx
             };
             if (!DoCmd("StartGasboxPrepare", cmdParams, true)) {
                 _log.TraceError("DoCmd(\"StartGasboxPrepare\") return false");
@@ -605,10 +684,11 @@ namespace Dyno_Geely {
             }
         }
 
-        public bool StartFlowmeterPrepareCmd(bool stop) {
+        public bool StartFlowmeterPrepareCmd(bool stopPrepare, bool stopCheck) {
             StartFlowmeterPrepareParams cmdParams = new StartFlowmeterPrepareParams {
                 ClientID = ClientID,
-                IsStopFlowmeterPrepare = stop,
+                IsStopFlowmeterPrepare = stopPrepare,
+                stopCheck = stopCheck
             };
             if (!DoCmd("StartFlowmeterPrepare", cmdParams, true)) {
                 _log.TraceError("DoCmd(\"StartFlowmeterPrepare\") return false");
@@ -641,10 +721,11 @@ namespace Dyno_Geely {
             }
         }
 
-        public bool StartSmokePrepareCmd(bool stop) {
+        public bool StartSmokePrepareCmd(bool stopPrepare, bool stopCheck) {
             StartSmokePrepareParams cmdParams = new StartSmokePrepareParams {
                 ClientID = ClientID,
-                IsStopSmokePrepare = stop,
+                IsStopSmokePrepare = stopPrepare,
+                stopCheck = stopCheck
             };
             if (!DoCmd("StartSmokePrepare", cmdParams, true)) {
                 _log.TraceError("DoCmd(\"StartSmokePrepare\") return false");

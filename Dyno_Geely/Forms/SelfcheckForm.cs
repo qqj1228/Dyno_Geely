@@ -25,9 +25,9 @@ namespace Dyno_Geely {
         private readonly WeatherSelfcheckSubForm f_weatherSelfcheck;
         private readonly EnvironmentData _envData;
 
-        public SelfcheckForm(DynoCmd dynoCmd, MainSetting mainCfg, EnvironmentData envData) {
+        public SelfcheckForm(DynoCmd dynoCmd, MainSetting mainCfg, EnvironmentData envData, bool bDiesel) {
             InitializeComponent();
-            _lastHeight = this.Height;
+            _lastHeight = Height;
             _dynoCmd = dynoCmd;
             _dicResults = new Dictionary<Form, bool>();
             _dicStops = new Dictionary<Form, bool>();
@@ -37,7 +37,7 @@ namespace Dyno_Geely {
             _timer.Elapsed += OnTimer;
             _timer.AutoReset = false;
 
-            f_gasBoxSelfcheck = new GasBoxSelfcheckSubForm(_dynoCmd, mainCfg, _dicResults, _dicStops);
+            f_gasBoxSelfcheck = new GasBoxSelfcheckSubForm(_dynoCmd, mainCfg, _dicResults, _dicStops, bDiesel);
             f_flowmeterSelfcheck = new FlowmeterSelfcheckSubForm(_dynoCmd, mainCfg, _dicResults, _dicStops);
             f_smokerSelfcheck = new SmokerSelfcheckSubForm(_dynoCmd, mainCfg, _dicResults, _dicStops);
             f_oilTempSelfcheck = new OilTempSelfcheckSubForm(_dynoCmd, mainCfg, _dicResults, _dicStops);
@@ -102,11 +102,7 @@ namespace Dyno_Geely {
         }
 
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e) {
-            if (_dynoCmd.StartGasboxPrepareCmd(true, true)) {
-                f_gasBoxSelfcheck.StartSelfcheck(true);
-            } else {
-                MessageBox.Show("开始仪器自检过程失败", "仪器自检", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            f_gasBoxSelfcheck.StartSelfcheck(true);
         }
 
         private void SelfcheckForm_Load(object sender, EventArgs e) {
@@ -161,7 +157,7 @@ namespace Dyno_Geely {
             if (_lastHeight == 0) {
                 return;
             }
-            float scale = this.Height / _lastHeight;
+            float scale = Height / _lastHeight;
             layoutMain.Font = new Font(layoutMain.Font.FontFamily, layoutMain.Font.Size * scale, layoutMain.Font.Style);
             btn1GasBox.Font = new Font(btn1GasBox.Font.FontFamily, btn1GasBox.Font.Size * scale, btn1GasBox.Font.Style);
             btn2Flowmeter.Font = new Font(btn2Flowmeter.Font.FontFamily, btn2Flowmeter.Font.Size * scale, btn2Flowmeter.Font.Style);
@@ -170,7 +166,7 @@ namespace Dyno_Geely {
             btn5Tachometer.Font = new Font(btn5Tachometer.Font.FontFamily, btn5Tachometer.Font.Size * scale, btn5Tachometer.Font.Style);
             btn6Weather.Font = new Font(btn6Weather.Font.FontFamily, btn6Weather.Font.Size * scale, btn6Weather.Font.Style);
             pnlForm.Font = new Font(pnlForm.Font.FontFamily, pnlForm.Font.Size * scale, pnlForm.Font.Style);
-            _lastHeight = this.Height;
+            _lastHeight = Height;
         }
 
         private void SelfcheckForm_FormClosing(object sender, FormClosingEventArgs e) {

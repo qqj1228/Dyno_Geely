@@ -37,7 +37,7 @@ namespace Dyno_Geely {
             _envData = envData;
             _log = log;
             EmissionInfo ei = new EmissionInfo();
-            _db.GetEmissionInfo(_VIN, ei);
+            _db.GetEmissionInfoFromVIN(_VIN, ei);
             _RatedRPM = ei.RatedRPM;
             _MaxRPM = -1;
 

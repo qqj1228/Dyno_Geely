@@ -186,11 +186,11 @@
             this.lblFlowCheck.AutoSize = true;
             this.lblFlowCheck.BackColor = System.Drawing.Color.Black;
             this.lblFlowCheck.ForeColor = System.Drawing.Color.Gold;
-            this.lblFlowCheck.Location = new System.Drawing.Point(575, 146);
+            this.lblFlowCheck.Location = new System.Drawing.Point(575, 215);
             this.lblFlowCheck.Margin = new System.Windows.Forms.Padding(0);
             this.lblFlowCheck.Name = "lblFlowCheck";
             this.lblFlowCheck.Size = new System.Drawing.Size(201, 61);
-            this.lblFlowCheck.TabIndex = 7;
+            this.lblFlowCheck.TabIndex = 8;
             this.lblFlowCheck.Text = "--";
             this.lblFlowCheck.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -199,11 +199,11 @@
             this.lblO2SpanCheck.AutoSize = true;
             this.lblO2SpanCheck.BackColor = System.Drawing.Color.Black;
             this.lblO2SpanCheck.ForeColor = System.Drawing.Color.Gold;
-            this.lblO2SpanCheck.Location = new System.Drawing.Point(575, 215);
+            this.lblO2SpanCheck.Location = new System.Drawing.Point(575, 146);
             this.lblO2SpanCheck.Margin = new System.Windows.Forms.Padding(0);
             this.lblO2SpanCheck.Name = "lblO2SpanCheck";
             this.lblO2SpanCheck.Size = new System.Drawing.Size(201, 61);
-            this.lblO2SpanCheck.TabIndex = 8;
+            this.lblO2SpanCheck.TabIndex = 7;
             this.lblO2SpanCheck.Text = "--";
             this.lblO2SpanCheck.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -300,8 +300,8 @@
             this.layoutGroup2.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             this.layoutGroup2.Items.AddRange(new DevComponents.DotNetBar.Layout.LayoutItemBase[] {
             this.layoutControlItem6,
-            this.layoutControlItem7,
             this.layoutControlItem8,
+            this.layoutControlItem7,
             this.layoutControlItem9});
             this.layoutGroup2.Name = "layoutGroup2";
             this.layoutGroup2.TextPosition = DevComponents.DotNetBar.Layout.eLayoutPosition.Top;

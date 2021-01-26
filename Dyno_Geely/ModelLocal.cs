@@ -65,11 +65,13 @@ namespace Dyno_Geely {
             if (dt.Rows.Count > 0) {
                 PropertyInfo[] PropertyList = obj.GetType().GetProperties();
                 foreach (PropertyInfo item in PropertyList) {
-                    object value = dt.Rows[dt.Rows.Count - 1][item.Name];
-                    if (value.GetType() == typeof(decimal)) {
-                        value = Convert.ToInt32(value);
+                    if (dt.Columns.Contains(item.Name)) {
+                        object value = dt.Rows[dt.Rows.Count - 1][item.Name];
+                        if (value.GetType() == typeof(decimal)) {
+                            value = Convert.ToInt32(value);
+                        }
+                        item.SetValue(obj, value, null);
                     }
-                    item.SetValue(obj, value, null);
                 }
             }
         }
@@ -94,7 +96,13 @@ namespace Dyno_Geely {
             }
         }
 
-        public void GetEmissionInfo(string strVIN, EmissionInfo ei) {
+        /// <summary>
+        /// 输入VIN获取EmissionInfo信息，返回找到的VIN在数据库中的主键ID值，若未找到则返回-1
+        /// </summary>
+        /// <param name="strVIN"></param>
+        /// <param name="ei"></param>
+        /// <returns></returns>
+        public int GetEmissionInfoFromVIN(string strVIN, EmissionInfo ei) {
             string strSQL = "select * from SH_VehicleInfo where VIN = '" + strVIN + "'";
             DataTable dtVI = new DataTable("SH_VehicleInfo");
             Query(strSQL, dtVI);
@@ -104,6 +112,27 @@ namespace Dyno_Geely {
                 strSQL = "select * from SH_EmissionInfo where VehicleModel = '" + dr["VehicleModel"] + "' and OpenInfoSN = '" + dr["OpenInfoSN"] + "'";
                 Query(strSQL, dtEI);
                 FillClassFromDataTable(dtEI, ei);
+                return (int)dr["ID"];
+            } else {
+                return -1;
+            }
+        }
+
+        /// <summary>
+        /// 输入VehicleModel获取EmissionInfo信息，返回true表示已有该VehicleModel记录，返回false表示无该VehicleModel记录
+        /// </summary>
+        /// <param name="strVehicleModel"></param>
+        /// <param name="ei"></param>
+        /// <returns></returns>
+        public bool GetEmissionInfoFromVehicleModel(string strVehicleModel, EmissionInfo ei) {
+            DataTable dtEI = new DataTable("SH_EmissionInfo");
+            string strSQL = "select * from SH_EmissionInfo where VehicleModel = '" + strVehicleModel + "'";
+            Query(strSQL, dtEI);
+            if (dtEI.Rows.Count > 0) {
+                FillClassFromDataTable(dtEI, ei);
+                return true;
+            } else {
+                return false;
             }
         }
 
@@ -131,8 +160,28 @@ namespace Dyno_Geely {
                 dr["OpenInfoSN"] = ei.OpenInfoSN;
                 dtVI.Rows.Add(dr);
                 InsertRecords(dtVI);
-                InsertRecords(dtEI);
+                if (EI_ID != null) {
+                    UpdateRecords(dtEI, "ID", new List<string>() { EI_ID.ToString() });
+                } else {
+                    InsertRecords(dtEI);
+                }
             }
+        }
+
+        public int GetLastVehicleInfoID() {
+            string strSQL = "select top(1) ID from SH_VehicleInfo order by ID desc";
+            return (int)QueryOne(strSQL);
+        }
+
+        public string[] GetVehicleModels() {
+            string strSQL = "select VehicleModel from SH_EmissionInfo";
+            DataTable dt = new DataTable("SH_EmissionInfo");
+            Query(strSQL, dt);
+            string[] rets = new string[dt.Rows.Count];
+            for (int i = 0; i < dt.Rows.Count; i++) {
+                rets[i] = dt.Rows[i]["VehicleModel"].ToString();
+            }
+            return rets;
         }
 
         public void SaveLDResult(string strVIN, DateTime startTime, double runningTime, EnvironmentData envData, LDResultData resultData) {

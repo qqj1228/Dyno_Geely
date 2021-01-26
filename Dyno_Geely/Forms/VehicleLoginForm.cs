@@ -13,18 +13,21 @@ using System.Windows.Forms;
 namespace Dyno_Geely {
     public partial class VehicleLoginForm : Form {
         private readonly ModelLocal _db;
+        private readonly DynoCmd _dynoCmd;
         private readonly MainSetting _mainCfg;
         private readonly Logger _log;
         private readonly SerialPortClass _sp;
         private string _serialRecvBuf;
         private float _lastHeight;
+        private int _carID;
         public VehicleInfo VI { get; set; }
         public EmissionInfo EI { get; set; }
 
-        public VehicleLoginForm(ModelLocal db, MainSetting mainCfg, Logger log) {
+        public VehicleLoginForm(ModelLocal db, DynoCmd dynoCmd, MainSetting mainCfg, Logger log) {
             InitializeComponent();
-            _lastHeight = this.Height;
+            _lastHeight = Height;
             _db = db;
+            _dynoCmd = dynoCmd;
             _mainCfg = mainCfg;
             _log = log;
             if (_mainCfg.ScannerPort.Length > 0) {
@@ -46,20 +49,21 @@ namespace Dyno_Geely {
             _serialRecvBuf = string.Empty;
             VI = new VehicleInfo();
             EI = new EmissionInfo();
+            _carID = -1;
         }
 
         void SerialDataReceived(object sender, SerialDataReceivedEventArgs e, byte[] bits) {
-            Control con = this.ActiveControl;
+            Control con = ActiveControl;
             if (con is TextBox tb) {
                 _serialRecvBuf += Encoding.Default.GetString(bits);
                 if (_serialRecvBuf.Contains("\n")) {
                     _serialRecvBuf = _serialRecvBuf.Trim();
-                    this.Invoke((EventHandler)delegate {
-                        this.txtBoxVIN.Text = _serialRecvBuf;
+                    Invoke((EventHandler)delegate {
+                        txtBoxVIN.Text = _serialRecvBuf;
                     });
                     if (_serialRecvBuf.Length == 17) {
                         VI.VIN = _serialRecvBuf;
-                        _db.GetEmissionInfo(VI.VIN, EI);
+                        _carID = _db.GetEmissionInfoFromVIN(VI.VIN, EI);
                         FillInputTextBox();
                         _serialRecvBuf = string.Empty;
                         if (chkBoxAutoStart.Checked) {
@@ -82,22 +86,23 @@ namespace Dyno_Geely {
                 }
             }
             txtBoxGettedVIN.Text = VI.VIN;
+            cmbBoxSelectVehicleModel.SelectedItem = EI.VehicleModel;
             txtBoxVehicleModel.Text = EI.VehicleModel;
             txtBoxOpenInfoSN.Text = EI.OpenInfoSN;
             txtBoxVehicleMfr.Text = EI.VehicleMfr;
             txtBoxEngineModel.Text = EI.EngineModel;
             txtBoxEngineSN.Text = EI.EngineSN;
             txtBoxEngineMfr.Text = EI.EngineMfr;
-            txtBoxEngineVolume.Text = EI.EngineVolume;
-            txtBoxCylinderQTY.Text = EI.CylinderQTY;
-            txtBoxFuelSupply.Text = EI.FuelSupply;
-            txtBoxRatedPower.Text = EI.RatedPower;
+            txtBoxEngineVolume.Text = EI.EngineVolume.ToString("F");
+            txtBoxCylinderQTY.Text = EI.CylinderQTY.ToString("");
+            cmbBoxFuelSupply.SelectedIndex = EI.FuelSupply;
+            txtBoxRatedPower.Text = EI.RatedPower.ToString("F");
             txtBoxRatedRPM.Text = EI.RatedRPM.ToString();
-            txtBoxEmissionStage.Text = EI.EmissionStage;
-            txtBoxTransmission.Text = EI.Transmission;
+            cmbBoxEmissionStage.SelectedIndex = EI.EmissionStage;
+            cmbBoxTransmission.SelectedIndex = EI.Transmission;
             txtBoxCatConverter.Text = EI.CatConverter;
-            txtBoxRefMass.Text = EI.RefMass;
-            txtBoxMaxMass.Text = EI.MaxMass;
+            txtBoxRefMass.Text = EI.RefMass.ToString("");
+            txtBoxMaxMass.Text = EI.MaxMass.ToString("");
             txtBoxOBDLocation.Text = EI.OBDLocation;
             txtBoxPostProcessing.Text = EI.PostProcessing;
             txtBoxPostProcessor.Text = EI.PostProcessor;
@@ -121,16 +126,16 @@ namespace Dyno_Geely {
             EI.EngineModel = txtBoxEngineModel.Text;
             EI.EngineSN = txtBoxEngineSN.Text;
             EI.EngineMfr = txtBoxEngineMfr.Text;
-            EI.EngineVolume = txtBoxEngineVolume.Text;
-            EI.CylinderQTY = txtBoxCylinderQTY.Text;
-            EI.FuelSupply = txtBoxFuelSupply.Text;
-            EI.RatedPower = txtBoxRatedPower.Text;
+            EI.EngineVolume = Convert.ToDouble(txtBoxEngineVolume.Text);
+            EI.CylinderQTY = Convert.ToInt32(txtBoxCylinderQTY.Text);
+            EI.FuelSupply = cmbBoxFuelSupply.SelectedIndex;
+            EI.RatedPower = Convert.ToDouble(txtBoxRatedPower.Text);
             EI.RatedRPM = Convert.ToInt32(txtBoxRatedRPM.Text);
-            EI.EmissionStage = txtBoxEmissionStage.Text;
-            EI.Transmission = txtBoxTransmission.Text;
+            EI.EmissionStage = cmbBoxEmissionStage.SelectedIndex;
+            EI.Transmission = cmbBoxTransmission.SelectedIndex;
             EI.CatConverter = txtBoxCatConverter.Text;
-            EI.RefMass = txtBoxRefMass.Text;
-            EI.MaxMass = txtBoxMaxMass.Text;
+            EI.RefMass = Convert.ToInt32(txtBoxRefMass.Text);
+            EI.MaxMass = Convert.ToInt32(txtBoxMaxMass.Text);
             EI.OBDLocation = txtBoxOBDLocation.Text;
             EI.PostProcessing = txtBoxPostProcessing.Text;
             EI.PostProcessor = txtBoxPostProcessor.Text;
@@ -141,6 +146,85 @@ namespace Dyno_Geely {
             EI.Name = cmbBoxName.Text;
         }
 
+        private void SetNewVehicle(NewVehicle newVehicle) {
+            newVehicle.CarId = _carID < 0 ? _db.GetLastVehicleInfoID() : _carID;
+            newVehicle.VIN = VI.VIN;
+            newVehicle.CLXH = EI.VehicleModel;
+            newVehicle.ZZL = EI.MaxMass.ToString();
+            newVehicle.JZZL = EI.RefMass.ToString();
+            newVehicle.FDJXH = EI.EngineModel;
+            newVehicle.FDJH = EI.EngineSN;
+            newVehicle.GYFS = EI.GetFuelSupplyString();
+            newVehicle.EDGL = EI.RatedPower.ToString("F");
+            newVehicle.EDZS = EI.RatedRPM.ToString();
+            newVehicle.FDJSCQY = EI.EngineMfr;
+            newVehicle.FDJPL = EI.EngineVolume.ToString("F");
+            newVehicle.PFSP = EI.GetEmissionStageString();
+            newVehicle.QDDJXH = EI.MotorModel;
+            newVehicle.CNZZXH = EI.EnergyStorage;
+            newVehicle.DCRL = EI.BatteryCap;
+            newVehicle.HasOBD = EI.OBDLocation.Length <= 0 || EI.OBDLocation.Contains("无") || EI.OBDLocation.Contains("没有") ? "无" : "有";
+            newVehicle.CHQXH = EI.CatConverter;
+            string[] PostProcessings = EI.PostProcessing.Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string item in PostProcessings) {
+                if (item.Contains("DPF")) {
+                    newVehicle.DPF = item;
+                }
+                if (item.Contains("SCR")) {
+                    newVehicle.SCR = item;
+                }
+            }
+            string[] PostProcessors = EI.PostProcessor.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string item in PostProcessors) {
+                if (item.Contains("DPF")) {
+                    int index = item.IndexOf(':');
+                    if (index < 0) {
+                        newVehicle.DPFXH = item;
+                    } else {
+                        newVehicle.DPFXH = item.Substring(index + 1);
+                    }
+                }
+                if (item.Contains("SCR")) {
+                    int index = item.IndexOf(':');
+                    if (index < 0) {
+                        newVehicle.SRCXH = item;
+                    } else {
+                        newVehicle.SRCXH = item.Substring(index + 1);
+                    }
+                }
+            }
+            switch (EI.TestMethod) {
+            case 0:
+                newVehicle.CheckMethod = "免检";
+                break;
+            case 1:
+                newVehicle.CheckMethod = "双怠速";
+                break;
+            case 2:
+                newVehicle.CheckMethod = "稳态工况";
+                break;
+            case 3:
+                newVehicle.CheckMethod = "简易瞬态";
+                break;
+            case 4:
+                newVehicle.CheckMethod = "加载减速";
+                break;
+            case 6:
+                newVehicle.CheckMethod = "自由加速";
+                break;
+            case 7:
+                newVehicle.CheckMethod = "林格曼黑度";
+                break;
+            case 8:
+                newVehicle.CheckMethod = "瞬态工况";
+                break;
+            case 9:
+                newVehicle.CheckMethod = "其他";
+                break;
+            }
+            newVehicle.CheckType = _carID < 0 ? "初检" : "复检";
+        }
+
         private void TxtBoxRatedRPM_KeyPress(object sender, KeyPressEventArgs e) {
             if (e.KeyChar != (char)Keys.Back && !char.IsDigit(e.KeyChar)) {
                 e.Handled = true;
@@ -148,20 +232,60 @@ namespace Dyno_Geely {
         }
 
         private void VehicleLoginForm_Load(object sender, EventArgs e) {
-            cmbBoxTestMethod.Items.Add("免检");
-            cmbBoxTestMethod.Items.Add("✓双怠速法✓");
-            cmbBoxTestMethod.Items.Add("✓稳态工况法✓");
-            cmbBoxTestMethod.Items.Add("✓简易瞬态工况法✓");
-            cmbBoxTestMethod.Items.Add("✓加载减速法✓");
-            cmbBoxTestMethod.Items.Add("---------");
-            cmbBoxTestMethod.Items.Add("✓自由加速法✓");
-            cmbBoxTestMethod.Items.Add("林格曼黑度法");
-            cmbBoxTestMethod.Items.Add("瞬态工况法");
-            cmbBoxTestMethod.Items.Add("其它");
-            cmbBoxTestMethod.SelectedIndex = 5;
             cmbBoxName.Items.Add(_mainCfg.Name);
             cmbBoxName.SelectedIndex = 0;
+
+            cmbBoxSelectVehicleModel.Items.AddRange(_db.GetVehicleModels());
+
+            foreach (string item in EI.GetFuelSupplyStrings()) {
+                cmbBoxFuelSupply.Items.Add(item);
+            }
+            cmbBoxFuelSupply.SelectedIndex = 0;
+
+            foreach (string item in EI.GetEmissionStageStrings()) {
+                cmbBoxEmissionStage.Items.Add(item);
+            }
+            cmbBoxEmissionStage.SelectedIndex = 0;
+
+            foreach (string item in EI.GetTransmissionStrings()) {
+                cmbBoxTransmission.Items.Add(item);
+            }
+            cmbBoxTransmission.SelectedIndex = 0;
+
+            foreach (string item in EI.GetTestMethodStrings()) {
+                cmbBoxTestMethod.Items.Add(item);
+            }
+            cmbBoxTestMethod.SelectedIndex = 5;
+
+            chkBoxNewVehicleModel.Checked = false;
+            UpdateVehicleModelUI();
             chkBoxAutoStart.Checked = true;
+        }
+
+        private void UpdateVehicleModelUI() {
+            txtBoxVehicleModel.Enabled = chkBoxNewVehicleModel.Checked;
+            txtBoxOpenInfoSN.Enabled = chkBoxNewVehicleModel.Checked;
+            txtBoxVehicleMfr.Enabled = chkBoxNewVehicleModel.Checked;
+            txtBoxEngineModel.Enabled = chkBoxNewVehicleModel.Checked;
+            txtBoxEngineSN.Enabled = chkBoxNewVehicleModel.Checked;
+            txtBoxEngineMfr.Enabled = chkBoxNewVehicleModel.Checked;
+            txtBoxEngineVolume.Enabled = chkBoxNewVehicleModel.Checked;
+            txtBoxCylinderQTY.Enabled = chkBoxNewVehicleModel.Checked;
+            cmbBoxFuelSupply.Enabled = chkBoxNewVehicleModel.Checked;
+            txtBoxRatedPower.Enabled = chkBoxNewVehicleModel.Checked;
+            txtBoxRatedRPM.Enabled = chkBoxNewVehicleModel.Checked;
+            cmbBoxEmissionStage.Enabled = chkBoxNewVehicleModel.Checked;
+            cmbBoxTransmission.Enabled = chkBoxNewVehicleModel.Checked;
+            txtBoxCatConverter.Enabled = chkBoxNewVehicleModel.Checked;
+            txtBoxRefMass.Enabled = chkBoxNewVehicleModel.Checked;
+            txtBoxMaxMass.Enabled = chkBoxNewVehicleModel.Checked;
+            txtBoxOBDLocation.Enabled = chkBoxNewVehicleModel.Checked;
+            txtBoxPostProcessing.Enabled = chkBoxNewVehicleModel.Checked;
+            txtBoxPostProcessor.Enabled = chkBoxNewVehicleModel.Checked;
+            txtBoxMotorModel.Enabled = chkBoxNewVehicleModel.Checked;
+            txtBoxEnergyStorage.Enabled = chkBoxNewVehicleModel.Checked;
+            txtBoxBatteryCap.Enabled = chkBoxNewVehicleModel.Checked;
+            cmbBoxTestMethod.Enabled = chkBoxNewVehicleModel.Checked;
         }
 
         private void VehicleLoginForm_Activated(object sender, EventArgs e) {
@@ -176,9 +300,9 @@ namespace Dyno_Geely {
                     txtBoxRatedRPM.BackColor = txtBoxGettedVIN.BackColor;
                     cmbBoxTestMethod.BackColor = txtBoxGettedVIN.BackColor;
                     VI.VIN = tb.Text;
-                    _db.GetEmissionInfo(VI.VIN, EI);
+                    _carID = _db.GetEmissionInfoFromVIN(VI.VIN, EI);
                     FillInputTextBox();
-                    this.txtBoxVIN.Clear();
+                    txtBoxVIN.Clear();
                     if (chkBoxAutoStart.Checked) {
                         btnStart.PerformClick();
                     }
@@ -202,12 +326,25 @@ namespace Dyno_Geely {
             bool bCanTest = true;
             bCanTest = bCanTest && txtBoxGettedVIN.TextLength > 0;
             bCanTest = bCanTest && txtBoxVehicleModel.TextLength > 0;
-            bCanTest = bCanTest && txtBoxOpenInfoSN.TextLength > 0;
-            bCanTest = bCanTest && txtBoxRatedRPM.TextLength > 0;
+            bCanTest = bCanTest && Convert.ToDouble(txtBoxRatedPower.Text) > 0;
+            bCanTest = bCanTest && Convert.ToInt32(txtBoxRatedRPM.Text) > 0;
+            bCanTest = bCanTest && cmbBoxEmissionStage.SelectedIndex > 0;
+            bCanTest = bCanTest && Convert.ToInt32(txtBoxRefMass.Text) > 0;
+            bCanTest = bCanTest && Convert.ToInt32(txtBoxMaxMass.Text) > 0;
             bCanTest = bCanTest && cmbBoxTestMethod.SelectedIndex != 5;
             if (bCanTest) {
-                DialogResult = DialogResult.OK;
-                Close();
+                NewVehicle newVehicle = new NewVehicle();
+                SetNewVehicle(newVehicle);
+                SaveNewVehicleInfoParams cmdParams = new SaveNewVehicleInfoParams() {
+                    ClientID = _dynoCmd.ClientID,
+                    Newvehicle = newVehicle
+                };
+                if (_dynoCmd.SaveNewVehicleInfoCmd(cmdParams)) {
+                    DialogResult = DialogResult.OK;
+                    Close();
+                } else {
+                    MessageBox.Show("保存车辆登录表单至服务器时出错", "车辆登录", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             } else {
                 if (txtBoxGettedVIN.TextLength <= 0) {
                     txtBoxGettedVIN.BackColor = Color.Yellow;
@@ -215,11 +352,20 @@ namespace Dyno_Geely {
                 if (txtBoxVehicleModel.TextLength <= 0) {
                     txtBoxVehicleModel.BackColor = Color.Yellow;
                 }
-                if (txtBoxOpenInfoSN.TextLength <= 0) {
-                    txtBoxOpenInfoSN.BackColor = Color.Yellow;
+                if (Convert.ToDouble(txtBoxRatedPower.Text) <= 0) {
+                    txtBoxRatedPower.BackColor = Color.Yellow;
                 }
-                if (txtBoxRatedRPM.TextLength <= 0) {
+                if (Convert.ToInt32(txtBoxRatedRPM.Text) <= 0) {
                     txtBoxRatedRPM.BackColor = Color.Yellow;
+                }
+                if (cmbBoxEmissionStage.SelectedIndex <= 0) {
+                    cmbBoxEmissionStage.BackColor = Color.Yellow;
+                }
+                if (Convert.ToInt32(txtBoxRefMass.Text) <= 0) {
+                    txtBoxRefMass.BackColor = Color.Yellow;
+                }
+                if (Convert.ToInt32(txtBoxMaxMass.Text) <= 0) {
+                    txtBoxMaxMass.BackColor = Color.Yellow;
                 }
                 if (cmbBoxTestMethod.SelectedIndex == 5) {
                     cmbBoxTestMethod.BackColor = Color.Yellow;
@@ -232,12 +378,22 @@ namespace Dyno_Geely {
             if (_lastHeight == 0) {
                 return;
             }
-            float scale = this.Height / _lastHeight;
+            float scale = Height / _lastHeight;
             layoutMain.Font = new Font(layoutMain.Font.FontFamily, layoutMain.Font.Size * scale, layoutMain.Font.Style);
             txtBoxVIN.Font = new Font(txtBoxVIN.Font.FontFamily, txtBoxVIN.Font.Size * scale, txtBoxVIN.Font.Style);
             layoutControlItem31.Style.Font = new Font(layoutControlItem31.Style.Font.FontFamily, layoutControlItem31.Style.Font.Size * scale, layoutControlItem31.Style.Font.Style);
             layoutControlItem31.TextSize = new Size(layoutControlItem31.TextSize.Width, layoutControlItem31.TextSize.Height * Convert.ToInt32(scale));
-            _lastHeight = this.Height;
+            _lastHeight = Height;
+        }
+
+        private void ChkBoxNewVehicleModel_CheckedChanged(object sender, EventArgs e) {
+            UpdateVehicleModelUI();
+        }
+
+        private void CmbBoxSelectVehicleModel_SelectedIndexChanged(object sender, EventArgs e) {
+            if(_db.GetEmissionInfoFromVehicleModel(cmbBoxSelectVehicleModel.Text, EI)) {
+                FillInputTextBox();
+            }
         }
     }
 }
