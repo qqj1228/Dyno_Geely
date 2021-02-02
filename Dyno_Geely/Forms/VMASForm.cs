@@ -26,10 +26,11 @@ namespace Dyno_Geely {
         private readonly VMASResultForm f_result;
         private DateTime _startTime;
         private double _speedRange;
+        private double _speedOverTime;
 
         public VMASForm(string VIN, DynoCmd dynoCmd, MainSetting mainCfg, ModelLocal db, EnvironmentData envData, Logger log) {
             InitializeComponent();
-            _lastHeight = this.Height;
+            _lastHeight = Height;
             _VIN = VIN;
             _dynoCmd = dynoCmd;
             _mainCfg = mainCfg;
@@ -85,7 +86,7 @@ namespace Dyno_Geely {
 
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e) {
             GetVmasRealTimeDataAckParams ackParams = new GetVmasRealTimeDataAckParams();
-            if (_dynoCmd.GetVMASRealTimeDataCmd(false, ref ackParams) && ackParams != null) {
+            if (_dynoCmd.GetVMASRealTimeDataCmd(_speedOverTime, ref ackParams) && ackParams != null) {
                 if (_timer != null && _timer.Enabled) {
                     try {
                         DataRow dr = _dtRealTime.NewRow();
@@ -110,6 +111,7 @@ namespace Dyno_Geely {
                         dr["DilutionRatio"] = ackParams.dilutionRatio;
                         dr["Flow"] = ackParams.flow;
                         _dtRealTime.Rows.Add(dr);
+                        _speedOverTime = ackParams.speedContinuityOverProofTime;
 
                         if (_dtRealTime.Rows.Count % (1000 / _mainCfg.RealtimeInterval) == 0) {
                             int index = _dtRealTime.Rows.Count / (1000 / _mainCfg.RealtimeInterval) - 1;
@@ -124,7 +126,7 @@ namespace Dyno_Geely {
                             lblHC.Text = ackParams.HC.ToString("F");
                             lblNO.Text = ackParams.NO.ToString("F");
                             lblCO.Text = ackParams.CO.ToString("F");
-                            this.chart1.DataBind();
+                            chart1.DataBind();
                             gaugeSpeed.CircularScales["Scale1"].Pointers["Pointer1"].Value = ackParams.speed;
                             if (gaugeSpeed.GaugeItems["Indicator1"] is NumericIndicator ind) {
                                 ind.Value = ackParams.speed;
@@ -200,13 +202,14 @@ namespace Dyno_Geely {
             }
         }
 
-        public void StartTest(bool bStart) {
+        public void StartTest(bool bStart, bool bRetry) {
             StartVmasCheckAckParams ackParams = new StartVmasCheckAckParams();
             if (bStart) {
-                if (!_dynoCmd.StartVMASCheckCmd(false, ref ackParams)) {
+                if (!_dynoCmd.StartVMASCheckCmd(false, bRetry, ref ackParams)) {
                     MessageBox.Show("执行开始简易瞬态工况检测命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _speedRange = ackParams.VmasCheckSpeedSpan;
+                    _speedOverTime = 0;
                     for (int i = 0; i < _dtSpeeds.Rows.Count; i++) {
                         _dtSpeeds.Rows[i][3] = Convert.ToDouble(_dtSpeeds.Rows[i][3]) + (_speedRange - 2);
                         _dtSpeeds.Rows[i][4] = Convert.ToDouble(_dtSpeeds.Rows[i][4]) - (_speedRange - 2);
@@ -216,7 +219,7 @@ namespace Dyno_Geely {
                     _startTime = DateTime.Now;
                 }
             } else {
-                if (!_dynoCmd.StartVMASCheckCmd(true, ref ackParams)) {
+                if (!_dynoCmd.StartVMASCheckCmd(true, bRetry, ref ackParams)) {
                     MessageBox.Show("执行停止简易瞬态工况检测命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _timer.Enabled = false;
@@ -226,17 +229,9 @@ namespace Dyno_Geely {
         }
 
         public void StopCheck() {
+            System.Threading.Thread.Sleep(_mainCfg.RealtimeInterval);
             _dynoCmd.ReconnectServer();
-            GetVmasRealTimeDataAckParams ackParams = new GetVmasRealTimeDataAckParams();
-            if (_dynoCmd.GetVMASRealTimeDataCmd(true, ref ackParams)) {
-                _timer.Enabled = false;
-                Invoke((EventHandler)delegate {
-                    StartTest(false);
-                });
-            } else {
-                _log.TraceError("GetVMASRealTimeDataCmd() return false");
-                MessageBox.Show("执行停止获取简易瞬态工况实时数据命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            StartTest(false, false);
         }
 
         private void SaveDBData() {
@@ -246,8 +241,8 @@ namespace Dyno_Geely {
         }
 
         private void SetupRectangleAnnotation(RectangleAnnotation ra, string text, double AnchorX, double AnchorY, Color color) {
-            ra.AxisX = this.chart1.ChartAreas[0].AxisX;
-            ra.AxisY = this.chart1.ChartAreas[0].AxisY;
+            ra.AxisX = chart1.ChartAreas[0].AxisX;
+            ra.AxisY = chart1.ChartAreas[0].AxisY;
             ra.AnchorAlignment = ContentAlignment.BottomRight;
             ra.AnchorOffsetX = 2;
             ra.AnchorX = AnchorX;
@@ -336,17 +331,17 @@ namespace Dyno_Geely {
             lblHC.Text = "--";
             lblNO.Text = "--";
             lblCO.Text = "--";
-            StartTest(true);
+            StartTest(true, false);
         }
 
         private void VMASForm_Resize(object sender, EventArgs e) {
             if (_lastHeight == 0) {
                 return;
             }
-            float scale = this.Height / _lastHeight;
+            float scale = Height / _lastHeight;
             layoutMain.Font = new Font(layoutMain.Font.FontFamily, layoutMain.Font.Size * scale, layoutMain.Font.Style);
             lblMsg.Font = new Font(lblMsg.Font.FontFamily, lblMsg.Font.Size * scale, lblMsg.Font.Style);
-            _lastHeight = this.Height;
+            _lastHeight = Height;
         }
 
         private void BtnRestart_Click(object sender, EventArgs e) {
@@ -355,7 +350,7 @@ namespace Dyno_Geely {
             lblHC.Text = "--";
             lblNO.Text = "--";
             lblCO.Text = "--";
-            StartTest(true);
+            StartTest(true, true);
         }
 
         private void BtnStop_Click(object sender, EventArgs e) {

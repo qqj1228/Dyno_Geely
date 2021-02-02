@@ -265,6 +265,11 @@ namespace Dyno_Geely {
         public string finishCheckVehiclesInfo { get; set; }
     }
 
+    public class SaveInUseVehicleInfoParams {
+        public string ClientID { get; set; }
+        public UseVehicle Usevehicle { get; set; }
+    }
+
     public class SaveNewVehicleInfoParams {
         public string ClientID { get; set; }
         public NewVehicle Newvehicle { get; set; }
@@ -397,71 +402,14 @@ namespace Dyno_Geely {
         public double amibientPressure { get; set; }
     }
 
-    public class GetWaitCheckQueueInfoParams {
-        public string ClientID { get; set; }
-    }
-    public class GetWaitCheckQueueInfoAckParams {
-        public string waitCheckQueueInfo { get; set; }
-    }
-
-    public class SaveVehicleAppearanceInfoParams {
-        public string ClientID { get; set; }
-        public string SurfaceCheckData { get; set; }
-    }
-    public class SaveVehicleAppearanceInfoAckParams {
-        public string SurfaceCheckMark { get; set; }
-    }
-
-    public class StartOBDCheckParams {
-        public string ClientID { get; set; }
-        public bool stopCheck { get; set; }
-    }
-    public class StartOBDCheckAckParams {
-        public bool SkipOBDCheck { get; set; }
-    }
-
-    public class GetOBDRealTimeDataParams {
-        public string ClientID { get; set; }
-        public bool stopCheck { get; set; }
-        public bool Abandon { get; set; }
-        public bool GZZSQSFTG { get; set; }
-        public bool DHSGZZSQSFDL { get; set; }
-        public bool DHHGZZSQSFXM { get; set; }
-        public bool ManualSelectionOK { get; set; }
-        public bool GZDZTSFYZ { get; set; }
-        public bool txqkyy { get; set; }
-        public bool IsInUseCar { get; set; }
-    }
-    public class GetOBDRealTimeDataAckParams {
-        public string msg { get; set; }
-        public int step { get; set; }
-        public string hphm { get; set; }
-        public string hpys { get; set; }
-        public string vin { get; set; }
-        public string rylx { get; set; }
-        public string gzzsqbj { get; set; }
-        public string txqk { get; set; }
-        public string GZDMGZXX { get; set; }
-        public string JXZTWWCXM { get; set; }
-        public string MILXSLC { get; set; }
-        public string FDJKZCALID { get; set; }
-        public string FDJKZCVN { get; set; }
-        public string HCLKZCALID { get; set; }
-        public string HCLKZCVN { get; set; }
-        public string QTKZCALID { get; set; }
-        public string QTKZCVN { get; set; }
-        public string OBDCheckResult { get; set; }
-        public string GZDZT { get; set; }
-    }
-
     public class StartASMCheckParams {
         public string ClientID { get; set; }
         public bool stopCheck { get; set; }
+        public bool retryCheck { get; set; }
     }
 
     public class GetASMRealTimeDataParams {
         public string ClientID { get; set; }
-        public bool stopCheck { get; set; }
     }
     public class GetASMRealTimeDataAckParams {
         public int SpeedMax { get; set; }
@@ -514,11 +462,11 @@ namespace Dyno_Geely {
     public class StartTsiCheckParams {
         public string ClientID { get; set; }
         public bool stopCheck { get; set; }
+        public bool retryCheck { get; set; }
     }
 
     public class GetTsiRealTimeDataParams {
         public string ClientID { get; set; }
-        public bool stopCheck { get; set; }
         public bool ignoreRpm70 { get; set; }
         public bool ignoreRpmHigh { get; set; }
         public bool ignoreRpmLow { get; set; }
@@ -531,6 +479,7 @@ namespace Dyno_Geely {
         public int step { get; set; }
         public int RPM { get; set; }
         public int CurrentStageTime { get; set; }
+        public int TsiCurrentSurplusTime { get; set; }
         public double lmd { get; set; }
         public double temperature { get; set; }
         public double humidity { get; set; }
@@ -564,6 +513,7 @@ namespace Dyno_Geely {
     public class StartVmasCheckParams {
         public string ClientID { get; set; }
         public bool stopCheck { get; set; }
+        public bool retryCheck { get; set; }
     }
     public class StartVmasCheckAckParams {
         public double VmasCheckSpeedSpan { get; set; }
@@ -571,7 +521,7 @@ namespace Dyno_Geely {
 
     public class GetVmasRealTimeDataParams {
         public string ClientID { get; set; }
-        public bool stopCheck { get; set; }
+        public double VmasContinueDiffTime { get; set; }
     }
     public class GetVmasRealTimeDataAckParams {
         public string msg { get; set; }
@@ -619,7 +569,6 @@ namespace Dyno_Geely {
 
     public class GetFalRealTimeDataParams {
         public string ClientID { get; set; }
-        public bool stopCheck { get; set; }
     }
     public class GetFalRealTimeDataAckParams {
         public string msg { get; set; }
@@ -654,11 +603,12 @@ namespace Dyno_Geely {
     public class StartLdCheckParams {
         public string ClientID { get; set; }
         public bool stopCheck { get; set; }
+        public int LDLoadPauCount { get; set; }
+
     }
 
     public class GetLdRealTimeDataParams {
         public string ClientID { get; set; }
-        public bool stopCheck { get; set; }
         public bool canGetMaxRpm { get; set; }
     }
     public class GetLdRealTimeDataAckParams {

@@ -633,6 +633,19 @@ namespace Dyno_Geely {
             }
         }
 
+        public bool SaveInUseVehicleInfoCmd(SaveInUseVehicleInfoParams cmdParams) {
+            if (!DoCmd("SaveInUseVehicleInfo", cmdParams, true)) {
+                _log.TraceError("DoCmd(\"SaveInUseVehicleInfo\") return false");
+                return false;
+            }
+            if (_msgAckRecv != null && _msgAckRecv.Cmd == "SaveInUseVehicleInfoAck") {
+                return true;
+            } else {
+                _log.TraceError("_msgAckRecv.Cmd[\"SaveInUseVehicleInfoAck\"] is wrong");
+                return false;
+            }
+        }
+
         public bool SaveNewVehicleInfoCmd(SaveNewVehicleInfoParams cmdParams) {
             if (!DoCmd("SaveNewVehicleInfo", cmdParams, true)) {
                 _log.TraceError("DoCmd(\"SaveNewVehicleInfo\") return false");
@@ -815,10 +828,11 @@ namespace Dyno_Geely {
             }
         }
 
-        public bool StartLdCheckCmd(bool stop) {
+        public bool StartLdCheckCmd(bool stop, int pauCount) {
             StartLdCheckParams cmdParams = new StartLdCheckParams {
                 ClientID = ClientID,
-                stopCheck = stop
+                stopCheck = stop,
+                LDLoadPauCount = pauCount
             };
             if (!DoCmd("StartLdCheck", cmdParams, true)) {
                 _log.TraceError("DoCmd(\"StartLdCheck\") return false");
@@ -832,10 +846,9 @@ namespace Dyno_Geely {
             }
         }
 
-        public bool GetLdRealTimeDataCmd(bool stop, bool getMaxRpm, ref GetLdRealTimeDataAckParams ackParams) {
+        public bool GetLdRealTimeDataCmd(bool getMaxRpm, ref GetLdRealTimeDataAckParams ackParams) {
             GetLdRealTimeDataParams cmdParams = new GetLdRealTimeDataParams {
                 ClientID = ClientID,
-                stopCheck = stop,
                 canGetMaxRpm = getMaxRpm
             };
             if (!DoCmd("GetLdRealTimeData", cmdParams, false)) {
@@ -868,10 +881,11 @@ namespace Dyno_Geely {
             }
         }
 
-        public bool StartASMCheckCmd(bool stop) {
+        public bool StartASMCheckCmd(bool stop, bool retry) {
             StartASMCheckParams cmdParams = new StartASMCheckParams {
                 ClientID = ClientID,
-                stopCheck = stop
+                stopCheck = stop,
+                retryCheck = retry
             };
             if (!DoCmd("StartASMCheck", cmdParams, true)) {
                 _log.TraceError("DoCmd(\"StartASMCheck\") return false");
@@ -885,10 +899,9 @@ namespace Dyno_Geely {
             }
         }
 
-        public bool GetASMRealTimeDataCmd(bool stop, ref GetASMRealTimeDataAckParams ackParams) {
+        public bool GetASMRealTimeDataCmd(ref GetASMRealTimeDataAckParams ackParams) {
             GetASMRealTimeDataParams cmdParams = new GetASMRealTimeDataParams {
                 ClientID = ClientID,
-                stopCheck = stop,
             };
             if (!DoCmd("GetASMRealTimeData", cmdParams, false)) {
                 _log.TraceError("DoCmd(\"GetASMRealTimeData\") return false");
@@ -937,10 +950,9 @@ namespace Dyno_Geely {
             }
         }
 
-        public bool GetFALRealTimeDataCmd(bool stop, ref GetFalRealTimeDataAckParams ackParams) {
+        public bool GetFALRealTimeDataCmd(ref GetFalRealTimeDataAckParams ackParams) {
             GetFalRealTimeDataParams cmdParams = new GetFalRealTimeDataParams {
                 ClientID = ClientID,
-                stopCheck = stop,
             };
             if (!DoCmd("GetFalRealTimeData", cmdParams, false)) {
                 _log.TraceError("DoCmd(\"GetFalRealTimeData\") return false");
@@ -972,10 +984,11 @@ namespace Dyno_Geely {
             }
         }
 
-        public bool StartTSICheckCmd(bool stop) {
+        public bool StartTSICheckCmd(bool stop, bool retry) {
             StartTsiCheckParams cmdParams = new StartTsiCheckParams {
                 ClientID = ClientID,
-                stopCheck = stop
+                stopCheck = stop,
+                retryCheck = retry
             };
             if (!DoCmd("StartTsiCheck", cmdParams, true)) {
                 _log.TraceError("DoCmd(\"StartTsiCheck\") return false");
@@ -1020,10 +1033,11 @@ namespace Dyno_Geely {
             }
         }
 
-        public bool StartVMASCheckCmd(bool stop, ref StartVmasCheckAckParams ackParams) {
+        public bool StartVMASCheckCmd(bool stop, bool retry, ref StartVmasCheckAckParams ackParams) {
             StartVmasCheckParams cmdParams = new StartVmasCheckParams {
                 ClientID = ClientID,
-                stopCheck = stop
+                stopCheck = stop,
+                retryCheck = retry
             };
             if (!DoCmd("StartVmasCheck", cmdParams, true)) {
                 _log.TraceError("DoCmd(\"StartVmasCheck\") return false");
@@ -1038,10 +1052,10 @@ namespace Dyno_Geely {
             }
         }
 
-        public bool GetVMASRealTimeDataCmd(bool stop, ref GetVmasRealTimeDataAckParams ackParams) {
+        public bool GetVMASRealTimeDataCmd(double overTime, ref GetVmasRealTimeDataAckParams ackParams) {
             GetVmasRealTimeDataParams cmdParams = new GetVmasRealTimeDataParams {
                 ClientID = ClientID,
-                stopCheck = stop,
+                VmasContinueDiffTime = overTime
             };
             if (!DoCmd("GetVmasRealTimeData", cmdParams, false)) {
                 _log.TraceError("DoCmd(\"GetFalRealTimeData\") return false");

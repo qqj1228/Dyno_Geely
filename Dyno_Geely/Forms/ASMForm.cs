@@ -26,7 +26,7 @@ namespace Dyno_Geely {
 
         public ASMForm(string VIN, DynoCmd dynoCmd, MainSetting mainCfg, ModelLocal db, EnvironmentData envData, Logger log) {
             InitializeComponent();
-            _lastHeight = this.Height;
+            _lastHeight = Height;
             _VIN = VIN;
             _dynoCmd = dynoCmd;
             _mainCfg = mainCfg;
@@ -67,7 +67,7 @@ namespace Dyno_Geely {
 
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e) {
             GetASMRealTimeDataAckParams ackParams = new GetASMRealTimeDataAckParams();
-            if (_dynoCmd.GetASMRealTimeDataCmd(false, ref ackParams) && ackParams != null) {
+            if (_dynoCmd.GetASMRealTimeDataCmd(ref ackParams) && ackParams != null) {
                 if (_timer != null && _timer.Enabled) {
                     try {
                         DataRow dr = _dtRealTime.NewRow();
@@ -166,7 +166,7 @@ namespace Dyno_Geely {
                                 });
                             }
                             StopCheck();
-                            SaveDBData();
+                            //SaveDBData();
                             if (_resultData.Result == "合格") {
                                 Invoke((EventHandler)delegate {
                                     Close();
@@ -180,9 +180,9 @@ namespace Dyno_Geely {
             }
         }
 
-        public void StartTest(bool bStart) {
+        public void StartTest(bool bStart, bool bRetry) {
             if (bStart) {
-                if (!_dynoCmd.StartASMCheckCmd(false)) {
+                if (!_dynoCmd.StartASMCheckCmd(false, bRetry)) {
                     MessageBox.Show("执行开始稳态工况检测命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _dtRealTime.Rows.Clear();
@@ -190,7 +190,7 @@ namespace Dyno_Geely {
                     _startTime = DateTime.Now;
                 }
             } else {
-                if (!_dynoCmd.StartASMCheckCmd(true)) {
+                if (!_dynoCmd.StartASMCheckCmd(true, bRetry)) {
                     MessageBox.Show("执行停止稳态工况检测命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _timer.Enabled = false;
@@ -200,17 +200,9 @@ namespace Dyno_Geely {
         }
 
         public void StopCheck() {
+            System.Threading.Thread.Sleep(_mainCfg.RealtimeInterval);
             _dynoCmd.ReconnectServer();
-            GetASMRealTimeDataAckParams ackParams = new GetASMRealTimeDataAckParams();
-            if (_dynoCmd.GetASMRealTimeDataCmd(true, ref ackParams)) {
-                _timer.Enabled = false;
-                Invoke((EventHandler)delegate {
-                    StartTest(false);
-                });
-            } else {
-                _log.TraceError("GetASMRealTimeDataCmd() return false");
-                MessageBox.Show("执行停止获取稳态工况实时数据命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            StartTest(false, false);
         }
 
         private void SaveDBData() {
@@ -232,10 +224,10 @@ namespace Dyno_Geely {
             if (_lastHeight == 0) {
                 return;
             }
-            float scale = this.Height / _lastHeight;
+            float scale = Height / _lastHeight;
             layoutMain.Font = new Font(layoutMain.Font.FontFamily, layoutMain.Font.Size * scale, layoutMain.Font.Style);
             lblMsg.Font = new Font(lblMsg.Font.FontFamily, lblMsg.Font.Size * scale, lblMsg.Font.Style);
-            _lastHeight = this.Height;
+            _lastHeight = Height;
         }
 
         private void ASMForm_Shown(object sender, EventArgs e) {
@@ -249,7 +241,7 @@ namespace Dyno_Geely {
             lblWorkingTime.Text = "--";
             lblAccTime.Text = "--";
             lblStableTime.Text = "--";
-            StartTest(true);
+            StartTest(true, false);
         }
 
         private void BtnRestart_Click(object sender, EventArgs e) {
@@ -258,7 +250,7 @@ namespace Dyno_Geely {
             lblWorkingTime.Text = "--";
             lblAccTime.Text = "--";
             lblStableTime.Text = "--";
-            StartTest(true);
+            StartTest(true, true);
         }
 
         private void BtnStop_Click(object sender, EventArgs e) {

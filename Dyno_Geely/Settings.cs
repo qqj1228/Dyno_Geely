@@ -101,9 +101,9 @@ namespace Dyno_Geely {
 
     [Serializable]
     public class MainSetting {
-        public OracleSetting MES { get; set; }
-        public SQLSetting Native { get; set; }
-        public OracleSetting Dyno { get; set; }
+        public OracleSetting MES { get; set; } // MES数据库参数
+        public SQLSetting Native { get; set; } // 本地数据库参数
+        public OracleSetting DynoParam { get; set; } // 扫码获取测功机参数功能对应的MES数据库地址
         public FlowmeterSetting Flowmeter { get; set; }
         public SmokerSetting Smoker { get; set; }
         public WeatherSetting Weather { get; set; }
@@ -122,7 +122,7 @@ namespace Dyno_Geely {
         public MainSetting() {
             MES = new OracleSetting();
             Native = new SQLSetting();
-            Dyno = new OracleSetting();
+            DynoParam = new OracleSetting();
             Flowmeter = new FlowmeterSetting();
             Smoker = new SmokerSetting();
             Weather = new WeatherSetting();
@@ -357,7 +357,7 @@ namespace Dyno_Geely {
     }
 
     public class NewVehicle {
-        public int CarId { get; set; }
+        public int CarId { get; set; } // 主键
         public string VIN { get; set; }
         public string CLXH { get; set; }
         public string ZZL { get; set; }
@@ -381,5 +381,77 @@ namespace Dyno_Geely {
         public string SRCXH { get; set; }
         public string CheckMethod { get; set; }
         public string CheckType { get; set; }
+    }
+
+    public class UseVehicle {
+        public string VIN { get; set; } // 主键
+        public int CarId { get; set; }
+        public string HPHM { get; set; }
+        public string HPYS { get; set; }
+        public string CLXH { get; set; }
+        public string JZZL { get; set; }
+        public string ZDZZL { get; set; }
+        public string FDJXH { get; set; }
+        public string FDJHM { get; set; }
+        public string FDJPL { get; set; }
+        public string EDZS { get; set; }
+        public string FDJEDGL { get; set; }
+        public string DPF { get; set; }
+        public string DPFXH { get; set; }
+        public string SRC { get; set; }
+        public string SRCXH { get; set; }
+        public string QGS { get; set; }
+        public string QDDJXH { get; set; }
+        public string CNZZXH { get; set; }
+        public string DCRL { get; set; }
+        public string CLSCQY { get; set; }
+        public string CLCCRQ { get; set; }
+        public string LJXSLC { get; set; }
+        public string CZXMorDW { get; set; }
+        public string LXDH { get; set; }
+        public string RYLX { get; set; }
+        public string GYFS { get; set; }
+        public string QDFS { get; set; }
+        public string PPorXH { get; set; }
+        public string BSQXS { get; set; }
+        public string SYXZ { get; set; }
+        public string CCDJRI { get; set; }
+        public string HasOBD { get; set; }
+        public string CheckMethod { get; set; }
+        public string CheckType { get; set; }
+        public string CLLX { get; set; }
+        public string CXXL { get; set; }
+        public string CSYS { get; set; }
+        public string ZKRS { get; set; }
+        public string DPH { get; set; }
+        public string LTQY { get; set; }
+        public string SYZT { get; set; }
+        public string DWS { get; set; }
+        public string LCBDS { get; set; }
+        public string DCZZ { get; set; }
+        public string JCZQ { get; set; }
+        public string SFSYGYYB { get; set; }
+        public string PFSP { get; set; }
+        public string CLS { get; set; }
+        public string JQFS { get; set; }
+        public string HPZL { get; set; }
+        public string CCS { get; set; }
+        public string FDJZZCJ { get; set; }
+        public string EDNJ { get; set; }
+        public string EDNJZS { get; set; }
+        public string PQCLZZ { get; set; }
+        public string PQGSL { get; set; }
+        public string SFSYSRL { get; set; }
+        public string CHQXH { get; set; }
+        public string ZRCL { get; set; }
+        public string JRCZ { get; set; }
+        public string YQBF { get; set; }
+        public string CZLX { get; set; }
+        public string CLLB { get; set; }
+        public string CZDZ { get; set; }
+        public string XQBH { get; set; }
+        public string SFYSYCHQ { get; set; }
+        public string ZBZL { get; set; }
+        public string CheckStatus { get; set; }
     }
 }

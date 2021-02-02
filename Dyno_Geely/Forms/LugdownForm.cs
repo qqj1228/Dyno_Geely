@@ -29,7 +29,7 @@ namespace Dyno_Geely {
 
         public LugdownForm(string VIN, DynoCmd dynoCmd, MainSetting mainCfg, ModelLocal db, EnvironmentData envData, Logger log) {
             InitializeComponent();
-            _lastHeight = this.Height;
+            _lastHeight = Height;
             _VIN = VIN;
             _dynoCmd = dynoCmd;
             _mainCfg = mainCfg;
@@ -64,7 +64,7 @@ namespace Dyno_Geely {
 
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e) {
             GetLdRealTimeDataAckParams ackParams = new GetLdRealTimeDataAckParams();
-            if (_dynoCmd.GetLdRealTimeDataCmd(false, true, ref ackParams) && ackParams != null) {
+            if (_dynoCmd.GetLdRealTimeDataCmd(false, ref ackParams) && ackParams != null) {
                 if (_timer != null && _timer.Enabled) {
                     try {
                         DataRow dr = _dtRealTime.NewRow();
@@ -91,7 +91,7 @@ namespace Dyno_Geely {
                             lblK.Text = ackParams.K.ToString("F");
                             lblNOx.Text = ackParams.NOx.ToString("F");
                             lblCO2.Text = ackParams.CO2.ToString("F");
-                            this.chart1.DataBind();
+                            chart1.DataBind();
                             gaugeSpeed.CircularScales["Scale1"].Pointers["Pointer1"].Value = ackParams.Speed;
                             if (gaugeSpeed.GaugeItems["Indicator1"] is NumericIndicator ind) {
                                 ind.Value = ackParams.Speed;
@@ -134,7 +134,7 @@ namespace Dyno_Geely {
                                 });
                             }
                             StopCheck();
-                            SaveDBData();
+                            //SaveDBData();
                             if (_resultData.Result == "合格") {
                                 Invoke((EventHandler)delegate {
                                     Close();
@@ -150,7 +150,7 @@ namespace Dyno_Geely {
 
         public void StartTest(bool bStart) {
             if (bStart) {
-                if (!_dynoCmd.StartLdCheckCmd(false)) {
+                if (!_dynoCmd.StartLdCheckCmd(false, 1)) {
                     MessageBox.Show("执行开始加载减速检测命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _dtRealTime.Rows.Clear();
@@ -158,7 +158,7 @@ namespace Dyno_Geely {
                     _startTime = DateTime.Now;
                 }
             } else {
-                if (!_dynoCmd.StartLdCheckCmd(true)) {
+                if (!_dynoCmd.StartLdCheckCmd(true, 1)) {
                     MessageBox.Show("执行停止加载减速检测命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _timer.Enabled = false;
@@ -169,16 +169,8 @@ namespace Dyno_Geely {
 
         public void StopCheck() {
             _dynoCmd.ReconnectServer();
-            GetLdRealTimeDataAckParams ackParams = new GetLdRealTimeDataAckParams();
-            if (_dynoCmd.GetLdRealTimeDataCmd(true, false, ref ackParams)) {
-                _timer.Enabled = false;
-                Invoke((EventHandler)delegate {
-                    StartTest(false);
-                });
-            } else {
-                _log.TraceError("GetLdRealTimeDataCmd() return false");
-                MessageBox.Show("执行停止获取加载减速实时数据命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            _timer.Enabled = false;
+            StartTest(false);
         }
 
         private void SaveDBData() {
@@ -189,41 +181,41 @@ namespace Dyno_Geely {
 
         private void LugdownForm_Load(object sender, EventArgs e) {
             lblMsg.Text = "加载减速法测试";
-            this.chart1.Series[0].Name = "转速(r/min)";
-            this.chart1.Series.Add("车速(km/h)");
-            this.chart1.Series.Add("功率(kW)");
-            this.chart1.Series[0].Color = Color.DodgerBlue;
-            this.chart1.Series[1].Color = Color.SeaGreen;
-            this.chart1.Series[2].Color = Color.Red;
-            this.chart1.Series[0].ChartType = SeriesChartType.FastLine;
-            this.chart1.Series[1].ChartType = SeriesChartType.FastLine;
-            this.chart1.Series[2].ChartType = SeriesChartType.FastLine;
-            this.chart1.Series[0].BorderWidth = 2;
-            this.chart1.Series[1].BorderWidth = 2;
-            this.chart1.Series[2].BorderWidth = 2;
-            this.chart1.Series[0].XValueMember = "TimeSN";
-            this.chart1.Series[0].YValueMembers = "RPM";
-            this.chart1.Series[0].YAxisType = AxisType.Secondary;
-            this.chart1.Series[1].XValueMember = "TimeSN";
-            this.chart1.Series[1].YValueMembers = "Speed";
-            this.chart1.Series[2].XValueMember = "TimeSN";
-            this.chart1.Series[2].YValueMembers = "Power";
-            this.chart1.ChartAreas[0].AxisX.IsStartedFromZero = true;
-            this.chart1.ChartAreas[0].AxisX.Minimum = 0;
-            this.chart1.ChartAreas[0].AxisX.IntervalAutoMode = IntervalAutoMode.VariableCount;
-            this.chart1.ChartAreas[0].AxisX.MajorGrid.LineDashStyle = ChartDashStyle.Dash;
-            this.chart1.ChartAreas[0].AxisX.MajorGrid.LineColor = Color.Gray;
-            this.chart1.ChartAreas[0].AxisX.Title = "时间（秒）";
-            this.chart1.ChartAreas[0].AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dash;
-            this.chart1.ChartAreas[0].AxisY.MajorGrid.LineColor = Color.Gray;
-            this.chart1.ChartAreas[0].AxisY.Title = "车速(km/h) / 功率(kW)";
-            this.chart1.ChartAreas[0].AxisY2.Enabled = AxisEnabled.True;
-            this.chart1.ChartAreas[0].AxisY2.MajorGrid.LineDashStyle = ChartDashStyle.Dash;
-            this.chart1.ChartAreas[0].AxisY2.MajorGrid.LineColor = Color.Gray;
-            this.chart1.ChartAreas[0].AxisY2.Title = "转速(r/min)";
-            this.chart1.ChartAreas[0].AxisY2.TitleForeColor = Color.DodgerBlue;
-            this.chart1.DataSource = _dtRealTime;
-            this.chart1.DataBind();
+            chart1.Series[0].Name = "转速(r/min)";
+            chart1.Series.Add("车速(km/h)");
+            chart1.Series.Add("功率(kW)");
+            chart1.Series[0].Color = Color.DodgerBlue;
+            chart1.Series[1].Color = Color.SeaGreen;
+            chart1.Series[2].Color = Color.Red;
+            chart1.Series[0].ChartType = SeriesChartType.FastLine;
+            chart1.Series[1].ChartType = SeriesChartType.FastLine;
+            chart1.Series[2].ChartType = SeriesChartType.FastLine;
+            chart1.Series[0].BorderWidth = 2;
+            chart1.Series[1].BorderWidth = 2;
+            chart1.Series[2].BorderWidth = 2;
+            chart1.Series[0].XValueMember = "TimeSN";
+            chart1.Series[0].YValueMembers = "RPM";
+            chart1.Series[0].YAxisType = AxisType.Secondary;
+            chart1.Series[1].XValueMember = "TimeSN";
+            chart1.Series[1].YValueMembers = "Speed";
+            chart1.Series[2].XValueMember = "TimeSN";
+            chart1.Series[2].YValueMembers = "Power";
+            chart1.ChartAreas[0].AxisX.IsStartedFromZero = true;
+            chart1.ChartAreas[0].AxisX.Minimum = 0;
+            chart1.ChartAreas[0].AxisX.IntervalAutoMode = IntervalAutoMode.VariableCount;
+            chart1.ChartAreas[0].AxisX.MajorGrid.LineDashStyle = ChartDashStyle.Dash;
+            chart1.ChartAreas[0].AxisX.MajorGrid.LineColor = Color.Gray;
+            chart1.ChartAreas[0].AxisX.Title = "时间（秒）";
+            chart1.ChartAreas[0].AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dash;
+            chart1.ChartAreas[0].AxisY.MajorGrid.LineColor = Color.Gray;
+            chart1.ChartAreas[0].AxisY.Title = "车速(km/h) / 功率(kW)";
+            chart1.ChartAreas[0].AxisY2.Enabled = AxisEnabled.True;
+            chart1.ChartAreas[0].AxisY2.MajorGrid.LineDashStyle = ChartDashStyle.Dash;
+            chart1.ChartAreas[0].AxisY2.MajorGrid.LineColor = Color.Gray;
+            chart1.ChartAreas[0].AxisY2.Title = "转速(r/min)";
+            chart1.ChartAreas[0].AxisY2.TitleForeColor = Color.DodgerBlue;
+            chart1.DataSource = _dtRealTime;
+            chart1.DataBind();
         }
 
         private void LugdownForm_FormClosing(object sender, FormClosingEventArgs e) {
@@ -253,10 +245,10 @@ namespace Dyno_Geely {
             if (_lastHeight == 0) {
                 return;
             }
-            float scale = this.Height / _lastHeight;
+            float scale = Height / _lastHeight;
             layoutMain.Font = new Font(layoutMain.Font.FontFamily, layoutMain.Font.Size * scale, layoutMain.Font.Style);
             lblMsg.Font = new Font(lblMsg.Font.FontFamily, lblMsg.Font.Size * scale, lblMsg.Font.Style);
-            _lastHeight = this.Height;
+            _lastHeight = Height;
         }
 
         private void BtnRestart_Click(object sender, EventArgs e) {

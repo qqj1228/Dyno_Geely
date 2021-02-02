@@ -28,7 +28,7 @@ namespace Dyno_Geely {
 
         public TSIForm(string VIN, DynoCmd dynoCmd, MainSetting mainCfg, ModelLocal db, EnvironmentData envData, Logger log) {
             InitializeComponent();
-            _lastHeight = this.Height;
+            _lastHeight = Height;
             _VIN = VIN;
             _dynoCmd = dynoCmd;
             _mainCfg = mainCfg;
@@ -64,7 +64,6 @@ namespace Dyno_Geely {
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e) {
             GetTsiRealTimeDataParams cmdParams = new GetTsiRealTimeDataParams {
                 ClientID = _dynoCmd.ClientID,
-                stopCheck = false,
                 ignoreRpm70 = false,
                 ignoreRpmHigh = false,
                 ignoreRpmLow = false,
@@ -98,7 +97,7 @@ namespace Dyno_Geely {
                             lblCurrentStageTime.Text = ackParams.CurrentStageTime.ToString();
                             lblLambda.Text = ackParams.lmd.ToString("F3");
                             lblOilTemp.Text = ackParams.oilTemp.ToString("F");
-                            this.chart1.DataBind();
+                            chart1.DataBind();
                             gaugeRPM.CircularScales["Scale1"].Pointers["Pointer1"].Value = ackParams.RPM / 1000.0;
                             if (gaugeRPM.GaugeItems["Indicator1"] is NumericIndicator ind) {
                                 ind.Value = ackParams.RPM / 1000.0;
@@ -139,7 +138,7 @@ namespace Dyno_Geely {
                                 });
                             }
                             StopCheck();
-                            SaveDBData();
+                            //SaveDBData();
                             if (_resultData.Result == "合格") {
                                 Invoke((EventHandler)delegate {
                                     Close();
@@ -153,9 +152,9 @@ namespace Dyno_Geely {
             }
         }
 
-        public void StartTest(bool bStart) {
+        public void StartTest(bool bStart, bool bRetry) {
             if (bStart) {
-                if (!_dynoCmd.StartTSICheckCmd(false)) {
+                if (!_dynoCmd.StartTSICheckCmd(false, bRetry)) {
                     MessageBox.Show("执行开始双怠速检测命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _dtRealTime.Rows.Clear();
@@ -163,7 +162,7 @@ namespace Dyno_Geely {
                     _startTime = DateTime.Now;
                 }
             } else {
-                if (!_dynoCmd.StartTSICheckCmd(true)) {
+                if (!_dynoCmd.StartTSICheckCmd(true, bRetry)) {
                     MessageBox.Show("执行停止双怠速检测命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _timer.Enabled = false;
@@ -173,25 +172,9 @@ namespace Dyno_Geely {
         }
 
         public void StopCheck() {
+            System.Threading.Thread.Sleep(_mainCfg.RealtimeInterval);
             _dynoCmd.ReconnectServer();
-            GetTsiRealTimeDataParams cmdParams = new GetTsiRealTimeDataParams {
-                ClientID = _dynoCmd.ClientID,
-                stopCheck = true,
-                ignoreRpm70 = true,
-                ignoreRpmHigh = true,
-                ignoreRpmLow = true,
-                ignoreOil = true,
-            };
-            GetTsiRealTimeDataAckParams ackParams = new GetTsiRealTimeDataAckParams();
-            if (_dynoCmd.GetTSIRealTimeDataCmd(cmdParams, ref ackParams)) {
-                _timer.Enabled = false;
-                Invoke((EventHandler)delegate {
-                    StartTest(false);
-                });
-            } else {
-                _log.TraceError("GetTsiRealTimeDataCmd() return false");
-                MessageBox.Show("执行停止获取双怠速实时数据命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            StartTest(false, false);
         }
 
         private void SaveDBData() {
@@ -204,23 +187,23 @@ namespace Dyno_Geely {
             lblMsg.Text = "双怠速法测试";
             gaugeRPM.CircularScales["Scale1"].Sections["Section2"].StartValue = _RatedRPM * 0.7;
             gaugeRPM.CircularScales["Scale1"].Sections["Section2"].EndValue = gaugeRPM.CircularScales["Scale1"].MaxValue;
-            this.chart1.Series[0].Name = "过量空气系数λ";
-            this.chart1.Series[0].Color = Color.DodgerBlue;
-            this.chart1.Series[0].ChartType = SeriesChartType.FastLine;
-            this.chart1.Series[0].BorderWidth = 2;
-            this.chart1.Series[0].XValueMember = "TimeSN";
-            this.chart1.Series[0].YValueMembers = "Lambda";
-            this.chart1.ChartAreas[0].AxisX.IsStartedFromZero = true;
-            this.chart1.ChartAreas[0].AxisX.Minimum = 0;
-            this.chart1.ChartAreas[0].AxisX.IntervalAutoMode = IntervalAutoMode.VariableCount;
-            this.chart1.ChartAreas[0].AxisX.MajorGrid.LineDashStyle = ChartDashStyle.Dash;
-            this.chart1.ChartAreas[0].AxisX.MajorGrid.LineColor = Color.Gray;
-            this.chart1.ChartAreas[0].AxisX.Title = "时间（秒）";
-            this.chart1.ChartAreas[0].AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dash;
-            this.chart1.ChartAreas[0].AxisY.MajorGrid.LineColor = Color.Gray;
-            this.chart1.ChartAreas[0].AxisY.Title = "过量空气系数λ";
-            this.chart1.DataSource = _dtRealTime;
-            this.chart1.DataBind();
+            chart1.Series[0].Name = "过量空气系数λ";
+            chart1.Series[0].Color = Color.DodgerBlue;
+            chart1.Series[0].ChartType = SeriesChartType.FastLine;
+            chart1.Series[0].BorderWidth = 2;
+            chart1.Series[0].XValueMember = "TimeSN";
+            chart1.Series[0].YValueMembers = "Lambda";
+            chart1.ChartAreas[0].AxisX.IsStartedFromZero = true;
+            chart1.ChartAreas[0].AxisX.Minimum = 0;
+            chart1.ChartAreas[0].AxisX.IntervalAutoMode = IntervalAutoMode.VariableCount;
+            chart1.ChartAreas[0].AxisX.MajorGrid.LineDashStyle = ChartDashStyle.Dash;
+            chart1.ChartAreas[0].AxisX.MajorGrid.LineColor = Color.Gray;
+            chart1.ChartAreas[0].AxisX.Title = "时间（秒）";
+            chart1.ChartAreas[0].AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dash;
+            chart1.ChartAreas[0].AxisY.MajorGrid.LineColor = Color.Gray;
+            chart1.ChartAreas[0].AxisY.Title = "过量空气系数λ";
+            chart1.DataSource = _dtRealTime;
+            chart1.DataBind();
         }
 
         private void TSIForm_FormClosing(object sender, FormClosingEventArgs e) {
@@ -232,17 +215,17 @@ namespace Dyno_Geely {
             lblCurrentStageTime.Text = "--";
             lblLambda.Text = "--";
             lblOilTemp.Text = "--";
-            StartTest(true);
+            StartTest(true, false);
         }
 
         private void TSIForm_Resize(object sender, EventArgs e) {
             if (_lastHeight == 0) {
                 return;
             }
-            float scale = this.Height / _lastHeight;
+            float scale = Height / _lastHeight;
             layoutMain.Font = new Font(layoutMain.Font.FontFamily, layoutMain.Font.Size * scale, layoutMain.Font.Style);
             lblMsg.Font = new Font(lblMsg.Font.FontFamily, lblMsg.Font.Size * scale, lblMsg.Font.Style);
-            _lastHeight = this.Height;
+            _lastHeight = Height;
         }
 
         private void BtnRestart_Click(object sender, EventArgs e) {
@@ -250,7 +233,7 @@ namespace Dyno_Geely {
             lblCurrentStageTime.Text = "--";
             lblLambda.Text = "--";
             lblOilTemp.Text = "--";
-            StartTest(true);
+            StartTest(true, true);
         }
 
         private void BtnStop_Click(object sender, EventArgs e) {

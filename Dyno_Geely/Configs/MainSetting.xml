@@ -14,13 +14,13 @@
     <IP>127.0.0.1</IP>
     <Port>1433</Port>
   </Native>
-  <Dyno>
+  <DynoParam>
     <Host>192.168.1.49</Host>
     <Port>1521</Port>
     <ServiceName>XE</ServiceName>
     <UserID>c##scott</UserID>
     <PassWord>tiger</PassWord>
-  </Dyno>
+  </DynoParam>
   <Flowmeter>
     <TargetPressure>101.3</TargetPressure>
     <TargetTempe>23.5</TargetTempe>
