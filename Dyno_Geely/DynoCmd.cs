@@ -210,6 +210,7 @@ namespace Dyno_Geely {
                     if (_RecvFlag.WaitOne(_cfg.Main.Data.RecvTimeout, false)) {
                         recvResult = true;
                     }
+                    frmLoading.CurrentMsg = new KeyValuePair<int, string>(100, string.Format("执行{0}命令结束", msgCmd.Cmd));
                 };
                 frmLoading.ShowDialog();
             } else {

@@ -110,6 +110,7 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="DynoCmdSchemas.cs" />
+    <Compile Include="DynoParamRecv.cs" />
     <Compile Include="Forms\ASMForm.cs">
       <SubType>Form</SubType>
     </Compile>

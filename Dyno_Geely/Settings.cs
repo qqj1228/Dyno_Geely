@@ -103,13 +103,14 @@ namespace Dyno_Geely {
     public class MainSetting {
         public OracleSetting MES { get; set; } // MES数据库参数
         public SQLSetting Native { get; set; } // 本地数据库参数
-        public OracleSetting DynoParam { get; set; } // 扫码获取测功机参数功能对应的MES数据库地址
         public FlowmeterSetting Flowmeter { get; set; }
         public SmokerSetting Smoker { get; set; }
         public WeatherSetting Weather { get; set; }
         public OilTempSetting OilTemp { get; set; }
         public int RealtimeInterval { get; set; } // 获取实时数据的间隔时间
         public string Name { get; set; } // 操作员名字
+        public string DynoParamIP { get; set; } // 获取测功机参数服务程序IP地址
+        public int DynoParamPort { get; set; } // 获取测功机参数服务程序端口号
         public string DynoIP { get; set; } // 测功机服务器IP地址
         public int DynoPort { get; set; } // 测功机服务器端口号
         public int RecvTimeout { get; set; } // 发送命令后等待返回的超时时间
@@ -122,13 +123,14 @@ namespace Dyno_Geely {
         public MainSetting() {
             MES = new OracleSetting();
             Native = new SQLSetting();
-            DynoParam = new OracleSetting();
             Flowmeter = new FlowmeterSetting();
             Smoker = new SmokerSetting();
             Weather = new WeatherSetting();
             OilTemp = new OilTempSetting();
             RealtimeInterval = 1000;
             Name = "Emission";
+            DynoParamIP = "127.0.0.1";
+            DynoParamPort = 50001;
             DynoIP = "127.0.0.1";
             DynoPort = 5555;
             RecvTimeout = 5000;
@@ -454,4 +456,108 @@ namespace Dyno_Geely {
         public string ZBZL { get; set; }
         public string CheckStatus { get; set; }
     }
+
+    public class VehicleInfo1Class {
+        public string License { get; set; }
+        public string VIN { get; set; }
+        public string RegisterDate { get; set; }
+        public string ISQZ { get; set; }
+        public string VehicleType { get; set; }
+        public string CLXH { get; set; }
+        public string FDJXH { get; set; }
+        public string HasOBD { get; set; }
+        public string FuelType { get; set; }
+        public string Standard { get; set; }
+        public string OBDCommCL { get; set; }
+        public string OBDCommCX { get; set; }
+    }
+
+    public class VehicleInfo2Class {
+        public string VehicleKind { get; set; }
+        public string License { get; set; }
+        public string VIN { get; set; }
+        public string RegisterDate { get; set; }
+        public string VehicleType { get; set; }
+        public string Model { get; set; }
+        public string GearBoxType { get; set; }
+        public string AdmissionMode { get; set; }
+        public string Volume { get; set; }
+        public string Odometer { get; set; }
+        public string FuelType { get; set; }
+        public string SupplyMode { get; set; }
+        public string RatedRev { get; set; }
+        public string RatedPower { get; set; }
+        public string DriveMode { get; set; }
+        public string Owner { get; set; }
+        public string Address { get; set; }
+        public string MaxMass { get; set; }
+        public string RefMass { get; set; }
+        public string HasODB { get; set; }
+        public string Phone { get; set; }
+        public string HasPurge { get; set; }
+        public string IsEFI { get; set; }
+        public string MaxLoad { get; set; }
+        public string CarOrTruck { get; set; }
+        public string Cylinder { get; set; }
+        public string IsTransform { get; set; }
+        public string StandardID { get; set; }
+        public string IsAsm { get; set; }
+        public string QCZZCJ { get; set; }
+        public string FDJZZC { get; set; }
+        public string DDJXH { get; set; }
+        public string XNZZXH { get; set; }
+        public string CHZHQXH { get; set; }
+        public string HPYS { get; set; }
+        public string SCR { get; set; }
+        public string SCRXH { get; set; }
+        public string DPF { get; set; }
+        public string DPFXH { get; set; }
+        public string DCRL { get; set; }
+        public string JCFF { get; set; }
+    }
+
+    public class LimitValueClass {
+        public string AmbientCOUp { get; set; }
+        public string AmbientCO2Up { get; set; }
+        public string AmbientHCUp { get; set; }
+        public string AmbientNOUp { get; set; }
+        public string BackgroundCOUp { get; set; }
+        public string BackgroundCO2Up { get; set; }
+        public string BackgroundHCUp { get; set; }
+        public string BackgroundNOUp { get; set; }
+        public string ResidualHCUp { get; set; }
+        public string CO5025 { get; set; }
+        public string HC5025 { get; set; }
+        public string NO5025 { get; set; }
+        public string Lambda5025Up { get; set; }
+        public string Lambda5025Below { get; set; }
+        public string CO2540 { get; set; }
+        public string HC2540 { get; set; }
+        public string NO2540 { get; set; }
+        public string Lambda2540Up { get; set; }
+        public string Lambda2540Below { get; set; }
+        public string COAndCO2 { get; set; }
+        public string HighIdleCO { get; set; }
+        public string HighIdleHC { get; set; }
+        public string IdleCO { get; set; }
+        public string IdleHC { get; set; }
+        public string FASmokeHSU { get; set; }
+        public string FASmokeK { get; set; }
+        public string SmokeK { get; set; }
+        public string SmokeHSU { get; set; }
+        public string SmokeNO { get; set; }
+        public string MaxPower { get; set; }
+    }
+
+    public class DynoParam {
+        public VehicleInfo1Class VehicleInfo1 { get; set; }
+        public VehicleInfo2Class VehicleInfo2 { get; set; }
+        public LimitValueClass LimitValue { get; set; }
+        public DynoParam() {
+            VehicleInfo1 = new VehicleInfo1Class();
+            VehicleInfo2 = new VehicleInfo2Class();
+            LimitValue = new LimitValueClass();
+        }
+    }
+
 }

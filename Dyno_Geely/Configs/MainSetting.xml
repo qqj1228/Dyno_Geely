@@ -14,13 +14,6 @@
     <IP>127.0.0.1</IP>
     <Port>1433</Port>
   </Native>
-  <DynoParam>
-    <Host>192.168.1.49</Host>
-    <Port>1521</Port>
-    <ServiceName>XE</ServiceName>
-    <UserID>c##scott</UserID>
-    <PassWord>tiger</PassWord>
-  </DynoParam>
   <Flowmeter>
     <TargetPressure>101.3</TargetPressure>
     <TargetTempe>23.5</TargetTempe>
@@ -44,6 +37,8 @@
   </Weather>
   <RealtimeInterval>1000</RealtimeInterval>
   <Name>操作员</Name>
+  <DynoParamIP>127.0.0.1</DynoParamIP>
+  <DynoParamPort>50001</DynoParamPort>
   <DynoIP>127.0.0.1</DynoIP>
   <DynoPort>5555</DynoPort>
   <RecvTimeout>5000</RecvTimeout>

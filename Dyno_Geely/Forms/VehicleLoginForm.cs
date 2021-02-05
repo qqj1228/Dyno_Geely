@@ -1,13 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO.Ports;
-using System.Linq;
-using System.Management;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Dyno_Geely {
@@ -17,6 +14,9 @@ namespace Dyno_Geely {
         private readonly MainSetting _mainCfg;
         private readonly Logger _log;
         private readonly SerialPortClass _sp;
+        private readonly DynoParamRecv _dynoParamRecver;
+        private readonly ManualResetEvent _dynoParamRecvFlag;
+        private DynoParam _dynoParam;
         private string _serialRecvBuf;
         private float _lastHeight;
         private int _carID;
@@ -40,13 +40,23 @@ namespace Dyno_Geely {
                 );
                 try {
                     _sp.OpenPort();
-                    _sp.DataReceived += new SerialPortClass.SerialPortDataReceiveEventArgs(SerialDataReceived);
+                    _sp.DataReceived += SerialDataReceived;
                 } catch (Exception ex) {
                     _log.TraceError("Open serial port error: " + ex.Message);
                     MessageBox.Show("打开串口扫码枪出错", "初始化错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             _serialRecvBuf = string.Empty;
+            if (_mainCfg.DynoParamIP.Length > 0) {
+                try {
+                    _dynoParamRecver = new DynoParamRecv(_mainCfg.DynoParamIP, _mainCfg.DynoParamPort);
+                    _dynoParamRecver.DynoParamRecvEvent += OnDynoParamRecv;
+                    _dynoParamRecvFlag = new ManualResetEvent(true);
+                } catch (Exception ex) {
+                    _log.TraceError("Connect to dyno parameter server error: " + ex.Message);
+                    MessageBox.Show("无法连接到测功机参数服务端软件", "初始化错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
             VI = new VehicleInfo();
             EI = new EmissionInfo();
             _carID = -1;
@@ -63,8 +73,25 @@ namespace Dyno_Geely {
                     });
                     if (_serialRecvBuf.Length == 17) {
                         VI.VIN = _serialRecvBuf;
-                        _carID = _db.GetEmissionInfoFromVIN(VI.VIN, EI);
-                        FillInputTextBox();
+                        if (_mainCfg.DynoParamIP.Length > 0) {
+                            if (_dynoParamRecver != null) {
+                                _dynoParamRecver.SendVIN(VI.VIN);
+                                _dynoParamRecvFlag.Reset();
+                                LoadingForm frmLoading = new LoadingForm();
+                                frmLoading.BackgroundWorkAction = () => {
+                                    frmLoading.CurrentMsg = new KeyValuePair<int, string>(50, "正在从MES获取测功机参数。。。");
+                                    _dynoParamRecvFlag.WaitOne(_mainCfg.RecvTimeout, false);
+                                    frmLoading.CurrentMsg = new KeyValuePair<int, string>(50, "测功机参数获取结束");
+                                };
+                                frmLoading.ShowDialog();
+                            } else {
+                                _log.TraceError("_dynoParamRecver is null");
+                                MessageBox.Show("测功机参数服务端软件接口未实例化", "初始化错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        } else {
+                            _carID = _db.GetEmissionInfoFromVIN(VI.VIN, EI);
+                            FillInputTextBox();
+                        }
                         _serialRecvBuf = string.Empty;
                         if (chkBoxAutoStart.Checked) {
                             btnStart.PerformClick();
@@ -72,6 +99,84 @@ namespace Dyno_Geely {
                     }
                 }
             }
+        }
+
+        private void OnDynoParamRecv(object sender, DynoParamRecvEventArgs e) {
+            _dynoParamRecvFlag.Set();
+            if (e.Code == "200") {
+                _dynoParam = JsonConvert.DeserializeObject<DynoParam>(e.Msg);
+                GetEmissionInfoFromParam(_dynoParam);
+            } else {
+                _dynoParam = null;
+                _log.TraceError(string.Format("Get dyno parameter from MES error, Code: {0}, Error: {1}", e.Code, e.Msg));
+                MessageBox.Show(string.Format("从MES获取测功机参数失败, Code: {0}, Error: {1}", e.Code, e.Msg),
+                    "获取测功机参数", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            Invoke((EventHandler)delegate {
+                FillInputTextBox();
+            });
+        }
+
+        private void GetEmissionInfoFromParam(DynoParam dynoParam) {
+            VI.VIN = dynoParam.VehicleInfo1.VIN;
+            VI.VehicleModel = dynoParam.VehicleInfo1.CLXH;
+            VI.OpenInfoSN = string.Empty;
+            EI.VehicleModel = dynoParam.VehicleInfo1.CLXH;
+            EI.OpenInfoSN = string.Empty;
+            EI.VehicleMfr = dynoParam.VehicleInfo2.QCZZCJ;
+            EI.EngineModel = dynoParam.VehicleInfo1.FDJXH;
+            EI.EngineSN = string.Empty;
+            EI.EngineMfr = dynoParam.VehicleInfo2.FDJZZC;
+            EI.EngineVolume = Convert.ToDouble(dynoParam.VehicleInfo2.Volume.Length > 0 ? dynoParam.VehicleInfo2.Volume : null);
+            EI.CylinderQTY = Convert.ToInt32(dynoParam.VehicleInfo2.Cylinder.Length > 0 ? dynoParam.VehicleInfo2.Cylinder : null);
+            if (dynoParam.VehicleInfo2.SupplyMode.Length > 0) {
+                EI.FuelSupply = Convert.ToInt32(dynoParam.VehicleInfo2.SupplyMode) + 1;
+            } else {
+                EI.FuelSupply = 0;
+            }
+            EI.RatedPower = Convert.ToDouble(dynoParam.VehicleInfo2.RatedPower.Length > 0 ? dynoParam.VehicleInfo2.RatedPower : null);
+            EI.RatedRPM = Convert.ToInt32(dynoParam.VehicleInfo2.RatedRev.Length > 0 ? dynoParam.VehicleInfo2.RatedRev : null);
+            if (dynoParam.VehicleInfo2.StandardID.Length > 0) {
+                EI.EmissionStage = Convert.ToInt32(dynoParam.VehicleInfo2.StandardID) + 1;
+            } else {
+                EI.EmissionStage = 0;
+            }
+            if (dynoParam.VehicleInfo2.GearBoxType.Length > 0) {
+                EI.Transmission = Convert.ToInt32(dynoParam.VehicleInfo2.GearBoxType) + 1;
+            } else {
+                EI.Transmission = 0;
+            }
+            EI.CatConverter = dynoParam.VehicleInfo2.CHZHQXH;
+            EI.RefMass = Convert.ToInt32(dynoParam.VehicleInfo2.RefMass.Length > 0 ? dynoParam.VehicleInfo2.RefMass : null);
+            EI.MaxMass = Convert.ToInt32(dynoParam.VehicleInfo2.MaxMass.Length > 0 ? dynoParam.VehicleInfo2.MaxMass : null);
+            EI.OBDLocation = string.Empty;
+            string strSCR = dynoParam.VehicleInfo2.SCR == "是" ? "SCR" : string.Empty;
+            string strDPF = dynoParam.VehicleInfo2.DPF == "是" ? "DPF" : string.Empty;
+            EI.PostProcessing = (strSCR + "+" + strDPF).Trim('+');
+            string strSCRXH = dynoParam.VehicleInfo2.SCRXH.Length > 0 ? "SCR:" + dynoParam.VehicleInfo2.SCRXH : string.Empty;
+            string strDPFXH = dynoParam.VehicleInfo2.DPFXH.Length > 0 ? "DPF:" + dynoParam.VehicleInfo2.DPFXH : string.Empty;
+            EI.PostProcessor = (strSCRXH + ";" + strDPFXH).Trim(';');
+            EI.MotorModel = dynoParam.VehicleInfo2.DDJXH;
+            EI.EnergyStorage = dynoParam.VehicleInfo2.XNZZXH;
+            EI.BatteryCap = dynoParam.VehicleInfo2.DCRL;
+            if (dynoParam.VehicleInfo2.JCFF.Contains("免检")) {
+                EI.TestMethod = 0;
+            } else if (dynoParam.VehicleInfo2.JCFF.Contains("双怠速")) {
+                EI.TestMethod = 1;
+            } else if (dynoParam.VehicleInfo2.JCFF.Contains("稳态工况")) {
+                EI.TestMethod = 2;
+            } else if (dynoParam.VehicleInfo2.JCFF.Contains("简易瞬态")) {
+                EI.TestMethod = 3;
+            } else if (dynoParam.VehicleInfo2.JCFF.Contains("加载减速")) {
+                EI.TestMethod = 4;
+            } else if (dynoParam.VehicleInfo2.JCFF.Contains("自由加速")) {
+                EI.TestMethod = 6;
+            } else if (dynoParam.VehicleInfo2.JCFF.Length > 0) {
+                EI.TestMethod = 9;
+            } else {
+                EI.TestMethod = 5;
+            }
+            EI.Name = string.Empty;
         }
 
         private void FillInputTextBox() {
@@ -86,7 +191,9 @@ namespace Dyno_Geely {
                 }
             }
             txtBoxGettedVIN.Text = VI.VIN;
-            cmbBoxSelectVehicleModel.SelectedItem = EI.VehicleModel;
+            if (_mainCfg.DynoParamIP.Length <= 0) {
+                cmbBoxSelectVehicleModel.SelectedItem = EI.VehicleModel;
+            }
             txtBoxVehicleModel.Text = EI.VehicleModel;
             txtBoxOpenInfoSN.Text = EI.OpenInfoSN;
             txtBoxVehicleMfr.Text = EI.VehicleMfr;
@@ -147,7 +254,7 @@ namespace Dyno_Geely {
         }
 
         private void SetNewVehicle(NewVehicle newVehicle) {
-            newVehicle.CarId = _carID < 0 ? _db.GetLastVehicleInfoID() : _carID;
+            newVehicle.CarId = _db.GetLastNewVehicleID() + 1;
             newVehicle.VIN = VI.VIN;
             newVehicle.CLXH = EI.VehicleModel;
             newVehicle.ZZL = EI.MaxMass.ToString();
@@ -222,7 +329,7 @@ namespace Dyno_Geely {
                 newVehicle.CheckMethod = "其他";
                 break;
             }
-            newVehicle.CheckType = _carID < 0 ? "初检" : "复检";
+            newVehicle.CheckType = _db.GetVINCountFromNewVehicle(VI.VIN) <= 0 ? "初检" : "复检";
         }
 
         private void TxtBoxRatedRPM_KeyPress(object sender, KeyPressEventArgs e) {
@@ -235,7 +342,14 @@ namespace Dyno_Geely {
             cmbBoxName.Items.Add(_mainCfg.Name);
             cmbBoxName.SelectedIndex = 0;
 
-            cmbBoxSelectVehicleModel.Items.AddRange(_db.GetVehicleModels());
+            if (_mainCfg.DynoParamIP.Length > 0) {
+                lblDynoParamMode.Text += "MES";
+                cmbBoxSelectVehicleModel.Enabled = false;
+                chkBoxNewVehicleModel.Enabled = false;
+            } else {
+                cmbBoxSelectVehicleModel.Items.AddRange(_db.GetVehicleModels());
+                lblDynoParamMode.Text += "本地";
+            }
 
             foreach (string item in EI.GetFuelSupplyStrings()) {
                 cmbBoxFuelSupply.Items.Add(item);
@@ -300,8 +414,25 @@ namespace Dyno_Geely {
                     txtBoxRatedRPM.BackColor = txtBoxGettedVIN.BackColor;
                     cmbBoxTestMethod.BackColor = txtBoxGettedVIN.BackColor;
                     VI.VIN = tb.Text;
-                    _carID = _db.GetEmissionInfoFromVIN(VI.VIN, EI);
-                    FillInputTextBox();
+                    if (_mainCfg.DynoParamIP.Length > 0) {
+                        if (_dynoParamRecver != null) {
+                            _dynoParamRecver.SendVIN(VI.VIN);
+                            _dynoParamRecvFlag.Reset();
+                            LoadingForm frmLoading = new LoadingForm();
+                            frmLoading.BackgroundWorkAction = () => {
+                                frmLoading.CurrentMsg = new KeyValuePair<int, string>(50, "正在从MES获取测功机参数。。。");
+                                _dynoParamRecvFlag.WaitOne(_mainCfg.RecvTimeout, false);
+                                frmLoading.CurrentMsg = new KeyValuePair<int, string>(50, "测功机参数获取结束");
+                            };
+                            frmLoading.ShowDialog();
+                        } else {
+                            _log.TraceError("_dynoParamRecver is null");
+                            MessageBox.Show("测功机参数服务端软件接口未实例化", "初始化错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    } else {
+                        _carID = _db.GetEmissionInfoFromVIN(VI.VIN, EI);
+                        FillInputTextBox();
+                    }
                     txtBoxVIN.Clear();
                     if (chkBoxAutoStart.Checked) {
                         btnStart.PerformClick();
@@ -315,23 +446,34 @@ namespace Dyno_Geely {
                 _sp.ClosePort();
                 _sp.DataReceived -= new SerialPortClass.SerialPortDataReceiveEventArgs(SerialDataReceived);
             }
+            if (_dynoParamRecver != null) {
+                _dynoParamRecver.DynoParamRecvEvent -= OnDynoParamRecv;
+            }
         }
 
         private void BtnSave_Click(object sender, EventArgs e) {
+            if (_mainCfg.DynoParamIP.Length > 0) {
+                MessageBox.Show("已开启自动从MES获取测功机参数功能，测功机参数保存至本地后，对登录操作没有实质效果",
+                    "车辆登录", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
             FillEmissionInfo();
             _db.SaveEmissionInfo(txtBoxGettedVIN.Text, EI);
         }
 
         private void BtnStart_Click(object sender, EventArgs e) {
+            double ratedPower = Convert.ToDouble(txtBoxRatedPower.Text.Length > 0 ? txtBoxRatedPower.Text : null);
+            int ratedRPM = Convert.ToInt32(txtBoxRatedRPM.Text.Length > 0 ? txtBoxRatedRPM.Text : null);
+            int refMass = Convert.ToInt32(txtBoxRefMass.Text.Length > 0 ? txtBoxRefMass.Text : null);
+            int maxMass = Convert.ToInt32(txtBoxMaxMass.Text.Length > 0 ? txtBoxMaxMass.Text : null);
             bool bCanTest = true;
-            bCanTest = bCanTest && txtBoxGettedVIN.TextLength > 0;
-            bCanTest = bCanTest && txtBoxVehicleModel.TextLength > 0;
-            bCanTest = bCanTest && Convert.ToDouble(txtBoxRatedPower.Text) > 0;
-            bCanTest = bCanTest && Convert.ToInt32(txtBoxRatedRPM.Text) > 0;
-            bCanTest = bCanTest && cmbBoxEmissionStage.SelectedIndex > 0;
-            bCanTest = bCanTest && Convert.ToInt32(txtBoxRefMass.Text) > 0;
-            bCanTest = bCanTest && Convert.ToInt32(txtBoxMaxMass.Text) > 0;
-            bCanTest = bCanTest && cmbBoxTestMethod.SelectedIndex != 5;
+            bCanTest = bCanTest && (txtBoxGettedVIN.TextLength > 0);
+            bCanTest = bCanTest && (txtBoxVehicleModel.TextLength > 0);
+            bCanTest = bCanTest && (ratedPower > 0);
+            bCanTest = bCanTest && (ratedRPM > 0);
+            bCanTest = bCanTest && (cmbBoxEmissionStage.SelectedIndex > 0);
+            bCanTest = bCanTest && (refMass > 0);
+            bCanTest = bCanTest && (maxMass > 0);
+            bCanTest = bCanTest && (cmbBoxTestMethod.SelectedIndex != 5);
             if (bCanTest) {
                 NewVehicle newVehicle = new NewVehicle();
                 SetNewVehicle(newVehicle);
@@ -352,19 +494,19 @@ namespace Dyno_Geely {
                 if (txtBoxVehicleModel.TextLength <= 0) {
                     txtBoxVehicleModel.BackColor = Color.Yellow;
                 }
-                if (Convert.ToDouble(txtBoxRatedPower.Text) <= 0) {
+                if (ratedPower <= 0) {
                     txtBoxRatedPower.BackColor = Color.Yellow;
                 }
-                if (Convert.ToInt32(txtBoxRatedRPM.Text) <= 0) {
+                if (ratedRPM <= 0) {
                     txtBoxRatedRPM.BackColor = Color.Yellow;
                 }
                 if (cmbBoxEmissionStage.SelectedIndex <= 0) {
                     cmbBoxEmissionStage.BackColor = Color.Yellow;
                 }
-                if (Convert.ToInt32(txtBoxRefMass.Text) <= 0) {
+                if (refMass <= 0) {
                     txtBoxRefMass.BackColor = Color.Yellow;
                 }
-                if (Convert.ToInt32(txtBoxMaxMass.Text) <= 0) {
+                if (maxMass <= 0) {
                     txtBoxMaxMass.BackColor = Color.Yellow;
                 }
                 if (cmbBoxTestMethod.SelectedIndex == 5) {
@@ -391,8 +533,10 @@ namespace Dyno_Geely {
         }
 
         private void CmbBoxSelectVehicleModel_SelectedIndexChanged(object sender, EventArgs e) {
-            if(_db.GetEmissionInfoFromVehicleModel(cmbBoxSelectVehicleModel.Text, EI)) {
-                FillInputTextBox();
+            if (_mainCfg.DynoParamIP.Length <= 0) {
+                if (_db.GetEmissionInfoFromVehicleModel(cmbBoxSelectVehicleModel.Text, EI)) {
+                    FillInputTextBox();
+                }
             }
         }
     }

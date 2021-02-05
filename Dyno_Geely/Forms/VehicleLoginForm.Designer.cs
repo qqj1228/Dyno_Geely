@@ -85,8 +85,8 @@
             this.layoutControlItem54 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem55 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem30 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
-            this.layoutControlItem57 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem56 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem57 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutGroup1 = new DevComponents.DotNetBar.Layout.LayoutGroup();
             this.layoutSpacerItem1 = new DevComponents.DotNetBar.Layout.LayoutSpacerItem();
             this.layoutControlItem28 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
@@ -120,6 +120,8 @@
             this.layoutControlItem41 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem44 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem45 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.lblDynoParamMode = new System.Windows.Forms.Label();
+            this.layoutControlItem63 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -129,7 +131,7 @@
             this.btnStart.Margin = new System.Windows.Forms.Padding(0);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(496, 35);
-            this.btnStart.TabIndex = 30;
+            this.btnStart.TabIndex = 31;
             this.btnStart.Text = "启动检测";
             this.btnStart.UseVisualStyleBackColor = true;
             this.btnStart.Click += new System.EventHandler(this.BtnStart_Click);
@@ -140,7 +142,7 @@
             this.btnSave.Margin = new System.Windows.Forms.Padding(0);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(496, 35);
-            this.btnSave.TabIndex = 29;
+            this.btnSave.TabIndex = 30;
             this.btnSave.Text = "保存信息";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.BtnSave_Click);
@@ -154,7 +156,7 @@
             this.cmbBoxTestMethod.Margin = new System.Windows.Forms.Padding(0);
             this.cmbBoxTestMethod.Name = "cmbBoxTestMethod";
             this.cmbBoxTestMethod.Size = new System.Drawing.Size(304, 27);
-            this.cmbBoxTestMethod.TabIndex = 27;
+            this.cmbBoxTestMethod.TabIndex = 28;
             // 
             // txtBoxBatteryCap
             // 
@@ -162,7 +164,7 @@
             this.txtBoxBatteryCap.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxBatteryCap.Name = "txtBoxBatteryCap";
             this.txtBoxBatteryCap.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxBatteryCap.TabIndex = 26;
+            this.txtBoxBatteryCap.TabIndex = 27;
             // 
             // txtBoxEnergyStorage
             // 
@@ -170,7 +172,7 @@
             this.txtBoxEnergyStorage.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxEnergyStorage.Name = "txtBoxEnergyStorage";
             this.txtBoxEnergyStorage.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxEnergyStorage.TabIndex = 25;
+            this.txtBoxEnergyStorage.TabIndex = 26;
             // 
             // txtBoxMotorModel
             // 
@@ -178,7 +180,7 @@
             this.txtBoxMotorModel.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxMotorModel.Name = "txtBoxMotorModel";
             this.txtBoxMotorModel.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxMotorModel.TabIndex = 24;
+            this.txtBoxMotorModel.TabIndex = 25;
             // 
             // txtBoxPostProcessor
             // 
@@ -186,7 +188,7 @@
             this.txtBoxPostProcessor.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxPostProcessor.Name = "txtBoxPostProcessor";
             this.txtBoxPostProcessor.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxPostProcessor.TabIndex = 23;
+            this.txtBoxPostProcessor.TabIndex = 24;
             // 
             // txtBoxPostProcessing
             // 
@@ -194,7 +196,7 @@
             this.txtBoxPostProcessing.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxPostProcessing.Name = "txtBoxPostProcessing";
             this.txtBoxPostProcessing.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxPostProcessing.TabIndex = 22;
+            this.txtBoxPostProcessing.TabIndex = 23;
             // 
             // txtBoxOBDLocation
             // 
@@ -202,7 +204,7 @@
             this.txtBoxOBDLocation.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxOBDLocation.Name = "txtBoxOBDLocation";
             this.txtBoxOBDLocation.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxOBDLocation.TabIndex = 21;
+            this.txtBoxOBDLocation.TabIndex = 22;
             // 
             // txtBoxMaxMass
             // 
@@ -210,7 +212,7 @@
             this.txtBoxMaxMass.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxMaxMass.Name = "txtBoxMaxMass";
             this.txtBoxMaxMass.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxMaxMass.TabIndex = 20;
+            this.txtBoxMaxMass.TabIndex = 21;
             // 
             // txtBoxRefMass
             // 
@@ -218,7 +220,7 @@
             this.txtBoxRefMass.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxRefMass.Name = "txtBoxRefMass";
             this.txtBoxRefMass.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxRefMass.TabIndex = 19;
+            this.txtBoxRefMass.TabIndex = 20;
             // 
             // txtBoxCatConverter
             // 
@@ -226,7 +228,7 @@
             this.txtBoxCatConverter.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxCatConverter.Name = "txtBoxCatConverter";
             this.txtBoxCatConverter.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxCatConverter.TabIndex = 18;
+            this.txtBoxCatConverter.TabIndex = 19;
             // 
             // txtBoxRatedRPM
             // 
@@ -235,7 +237,7 @@
             this.txtBoxRatedRPM.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxRatedRPM.Name = "txtBoxRatedRPM";
             this.txtBoxRatedRPM.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxRatedRPM.TabIndex = 15;
+            this.txtBoxRatedRPM.TabIndex = 16;
             this.txtBoxRatedRPM.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxtBoxRatedRPM_KeyPress);
             // 
             // txtBoxRatedPower
@@ -244,7 +246,7 @@
             this.txtBoxRatedPower.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxRatedPower.Name = "txtBoxRatedPower";
             this.txtBoxRatedPower.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxRatedPower.TabIndex = 14;
+            this.txtBoxRatedPower.TabIndex = 15;
             // 
             // txtBoxCylinderQTY
             // 
@@ -252,7 +254,7 @@
             this.txtBoxCylinderQTY.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxCylinderQTY.Name = "txtBoxCylinderQTY";
             this.txtBoxCylinderQTY.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxCylinderQTY.TabIndex = 12;
+            this.txtBoxCylinderQTY.TabIndex = 13;
             // 
             // txtBoxEngineVolume
             // 
@@ -260,7 +262,7 @@
             this.txtBoxEngineVolume.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxEngineVolume.Name = "txtBoxEngineVolume";
             this.txtBoxEngineVolume.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxEngineVolume.TabIndex = 11;
+            this.txtBoxEngineVolume.TabIndex = 12;
             // 
             // txtBoxEngineMfr
             // 
@@ -268,7 +270,7 @@
             this.txtBoxEngineMfr.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxEngineMfr.Name = "txtBoxEngineMfr";
             this.txtBoxEngineMfr.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxEngineMfr.TabIndex = 10;
+            this.txtBoxEngineMfr.TabIndex = 11;
             // 
             // txtBoxEngineSN
             // 
@@ -276,7 +278,7 @@
             this.txtBoxEngineSN.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxEngineSN.Name = "txtBoxEngineSN";
             this.txtBoxEngineSN.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxEngineSN.TabIndex = 9;
+            this.txtBoxEngineSN.TabIndex = 10;
             // 
             // txtBoxEngineModel
             // 
@@ -284,7 +286,7 @@
             this.txtBoxEngineModel.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxEngineModel.Name = "txtBoxEngineModel";
             this.txtBoxEngineModel.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxEngineModel.TabIndex = 8;
+            this.txtBoxEngineModel.TabIndex = 9;
             // 
             // txtBoxVehicleMfr
             // 
@@ -292,7 +294,7 @@
             this.txtBoxVehicleMfr.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxVehicleMfr.Name = "txtBoxVehicleMfr";
             this.txtBoxVehicleMfr.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxVehicleMfr.TabIndex = 7;
+            this.txtBoxVehicleMfr.TabIndex = 8;
             // 
             // txtBoxOpenInfoSN
             // 
@@ -300,7 +302,7 @@
             this.txtBoxOpenInfoSN.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxOpenInfoSN.Name = "txtBoxOpenInfoSN";
             this.txtBoxOpenInfoSN.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxOpenInfoSN.TabIndex = 6;
+            this.txtBoxOpenInfoSN.TabIndex = 7;
             // 
             // txtBoxVehicleModel
             // 
@@ -308,7 +310,7 @@
             this.txtBoxVehicleModel.Margin = new System.Windows.Forms.Padding(0);
             this.txtBoxVehicleModel.Name = "txtBoxVehicleModel";
             this.txtBoxVehicleModel.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxVehicleModel.TabIndex = 5;
+            this.txtBoxVehicleModel.TabIndex = 6;
             // 
             // cmbBoxName
             // 
@@ -337,13 +339,14 @@
             this.chkBoxAutoStart.Margin = new System.Windows.Forms.Padding(0);
             this.chkBoxAutoStart.Name = "chkBoxAutoStart";
             this.chkBoxAutoStart.Size = new System.Drawing.Size(496, 35);
-            this.chkBoxAutoStart.TabIndex = 28;
+            this.chkBoxAutoStart.TabIndex = 29;
             this.chkBoxAutoStart.Text = "扫描或输入VIN号后自动开始检测";
             this.chkBoxAutoStart.UseVisualStyleBackColor = true;
             // 
             // layoutMain
             // 
             this.layoutMain.BackColor = System.Drawing.Color.Transparent;
+            this.layoutMain.Controls.Add(this.lblDynoParamMode);
             this.layoutMain.Controls.Add(this.txtBoxGettedVIN);
             this.layoutMain.Controls.Add(this.chkBoxAutoStart);
             this.layoutMain.Controls.Add(this.txtBoxVIN);
@@ -388,6 +391,7 @@
             this.layoutControlItem32,
             this.layoutControlItem61,
             this.layoutControlItem62,
+            this.layoutControlItem63,
             this.layoutControlItem33,
             this.layoutControlItem34,
             this.layoutControlItem35,
@@ -434,7 +438,7 @@
             this.cmbBoxFuelSupply.Margin = new System.Windows.Forms.Padding(0);
             this.cmbBoxFuelSupply.Name = "cmbBoxFuelSupply";
             this.cmbBoxFuelSupply.Size = new System.Drawing.Size(304, 27);
-            this.cmbBoxFuelSupply.TabIndex = 13;
+            this.cmbBoxFuelSupply.TabIndex = 14;
             // 
             // cmbBoxEmissionStage
             // 
@@ -445,7 +449,7 @@
             this.cmbBoxEmissionStage.Margin = new System.Windows.Forms.Padding(0);
             this.cmbBoxEmissionStage.Name = "cmbBoxEmissionStage";
             this.cmbBoxEmissionStage.Size = new System.Drawing.Size(304, 27);
-            this.cmbBoxEmissionStage.TabIndex = 16;
+            this.cmbBoxEmissionStage.TabIndex = 17;
             // 
             // cmbBoxTransmission
             // 
@@ -456,7 +460,7 @@
             this.cmbBoxTransmission.Margin = new System.Windows.Forms.Padding(0);
             this.cmbBoxTransmission.Name = "cmbBoxTransmission";
             this.cmbBoxTransmission.Size = new System.Drawing.Size(304, 27);
-            this.cmbBoxTransmission.TabIndex = 17;
+            this.cmbBoxTransmission.TabIndex = 18;
             // 
             // cmbBoxSelectVehicleModel
             // 
@@ -476,7 +480,7 @@
             this.chkBoxNewVehicleModel.Location = new System.Drawing.Point(508, 119);
             this.chkBoxNewVehicleModel.Margin = new System.Windows.Forms.Padding(0);
             this.chkBoxNewVehicleModel.Name = "chkBoxNewVehicleModel";
-            this.chkBoxNewVehicleModel.Size = new System.Drawing.Size(496, 35);
+            this.chkBoxNewVehicleModel.Size = new System.Drawing.Size(244, 35);
             this.chkBoxNewVehicleModel.TabIndex = 4;
             this.chkBoxNewVehicleModel.Text = "新增或修改车型参数";
             this.chkBoxNewVehicleModel.UseVisualStyleBackColor = true;
@@ -537,7 +541,7 @@
             this.layoutControlItem62.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             this.layoutControlItem62.MinSize = new System.Drawing.Size(32, 20);
             this.layoutControlItem62.Name = "layoutControlItem62";
-            this.layoutControlItem62.Width = 50;
+            this.layoutControlItem62.Width = 25;
             this.layoutControlItem62.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
             // layoutControlItem33
@@ -805,15 +809,6 @@
             this.layoutControlItem30.Width = 50;
             this.layoutControlItem30.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
-            // layoutControlItem57
-            // 
-            this.layoutControlItem57.Control = this.btnStart;
-            this.layoutControlItem57.Height = 6;
-            this.layoutControlItem57.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem57.Name = "layoutControlItem57";
-            this.layoutControlItem57.Width = 50;
-            this.layoutControlItem57.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            // 
             // layoutControlItem56
             // 
             this.layoutControlItem56.Control = this.btnSave;
@@ -822,6 +817,15 @@
             this.layoutControlItem56.Name = "layoutControlItem56";
             this.layoutControlItem56.Width = 50;
             this.layoutControlItem56.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
+            // layoutControlItem57
+            // 
+            this.layoutControlItem57.Control = this.btnStart;
+            this.layoutControlItem57.Height = 6;
+            this.layoutControlItem57.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem57.Name = "layoutControlItem57";
+            this.layoutControlItem57.Width = 50;
+            this.layoutControlItem57.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
             // layoutGroup1
             // 
@@ -1178,6 +1182,29 @@
             this.layoutControlItem45.Width = 50;
             this.layoutControlItem45.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
+            // lblDynoParamMode
+            // 
+            this.lblDynoParamMode.AutoSize = true;
+            this.lblDynoParamMode.Location = new System.Drawing.Point(760, 119);
+            this.lblDynoParamMode.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.lblDynoParamMode.Name = "lblDynoParamMode";
+            this.lblDynoParamMode.Size = new System.Drawing.Size(244, 35);
+            this.lblDynoParamMode.TabIndex = 5;
+            this.lblDynoParamMode.Text = "参数获取方式:";
+            this.lblDynoParamMode.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // layoutControlItem63
+            // 
+            this.layoutControlItem63.Control = this.lblDynoParamMode;
+            this.layoutControlItem63.Height = 6;
+            this.layoutControlItem63.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem63.Name = "layoutControlItem63";
+            this.layoutControlItem63.Text = "Label:";
+            this.layoutControlItem63.TextLineAlignment = DevComponents.DotNetBar.Layout.eTextLineAlignment.Middle;
+            this.layoutControlItem63.TextVisible = false;
+            this.layoutControlItem63.Width = 25;
+            this.layoutControlItem63.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
             // VehicleLoginForm
             // 
             this.AcceptButton = this.btnStart;
@@ -1299,5 +1326,7 @@
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem61;
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem62;
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem45;
+        private System.Windows.Forms.Label lblDynoParamMode;
+        private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem63;
     }
 }
