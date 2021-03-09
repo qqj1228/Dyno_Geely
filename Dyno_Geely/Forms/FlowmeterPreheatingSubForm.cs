@@ -59,10 +59,17 @@ namespace Dyno_Geely {
 
             if (_iResults[_step] == 1) {
                 _timer.Enabled = false;
-                _dynoCmd.GetFlowmeterCheckRealTimeDataCmd(true, ref ackParams);
+                _dynoCmd.GetFlowmeterCheckRealTimeDataCmd(true, ref ackParams, out string errMsg);
                 if (_step < _iResults.Length - 1) {
+                    StartFlowmeterCheckParams cmdParams = new StartFlowmeterCheckParams {
+                        ClientID = _dynoCmd.ClientID,
+                        stopCheck = false,
+                        step = ++_step,
+                        FlowmeterTargetPressure = _mainCfg.Flowmeter.TargetPressure,
+                        FlowmeterTargetTempe = _mainCfg.Flowmeter.TargetTempe
+                    };
                     StartFlowmeterCheckAckParams startAckParams = new StartFlowmeterCheckAckParams();
-                    if (!_dynoCmd.StartFlowmeterCheckCmd(false, ++_step, _mainCfg.Flowmeter.TargetTempe, _mainCfg.Flowmeter.TargetPressure, ref startAckParams)) {
+                    if (!_dynoCmd.StartFlowmeterCheckCmd(cmdParams, ref startAckParams, out errMsg)) {
                         MessageBox.Show("执行开始流量计预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     } else {
                         _timer.Enabled = true;
@@ -80,7 +87,7 @@ namespace Dyno_Geely {
 
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e) {
             GetFlowmeterCheckRealTimeDataAckParams ackParams = new GetFlowmeterCheckRealTimeDataAckParams();
-            if (_dynoCmd.GetFlowmeterCheckRealTimeDataCmd(false, ref ackParams) && ackParams != null) {
+            if (_dynoCmd.GetFlowmeterCheckRealTimeDataCmd(false, ref ackParams, out string errMsg) && ackParams != null) {
                 if (_timer != null && _timer.Enabled) {
                     try {
                         Invoke((EventHandler)delegate {
@@ -181,8 +188,15 @@ namespace Dyno_Geely {
             for (int i = 0; i < _iResults.Length; i++) {
                 _iResults[i] = 0;
             }
+            StartFlowmeterCheckParams cmdParams = new StartFlowmeterCheckParams {
+                ClientID = _dynoCmd.ClientID,
+                stopCheck = false,
+                step = _step,
+                FlowmeterTargetPressure = _mainCfg.Flowmeter.TargetPressure,
+                FlowmeterTargetTempe = _mainCfg.Flowmeter.TargetTempe
+            };
             StartFlowmeterCheckAckParams ackParams = new StartFlowmeterCheckAckParams();
-            if (!_dynoCmd.StartFlowmeterCheckCmd(false, _step, _mainCfg.Flowmeter.TargetTempe, _mainCfg.Flowmeter.TargetPressure, ref ackParams)) {
+            if (!_dynoCmd.StartFlowmeterCheckCmd(cmdParams, ref ackParams, out string errMsg)) {
                 MessageBox.Show("执行开始流量计预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
             } else {
                 _timer.Enabled = true;
@@ -194,17 +208,31 @@ namespace Dyno_Geely {
 
         private void BtnStop_Click(object sender, EventArgs e) {
             _timer.Enabled = false;
-            lblMsg.Text = "手动停止流量计预热";
+            System.Threading.Thread.Sleep(_mainCfg.RealtimeInterval);
+            //_dynoCmd.ReconnectServer();
+            StartFlowmeterCheckParams cmdParams = new StartFlowmeterCheckParams {
+                ClientID = _dynoCmd.ClientID,
+                stopCheck = true,
+                step = _step,
+                FlowmeterTargetPressure = _mainCfg.Flowmeter.TargetPressure,
+                FlowmeterTargetTempe = _mainCfg.Flowmeter.TargetTempe
+            };
+            StartFlowmeterCheckAckParams ackParams = new StartFlowmeterCheckAckParams();
+            if (!_dynoCmd.StartFlowmeterCheckCmd(cmdParams, ref ackParams, out string errMsg) && errMsg != "ati >= 0") {
+                MessageBox.Show("执行停止流量计预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (errMsg.Length > 0) {
+                if (errMsg == "ati >= 0") {
+                    lblMsg.Text = "手动停止流量计预热";
+                } else if (errMsg != "OK") {
+                    lblMsg.Text = errMsg;
+                }
+            }
             lblFlow.Text = "--";
             lblDiluteO2.Text = "--";
             lblTemperature.Text = "--";
             lblPressure.Text = "--";
-            System.Threading.Thread.Sleep(_mainCfg.RealtimeInterval);
-            //_dynoCmd.ReconnectServer();
-            StartFlowmeterCheckAckParams ackParams = new StartFlowmeterCheckAckParams();
-            if (!_dynoCmd.StartFlowmeterCheckCmd(true, _step, _mainCfg.Flowmeter.TargetTempe, _mainCfg.Flowmeter.TargetPressure, ref ackParams)) {
-                MessageBox.Show("执行停止流量计预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
         }
 
         private void FlowmeterPreheatingSubForm_FormClosing(object sender, FormClosingEventArgs e) {

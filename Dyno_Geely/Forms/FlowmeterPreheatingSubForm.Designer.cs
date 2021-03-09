@@ -353,7 +353,7 @@
             borderPattern1.Top = DevComponents.DotNetBar.Layout.LinePattern.Solid;
             this.layoutGroup1.Style.BorderPattern = borderPattern1;
             this.layoutGroup1.Style.BorderThickness = new DevComponents.DotNetBar.Layout.Thickness(1D, 1D, 0D, 0D);
-            this.layoutGroup1.Text = "1.低流量检查(L/min)";
+            this.layoutGroup1.Text = "1.流量检查(L/min)";
             this.layoutGroup1.TextAlignment = DevComponents.DotNetBar.Layout.eTextAlignment.Center;
             this.layoutGroup1.TextPadding = new System.Windows.Forms.Padding(0, 10, 0, 0);
             this.layoutGroup1.TextPosition = DevComponents.DotNetBar.Layout.eLayoutPosition.Top;

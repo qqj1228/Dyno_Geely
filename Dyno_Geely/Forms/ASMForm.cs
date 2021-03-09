@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -67,7 +68,7 @@ namespace Dyno_Geely {
 
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e) {
             GetASMRealTimeDataAckParams ackParams = new GetASMRealTimeDataAckParams();
-            if (_dynoCmd.GetASMRealTimeDataCmd(ref ackParams) && ackParams != null) {
+            if (_dynoCmd.GetASMRealTimeDataCmd(ref ackParams, out string errMsg) && ackParams != null) {
                 if (_timer != null && _timer.Enabled) {
                     try {
                         DataRow dr = _dtRealTime.NewRow();
@@ -126,7 +127,7 @@ namespace Dyno_Geely {
                         });
                         if (ackParams.step == 14) {
                             GetASMCheckResultAckParams ackParams2 = new GetASMCheckResultAckParams();
-                            if (_dynoCmd.GetASMCheckResultDataCmd(ref ackParams2)) {
+                            if (_dynoCmd.GetASMCheckResultDataCmd(ref ackParams2, out errMsg)) {
                                 _resultData.HC5025Limit = ackParams2.HC5025Limit;
                                 _resultData.CO5025Limit = ackParams2.CO5025Limit;
                                 _resultData.NO5025Limit = ackParams2.NO5025Limit;
@@ -182,7 +183,7 @@ namespace Dyno_Geely {
 
         public void StartTest(bool bStart, bool bRetry) {
             if (bStart) {
-                if (!_dynoCmd.StartASMCheckCmd(false, bRetry)) {
+                if (!_dynoCmd.StartASMCheckCmd(false, bRetry, out string errMsg)) {
                     MessageBox.Show("执行开始稳态工况检测命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _dtRealTime.Rows.Clear();
@@ -190,18 +191,22 @@ namespace Dyno_Geely {
                     _startTime = DateTime.Now;
                 }
             } else {
-                if (!_dynoCmd.StartASMCheckCmd(true, bRetry)) {
+                _timer.Enabled = false;
+                Thread.Sleep(_mainCfg.RealtimeInterval);
+                if (!_dynoCmd.StartASMCheckCmd(true, bRetry, out string errMsg) && errMsg != "ati >= 0") {
                     MessageBox.Show("执行停止稳态工况检测命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                } else {
-                    _timer.Enabled = false;
-                    lblMsg.Text = "已停止稳态工况检测";
+                } else if (errMsg.Length > 0) {
+                    if (errMsg == "ati >= 0") {
+                        lblMsg.Text = "已停止稳态工况检测";
+                    } else if (errMsg != "OK") {
+                        lblMsg.Text = errMsg;
+                    }
                 }
             }
         }
 
         public void StopCheck() {
-            System.Threading.Thread.Sleep(_mainCfg.RealtimeInterval);
-            _dynoCmd.ReconnectServer();
+            //_dynoCmd.ReconnectServer();
             StartTest(false, false);
         }
 

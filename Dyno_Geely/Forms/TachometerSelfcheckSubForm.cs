@@ -33,7 +33,7 @@ namespace Dyno_Geely {
 
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e) {
             GetTachometerPrepareRealTimeDataAckParams ackParams = new GetTachometerPrepareRealTimeDataAckParams();
-            if (_dynoCmd.GetTachometerPrepareRealTimeDataCmd(true, false, ref ackParams) && ackParams != null) {
+            if (_dynoCmd.GetTachometerPrepareRealTimeDataCmd(true, false, ref ackParams, out string errMsg) && ackParams != null) {
                 if (_timer != null && _timer.Enabled) {
                     try {
                         Invoke((EventHandler)delegate {
@@ -48,11 +48,12 @@ namespace Dyno_Geely {
                             RPMOK = RPMOK || ((ackParams.CYRPM >= ackParams.CYRPMLow) && (ackParams.CYRPM <= ackParams.CYRPMHigt));
                             bool OBDOK = Math.Abs(ackParams.OBDRPM - ackParams.RPM) <= RPM_Tolerance;
                             OBDOK = OBDOK || Math.Abs(ackParams.OBDRPM - ackParams.CYRPM) <= RPM_Tolerance;
-                            if ((RPMOK && OBDOK) || _dicStops[this]) {
+                            OBDOK = OBDOK && ackParams.OBDRPM > 0;
+                            if ((RPMOK || OBDOK) || _dicStops[this]) {
                                 _timer.Enabled = false;
                                 _dicResults[this] = true;
                                 ackParams = new GetTachometerPrepareRealTimeDataAckParams();
-                                _dynoCmd.GetTachometerPrepareRealTimeDataCmd(false, true, ref ackParams);
+                                _dynoCmd.GetTachometerPrepareRealTimeDataCmd(false, true, ref ackParams, out errMsg);
                                 SelfcheckDoneEventArgs args = new SelfcheckDoneEventArgs {
                                     Result = _dicResults[this]
                                 };
@@ -69,13 +70,13 @@ namespace Dyno_Geely {
         public void StartSelfcheck(bool bStart) {
             GetTachometerPrepareRealTimeDataAckParams ackParams = new GetTachometerPrepareRealTimeDataAckParams();
             if (bStart) {
-                if (!_dynoCmd.GetTachometerPrepareRealTimeDataCmd(true, false, ref ackParams)) {
+                if (!_dynoCmd.GetTachometerPrepareRealTimeDataCmd(true, false, ref ackParams, out string errMsg)) {
                     MessageBox.Show("执行开始获取转速计实时数据命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _timer.Enabled = true;
                 }
             } else {
-                if (!_dynoCmd.GetTachometerPrepareRealTimeDataCmd(false, true, ref ackParams)) {
+                if (!_dynoCmd.GetTachometerPrepareRealTimeDataCmd(false, true, ref ackParams, out string errMsg)) {
                     MessageBox.Show("执行停止获取转速计实时数据命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _timer.Enabled = false;

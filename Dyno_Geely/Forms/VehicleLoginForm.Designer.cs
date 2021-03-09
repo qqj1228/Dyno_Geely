@@ -30,8 +30,8 @@
             this.txtBoxBatteryCap = new System.Windows.Forms.TextBox();
             this.txtBoxEnergyStorage = new System.Windows.Forms.TextBox();
             this.txtBoxMotorModel = new System.Windows.Forms.TextBox();
-            this.txtBoxPostProcessor = new System.Windows.Forms.TextBox();
-            this.txtBoxPostProcessing = new System.Windows.Forms.TextBox();
+            this.txtBoxPostProcessorModel = new System.Windows.Forms.TextBox();
+            this.txtBoxPostProcessorType = new System.Windows.Forms.TextBox();
             this.txtBoxOBDLocation = new System.Windows.Forms.TextBox();
             this.txtBoxMaxMass = new System.Windows.Forms.TextBox();
             this.txtBoxRefMass = new System.Windows.Forms.TextBox();
@@ -50,6 +50,7 @@
             this.txtBoxVIN = new System.Windows.Forms.TextBox();
             this.chkBoxAutoStart = new System.Windows.Forms.CheckBox();
             this.layoutMain = new DevComponents.DotNetBar.Layout.LayoutControl();
+            this.lblDynoParamMode = new System.Windows.Forms.Label();
             this.txtBoxGettedVIN = new System.Windows.Forms.TextBox();
             this.cmbBoxFuelSupply = new System.Windows.Forms.ComboBox();
             this.cmbBoxEmissionStage = new System.Windows.Forms.ComboBox();
@@ -61,6 +62,7 @@
             this.layoutControlItem32 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem61 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem62 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem63 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem33 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem34 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem35 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
@@ -120,8 +122,6 @@
             this.layoutControlItem41 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem44 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem45 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
-            this.lblDynoParamMode = new System.Windows.Forms.Label();
-            this.layoutControlItem63 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -182,21 +182,21 @@
             this.txtBoxMotorModel.Size = new System.Drawing.Size(304, 29);
             this.txtBoxMotorModel.TabIndex = 25;
             // 
-            // txtBoxPostProcessor
+            // txtBoxPostProcessorModel
             // 
-            this.txtBoxPostProcessor.Location = new System.Drawing.Point(196, 549);
-            this.txtBoxPostProcessor.Margin = new System.Windows.Forms.Padding(0);
-            this.txtBoxPostProcessor.Name = "txtBoxPostProcessor";
-            this.txtBoxPostProcessor.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxPostProcessor.TabIndex = 24;
+            this.txtBoxPostProcessorModel.Location = new System.Drawing.Point(196, 549);
+            this.txtBoxPostProcessorModel.Margin = new System.Windows.Forms.Padding(0);
+            this.txtBoxPostProcessorModel.Name = "txtBoxPostProcessorModel";
+            this.txtBoxPostProcessorModel.Size = new System.Drawing.Size(304, 29);
+            this.txtBoxPostProcessorModel.TabIndex = 24;
             // 
-            // txtBoxPostProcessing
+            // txtBoxPostProcessorType
             // 
-            this.txtBoxPostProcessing.Location = new System.Drawing.Point(700, 506);
-            this.txtBoxPostProcessing.Margin = new System.Windows.Forms.Padding(0);
-            this.txtBoxPostProcessing.Name = "txtBoxPostProcessing";
-            this.txtBoxPostProcessing.Size = new System.Drawing.Size(304, 29);
-            this.txtBoxPostProcessing.TabIndex = 23;
+            this.txtBoxPostProcessorType.Location = new System.Drawing.Point(700, 506);
+            this.txtBoxPostProcessorType.Margin = new System.Windows.Forms.Padding(0);
+            this.txtBoxPostProcessorType.Name = "txtBoxPostProcessorType";
+            this.txtBoxPostProcessorType.Size = new System.Drawing.Size(304, 29);
+            this.txtBoxPostProcessorType.TabIndex = 23;
             // 
             // txtBoxOBDLocation
             // 
@@ -365,8 +365,8 @@
             this.layoutMain.Controls.Add(this.txtBoxRefMass);
             this.layoutMain.Controls.Add(this.txtBoxMaxMass);
             this.layoutMain.Controls.Add(this.txtBoxOBDLocation);
-            this.layoutMain.Controls.Add(this.txtBoxPostProcessing);
-            this.layoutMain.Controls.Add(this.txtBoxPostProcessor);
+            this.layoutMain.Controls.Add(this.txtBoxPostProcessorType);
+            this.layoutMain.Controls.Add(this.txtBoxPostProcessorModel);
             this.layoutMain.Controls.Add(this.txtBoxMotorModel);
             this.layoutMain.Controls.Add(this.txtBoxEnergyStorage);
             this.layoutMain.Controls.Add(this.txtBoxBatteryCap);
@@ -420,6 +420,17 @@
             this.layoutControlItem57});
             this.layoutMain.Size = new System.Drawing.Size(1008, 729);
             this.layoutMain.TabIndex = 1;
+            // 
+            // lblDynoParamMode
+            // 
+            this.lblDynoParamMode.AutoSize = true;
+            this.lblDynoParamMode.Location = new System.Drawing.Point(760, 119);
+            this.lblDynoParamMode.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDynoParamMode.Name = "lblDynoParamMode";
+            this.lblDynoParamMode.Size = new System.Drawing.Size(244, 35);
+            this.lblDynoParamMode.TabIndex = 5;
+            this.lblDynoParamMode.Text = "参数获取方式:";
+            this.lblDynoParamMode.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // txtBoxGettedVIN
             // 
@@ -543,6 +554,18 @@
             this.layoutControlItem62.Name = "layoutControlItem62";
             this.layoutControlItem62.Width = 25;
             this.layoutControlItem62.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
+            // layoutControlItem63
+            // 
+            this.layoutControlItem63.Control = this.lblDynoParamMode;
+            this.layoutControlItem63.Height = 6;
+            this.layoutControlItem63.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem63.Name = "layoutControlItem63";
+            this.layoutControlItem63.Text = "Label:";
+            this.layoutControlItem63.TextLineAlignment = DevComponents.DotNetBar.Layout.eTextLineAlignment.Middle;
+            this.layoutControlItem63.TextVisible = false;
+            this.layoutControlItem63.Width = 25;
+            this.layoutControlItem63.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
             // layoutControlItem33
             // 
@@ -733,7 +756,7 @@
             // 
             // layoutControlItem50
             // 
-            this.layoutControlItem50.Control = this.txtBoxPostProcessing;
+            this.layoutControlItem50.Control = this.txtBoxPostProcessorType;
             this.layoutControlItem50.Height = 6;
             this.layoutControlItem50.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             this.layoutControlItem50.MinSize = new System.Drawing.Size(300, 0);
@@ -744,7 +767,7 @@
             // 
             // layoutControlItem51
             // 
-            this.layoutControlItem51.Control = this.txtBoxPostProcessor;
+            this.layoutControlItem51.Control = this.txtBoxPostProcessorModel;
             this.layoutControlItem51.Height = 6;
             this.layoutControlItem51.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             this.layoutControlItem51.MinSize = new System.Drawing.Size(300, 0);
@@ -916,7 +939,7 @@
             // 
             // layoutControlItem22
             // 
-            this.layoutControlItem22.Control = this.txtBoxPostProcessor;
+            this.layoutControlItem22.Control = this.txtBoxPostProcessorModel;
             this.layoutControlItem22.Height = 37;
             this.layoutControlItem22.MinSize = new System.Drawing.Size(120, 0);
             this.layoutControlItem22.Name = "layoutControlItem22";
@@ -927,7 +950,7 @@
             // 
             // layoutControlItem21
             // 
-            this.layoutControlItem21.Control = this.txtBoxPostProcessing;
+            this.layoutControlItem21.Control = this.txtBoxPostProcessorType;
             this.layoutControlItem21.Height = 37;
             this.layoutControlItem21.MinSize = new System.Drawing.Size(120, 0);
             this.layoutControlItem21.Name = "layoutControlItem21";
@@ -1182,29 +1205,6 @@
             this.layoutControlItem45.Width = 50;
             this.layoutControlItem45.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
-            // lblDynoParamMode
-            // 
-            this.lblDynoParamMode.AutoSize = true;
-            this.lblDynoParamMode.Location = new System.Drawing.Point(760, 119);
-            this.lblDynoParamMode.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
-            this.lblDynoParamMode.Name = "lblDynoParamMode";
-            this.lblDynoParamMode.Size = new System.Drawing.Size(244, 35);
-            this.lblDynoParamMode.TabIndex = 5;
-            this.lblDynoParamMode.Text = "参数获取方式:";
-            this.lblDynoParamMode.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // layoutControlItem63
-            // 
-            this.layoutControlItem63.Control = this.lblDynoParamMode;
-            this.layoutControlItem63.Height = 6;
-            this.layoutControlItem63.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            this.layoutControlItem63.Name = "layoutControlItem63";
-            this.layoutControlItem63.Text = "Label:";
-            this.layoutControlItem63.TextLineAlignment = DevComponents.DotNetBar.Layout.eTextLineAlignment.Middle;
-            this.layoutControlItem63.TextVisible = false;
-            this.layoutControlItem63.Width = 25;
-            this.layoutControlItem63.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
-            // 
             // VehicleLoginForm
             // 
             this.AcceptButton = this.btnStart;
@@ -1236,8 +1236,8 @@
         private System.Windows.Forms.TextBox txtBoxBatteryCap;
         private System.Windows.Forms.TextBox txtBoxEnergyStorage;
         private System.Windows.Forms.TextBox txtBoxMotorModel;
-        private System.Windows.Forms.TextBox txtBoxPostProcessor;
-        private System.Windows.Forms.TextBox txtBoxPostProcessing;
+        private System.Windows.Forms.TextBox txtBoxPostProcessorModel;
+        private System.Windows.Forms.TextBox txtBoxPostProcessorType;
         private System.Windows.Forms.TextBox txtBoxOBDLocation;
         private System.Windows.Forms.TextBox txtBoxMaxMass;
         private System.Windows.Forms.TextBox txtBoxRefMass;

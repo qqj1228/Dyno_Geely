@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -34,7 +35,7 @@ namespace Dyno_Geely {
 
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e) {
             GetGasboxPrepareRealTimeDataAckParams ackParams = new GetGasboxPrepareRealTimeDataAckParams();
-            if (_dynoCmd.GetGasboxPrepareRealTimeDataCmd(true, false, ref ackParams) && ackParams != null) {
+            if (_dynoCmd.GetGasboxPrepareRealTimeDataCmd(true, false, ref ackParams, out string errMsg) && ackParams != null) {
                 if (_timer != null && _timer.Enabled) {
                     try {
                         Invoke((EventHandler)delegate {
@@ -82,7 +83,7 @@ namespace Dyno_Geely {
                                 _dicResults[this] = bResult;
                                 lblResult.Text = _dicResults[this] ? "成功" : "失败";
                                 ackParams = new GetGasboxPrepareRealTimeDataAckParams();
-                                _dynoCmd.GetGasboxPrepareRealTimeDataCmd(false, true, ref ackParams);
+                                _dynoCmd.GetGasboxPrepareRealTimeDataCmd(false, true, ref ackParams, out errMsg);
                                 SelfcheckDoneEventArgs args = new SelfcheckDoneEventArgs {
                                     Result = _dicResults[this]
                                 };
@@ -102,17 +103,22 @@ namespace Dyno_Geely {
                 fuel = "柴油";
             }
             if (bStart) {
-                if (!_dynoCmd.StartGasboxPrepareCmd(false, false, fuel)) {
+                if (!_dynoCmd.StartGasboxPrepareCmd(false, false, fuel, out string errMsg)) {
                     MessageBox.Show("执行开始分析仪准备命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _timer.Enabled = true;
                 }
             } else {
-                if (!_dynoCmd.StartGasboxPrepareCmd(true, false, fuel)) {
+                _timer.Enabled = false;
+                Thread.Sleep(_mainCfg.RealtimeInterval);
+                if (!_dynoCmd.StartGasboxPrepareCmd(true, false, fuel, out string errMsg) && errMsg != "ati >= 0") {
                     MessageBox.Show("执行停止分析仪准备命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                } else {
-                    _timer.Enabled = false;
-                    lblMsg.Text = "已手动停止尾气分析仪自检";
+                } else if (errMsg.Length > 0) {
+                    if (errMsg == "ati >= 0") {
+                        lblMsg.Text = "已手动停止尾气分析仪自检";
+                    } else if (errMsg != "OK") {
+                        lblMsg.Text = errMsg;
+                    }
                 }
             }
         }

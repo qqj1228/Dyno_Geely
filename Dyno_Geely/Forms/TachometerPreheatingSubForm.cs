@@ -35,7 +35,7 @@ namespace Dyno_Geely {
 
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e) {
             GetTachometerCheckRealTimeDataAckParams ackParams = new GetTachometerCheckRealTimeDataAckParams();
-            if (_dynoCmd.GetTachometerCheckRealTimeDataCmd(ref ackParams) && ackParams != null) {
+            if (_dynoCmd.GetTachometerCheckRealTimeDataCmd(ref ackParams, out string errMsg) && ackParams != null) {
                 if (_timer != null && _timer.Enabled) {
                     try {
                         Invoke((EventHandler)delegate {
@@ -67,7 +67,7 @@ namespace Dyno_Geely {
                                 CommCheck = _bCommResult ? "1" : "2",
                                 Result = lblResult.Text
                             };
-                            if (!_dynoCmd.SaveTachometerCheckCmd(cmdParams)) {
+                            if (!_dynoCmd.SaveTachometerCheckCmd(cmdParams, out errMsg)) {
                                 MessageBox.Show("执行保存转速计预热数据命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                             PreheatingDoneEventArgs args = new PreheatingDoneEventArgs {
@@ -86,7 +86,7 @@ namespace Dyno_Geely {
             _counter = 0;
             lblMsg.Text = "开始转速计预热";
             StartTachometerCheckAckParams ackParams = new StartTachometerCheckAckParams();
-            if (!_dynoCmd.StartTachometerCheckCmd(ref ackParams)) {
+            if (!_dynoCmd.StartTachometerCheckCmd(ref ackParams, out string errMsg)) {
                 MessageBox.Show("执行开始转速计预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
             } else {
                 _timer.Enabled = true;

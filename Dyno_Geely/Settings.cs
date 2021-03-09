@@ -140,24 +140,6 @@ namespace Dyno_Geely {
         }
     }
 
-    [Serializable]
-    public class DeviceInfo {
-        public string AnalyManuf { get; set; }
-        public string AnalyName { get; set; }
-        public string AnalyModel { get; set; }
-        public string AnalyDate { get; set; }
-        public string DynoModel { get; set; }
-        public string DynoManuf { get; set; }
-        public DeviceInfo() {
-            AnalyManuf = string.Empty;
-            AnalyName = string.Empty;
-            AnalyModel = string.Empty;
-            AnalyDate = string.Empty;
-            DynoModel = string.Empty;
-            DynoManuf = string.Empty;
-        }
-    }
-
     public class VehicleInfo {
         public string VIN { get; set; }
         public string VehicleModel { get; set; } // 车辆型号
@@ -183,8 +165,8 @@ namespace Dyno_Geely {
         public int RefMass { get; set; } // 基准质量
         public int MaxMass { get; set; } // 最大设计总质量
         public string OBDLocation { get; set; } // OBD接口位置
-        public string PostProcessing { get; set; } // 后处理类型
-        public string PostProcessor { get; set; } // 后处理型号
+        public string PostProcessorType { get; set; } // 后处理类型
+        public string PostProcessorModel { get; set; } // 后处理型号
         public string MotorModel { get; set; } // 电动机型号
         public string EnergyStorage { get; set; } // 储能装置型号
         public string BatteryCap { get; set; } // 电池容量
@@ -359,205 +341,140 @@ namespace Dyno_Geely {
     }
 
     public class NewVehicle {
-        public int CarId { get; set; } // 主键
-        public string VIN { get; set; }
-        public string CLXH { get; set; }
-        public string ZZL { get; set; }
-        public string JZZL { get; set; }
-        public string FDJXH { get; set; }
-        public string FDJH { get; set; }
-        public string GYFS { get; set; }
-        public string EDGL { get; set; }
-        public string EDZS { get; set; }
-        public string FDJSCQY { get; set; }
-        public string FDJPL { get; set; }
-        public string PFSP { get; set; }
-        public string QDDJXH { get; set; }
-        public string CNZZXH { get; set; }
-        public string DCRL { get; set; }
-        public string HasOBD { get; set; }
-        public string CHQXH { get; set; }
-        public string DPF { get; set; }
-        public string DPFXH { get; set; }
-        public string SCR { get; set; }
-        public string SRCXH { get; set; }
-        public string CheckMethod { get; set; }
-        public string CheckType { get; set; }
+        public int CarId { get; set; } // 主键，车辆ID
+        public string VIN { get; set; } // VIN号
+        public string CLXH { get; set; } // 车辆型号
+        public string ZZL { get; set; } // 总质量
+        public string JZZL { get; set; } // 基准质量(kg)
+        public string FDJXH { get; set; } // 发动机型号
+        public string FDJH { get; set; } // 发动机号
+        public string GYFS { get; set; } // 供油方式
+        public string EDGL { get; set; } // 额定功率(kw)
+        public string EDZS { get; set; } // 额定转速(r/min)
+        public string FDJSCQY { get; set; } // 发动机生产企业
+        public string FDJPL { get; set; } // 发动机排量
+        public string PFSP { get; set; } // 排放水平
+        public string QDDJXH { get; set; } // 驱动电机型号
+        public string CNZZXH { get; set; } // 储能装置型号
+        public string DCRL { get; set; } // 电池容量
+        public string HasOBD { get; set; } // 是否有OBD
+        public string CHQXH { get; set; } // 催化器型号
+        public string DPF { get; set; } // 有没有DPF
+        public string DPFXH { get; set; } // DPF型号
+        public string SCR { get; set; } // 有没有SCR
+        public string SRCXH { get; set; } // SCR型号
+        public string CheckMethod { get; set; } // 检测方法
+        public string CheckType { get; set; } // 检测类型【初检、复检】
     }
 
     public class UseVehicle {
-        public string VIN { get; set; } // 主键
-        public int CarId { get; set; }
-        public string HPHM { get; set; }
-        public string HPYS { get; set; }
-        public string CLXH { get; set; }
-        public string JZZL { get; set; }
-        public string ZDZZL { get; set; }
-        public string FDJXH { get; set; }
-        public string FDJHM { get; set; }
-        public string FDJPL { get; set; }
-        public string EDZS { get; set; }
-        public string FDJEDGL { get; set; }
-        public string DPF { get; set; }
-        public string DPFXH { get; set; }
-        public string SRC { get; set; }
-        public string SRCXH { get; set; }
-        public string QGS { get; set; }
-        public string QDDJXH { get; set; }
-        public string CNZZXH { get; set; }
-        public string DCRL { get; set; }
-        public string CLSCQY { get; set; }
-        public string CLCCRQ { get; set; }
-        public string LJXSLC { get; set; }
-        public string CZXMorDW { get; set; }
-        public string LXDH { get; set; }
-        public string RYLX { get; set; }
-        public string GYFS { get; set; }
-        public string QDFS { get; set; }
-        public string PPorXH { get; set; }
-        public string BSQXS { get; set; }
-        public string SYXZ { get; set; }
-        public string CCDJRI { get; set; }
-        public string HasOBD { get; set; }
-        public string CheckMethod { get; set; }
-        public string CheckType { get; set; }
-        public string CLLX { get; set; }
-        public string CXXL { get; set; }
-        public string CSYS { get; set; }
-        public string ZKRS { get; set; }
-        public string DPH { get; set; }
-        public string LTQY { get; set; }
-        public string SYZT { get; set; }
-        public string DWS { get; set; }
-        public string LCBDS { get; set; }
-        public string DCZZ { get; set; }
-        public string JCZQ { get; set; }
-        public string SFSYGYYB { get; set; }
-        public string PFSP { get; set; }
-        public string CLS { get; set; }
-        public string JQFS { get; set; }
-        public string HPZL { get; set; }
-        public string CCS { get; set; }
-        public string FDJZZCJ { get; set; }
-        public string EDNJ { get; set; }
-        public string EDNJZS { get; set; }
-        public string PQCLZZ { get; set; }
-        public string PQGSL { get; set; }
-        public string SFSYSRL { get; set; }
-        public string CHQXH { get; set; }
-        public string ZRCL { get; set; }
-        public string JRCZ { get; set; }
-        public string YQBF { get; set; }
-        public string CZLX { get; set; }
-        public string CLLB { get; set; }
-        public string CZDZ { get; set; }
-        public string XQBH { get; set; }
-        public string SFYSYCHQ { get; set; }
-        public string ZBZL { get; set; }
-        public string CheckStatus { get; set; }
+        public string VIN { get; set; } // 主键，VIN号
+        public int CarId { get; set; } // 车辆ID
+        public string HPHM { get; set; } // 号牌号码
+        public string HPYS { get; set; } // 号牌颜色
+        public string CLXH { get; set; } // 车辆型号
+        public string JZZL { get; set; } // 基准质量
+        public string ZDZZL { get; set; } // 最大总质量
+        public string FDJXH { get; set; } // 发动机型号
+        public string FDJHM { get; set; } // 发动机号码
+        public string FDJPL { get; set; } // 发动机排量
+        public string EDZS { get; set; } // 额定转速(r/min)
+        public string FDJEDGL { get; set; } // 发动机额定功率(kw)
+        public string DPF { get; set; } // 有没有DPF
+        public string DPFXH { get; set; } // DPF型号
+        public string SRC { get; set; } // 有没有SCR
+        public string SRCXH { get; set; } // SCR型号
+        public string QGS { get; set; } // 气缸数
+        public string QDDJXH { get; set; } // 驱动电机型号
+        public string CNZZXH { get; set; } // 储能装置型号
+        public string DCRL { get; set; } // 电池容量
+        public string CLSCQY { get; set; } // 车辆生产企业
+        public string CLCCRQ { get; set; } // 车辆出厂日期
+        public string LJXSLC { get; set; } // 累计行驶里程/km
+        public string CZXMorDW { get; set; } // 车主姓名(单位)
+        public string LXDH { get; set; } // 联系电话
+        public string RYLX { get; set; } // 燃油类型
+        public string GYFS { get; set; } // 供油方式
+        public string QDFS { get; set; } // 驱动方式
+        public string PPorXH { get; set; } // 品牌/型号
+        public string BSQXS { get; set; } // 变速器形式
+        public string SYXZ { get; set; } // 使用性质
+        public string CCDJRI { get; set; } // 初次登记日期
+        public string HasOBD { get; set; } // 是否有OBD
+        public string CheckMethod { get; set; } // 检测方法
+        public string CheckType { get; set; } // 检测类型【初检、复检】
+        public string CLLX { get; set; } // 车辆类型
+        public string CXXL { get; set; } // 车型系列
+        public string CSYS { get; set; } // 车身颜色
+        public string ZKRS { get; set; } // 载客人数
+        public string DPH { get; set; } // 底盘号
+        public string LTQY { get; set; } // 轮胎气压
+        public string SYZT { get; set; } // 使用状态
+        public string DWS { get; set; } // 档位数
+        public string LCBDS { get; set; } // 里程表读数
+        public string DCZZ { get; set; } // 单车轴重
+        public string JCZQ { get; set; } // 检测周期
+        public string SFSYGYYB { get; set; } // 是否使用高压油泵
+        public string PFSP { get; set; } // 排放水平
+        public string CLS { get; set; } // 车轮数
+        public string JQFS { get; set; } // 进气方式
+        public string HPZL { get; set; } // 号牌种类
+        public string CCS { get; set; } // 冲程数
+        public string FDJZZCJ { get; set; } // 发动机制造厂家
+        public string EDNJ { get; set; } // 额定扭矩
+        public string EDNJZS { get; set; } // 额定扭矩转速
+        public string PQCLZZ { get; set; } // 排气处理装置
+        public string PQGSL { get; set; } // 排气管数量
+        public string SFSYSRL { get; set; } // 是否使用双燃料
+        public string CHQXH { get; set; } // 催化器型号
+        public string ZRCL { get; set; } // 转入车辆
+        public string JRCZ { get; set; } // 进入城镇
+        public string YQBF { get; set; } // 延期报废
+        public string CZLX { get; set; } // 车主类型
+        public string CLLB { get; set; } // 车辆类别
+        public string CZDZ { get; set; } // 车主地址
+        public string XQBH { get; set; } // 辖区编号
+        public string SFYSYCHQ { get; set; } // 是否有三元催化器
+        public string ZBZL { get; set; } // 整备质量
+        public string CheckStatus { get; set; } // 检测状态
     }
 
-    public class VehicleInfo1Class {
-        public string License { get; set; }
-        public string VIN { get; set; }
-        public string RegisterDate { get; set; }
-        public string ISQZ { get; set; }
-        public string VehicleType { get; set; }
-        public string CLXH { get; set; }
-        public string FDJXH { get; set; }
-        public string HasOBD { get; set; }
-        public string FuelType { get; set; }
-        public string Standard { get; set; }
-        public string OBDCommCL { get; set; }
-        public string OBDCommCX { get; set; }
-    }
-
-    public class VehicleInfo2Class {
-        public string VehicleKind { get; set; }
-        public string License { get; set; }
-        public string VIN { get; set; }
-        public string RegisterDate { get; set; }
-        public string VehicleType { get; set; }
-        public string Model { get; set; }
-        public string GearBoxType { get; set; }
-        public string AdmissionMode { get; set; }
-        public string Volume { get; set; }
-        public string Odometer { get; set; }
-        public string FuelType { get; set; }
-        public string SupplyMode { get; set; }
-        public string RatedRev { get; set; }
-        public string RatedPower { get; set; }
-        public string DriveMode { get; set; }
-        public string Owner { get; set; }
-        public string Address { get; set; }
-        public string MaxMass { get; set; }
-        public string RefMass { get; set; }
-        public string HasODB { get; set; }
-        public string Phone { get; set; }
-        public string HasPurge { get; set; }
-        public string IsEFI { get; set; }
-        public string MaxLoad { get; set; }
-        public string CarOrTruck { get; set; }
-        public string Cylinder { get; set; }
-        public string IsTransform { get; set; }
-        public string StandardID { get; set; }
-        public string IsAsm { get; set; }
-        public string QCZZCJ { get; set; }
-        public string FDJZZC { get; set; }
-        public string DDJXH { get; set; }
-        public string XNZZXH { get; set; }
-        public string CHZHQXH { get; set; }
-        public string HPYS { get; set; }
-        public string SCR { get; set; }
-        public string SCRXH { get; set; }
-        public string DPF { get; set; }
-        public string DPFXH { get; set; }
-        public string DCRL { get; set; }
-        public string JCFF { get; set; }
-    }
-
-    public class LimitValueClass {
-        public string AmbientCOUp { get; set; }
-        public string AmbientCO2Up { get; set; }
-        public string AmbientHCUp { get; set; }
-        public string AmbientNOUp { get; set; }
-        public string BackgroundCOUp { get; set; }
-        public string BackgroundCO2Up { get; set; }
-        public string BackgroundHCUp { get; set; }
-        public string BackgroundNOUp { get; set; }
-        public string ResidualHCUp { get; set; }
-        public string CO5025 { get; set; }
-        public string HC5025 { get; set; }
-        public string NO5025 { get; set; }
-        public string Lambda5025Up { get; set; }
-        public string Lambda5025Below { get; set; }
-        public string CO2540 { get; set; }
-        public string HC2540 { get; set; }
-        public string NO2540 { get; set; }
-        public string Lambda2540Up { get; set; }
-        public string Lambda2540Below { get; set; }
-        public string COAndCO2 { get; set; }
-        public string HighIdleCO { get; set; }
-        public string HighIdleHC { get; set; }
-        public string IdleCO { get; set; }
-        public string IdleHC { get; set; }
-        public string FASmokeHSU { get; set; }
-        public string FASmokeK { get; set; }
-        public string SmokeK { get; set; }
-        public string SmokeHSU { get; set; }
-        public string SmokeNO { get; set; }
-        public string MaxPower { get; set; }
-    }
-
-    public class DynoParam {
-        public VehicleInfo1Class VehicleInfo1 { get; set; }
-        public VehicleInfo2Class VehicleInfo2 { get; set; }
-        public LimitValueClass LimitValue { get; set; }
-        public DynoParam() {
-            VehicleInfo1 = new VehicleInfo1Class();
-            VehicleInfo2 = new VehicleInfo2Class();
-            LimitValue = new LimitValueClass();
-        }
+    public class WaitCheckVehicles {
+        public string WJBGBH { get; set; } // 外检报告编号(系统流水号)，主键
+        public int CarId { get; set; } // 车辆ID
+        public string HPHM { get; set; } // 号牌号码
+        public string HPYS { get; set; } // 号牌颜色
+        public string JCFF { get; set; } // 检测方法
+        public string SurfaceCheckMark { get; set; } // 外观检测标识
+        public string OBDCheckMark { get; set; } // OBD检测标识
+        public string DischargeCheckMark { get; set; } // 排放检测标识
+        public string CheckFinishResult { get; set; } // 检测完成结果
+        public string JCLX { get; set; } // 检测类型
+        public string STATUS { get; set; } // 状态
+        public string HPZL { get; set; } // 号牌种类
+        public string VIN { get; set; } // 车辆识别代码
+        public string CLLB { get; set; } // 车辆类别
+        public string CLLX { get; set; } // 车辆类型
+        public string CCDJRQ { get; set; } // 登记日期
+        public string CCRQ { get; set; } // 出厂日期
+        public string CLXH { get; set; } // 车辆型号
+        public string ZZL { get; set; } // 总质量
+        public string ZKRS { get; set; } // 载客人数
+        public string ZBZL { get; set; } // 整备质量
+        public string JZZL { get; set; } // 基准质量
+        public string FDJXH { get; set; } // 发动机型号
+        public string FDJH { get; set; } // 发动机号
+        public string GYFS { get; set; } // 供油方式
+        public string RYLX { get; set; } // 燃油类型
+        public string JQFS { get; set; } // 进气方式
+        public string SYCHQ { get; set; } // 三元催化器
+        public string EDGL { get; set; } // 额定功率
+        public string EDZS { get; set; } // 额定转速
+        public string QDXS { get; set; } // 驱动形式
+        public string CZMC { get; set; } // 车主名称
+        public string DLY { get; set; } // 登录员
+        public DateTime DLSJ { get; set; } // 登录时间
+        public string BSQXS { get; set; } // 变速器形式
     }
 
 }

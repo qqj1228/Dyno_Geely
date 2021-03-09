@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -34,7 +35,7 @@ namespace Dyno_Geely {
 
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e) {
             GetFlowmeterPrepareRealTimeDataAckParams ackParams = new GetFlowmeterPrepareRealTimeDataAckParams();
-            if (_dynoCmd.GetFlowmeterPrepareRealTimeDataCmd(true, false, ref ackParams) && ackParams != null) {
+            if (_dynoCmd.GetFlowmeterPrepareRealTimeDataCmd(true, false, ref ackParams, out string errMsg) && ackParams != null) {
                 if (_timer != null && _timer.Enabled) {
                     try {
                         Invoke((EventHandler)delegate {
@@ -71,7 +72,7 @@ namespace Dyno_Geely {
                                 _dicResults[this] = bResult;
                                 //lblResult.Text = _dicResults[this] ? "合格" : "不合格";
                                 ackParams = new GetFlowmeterPrepareRealTimeDataAckParams();
-                                _dynoCmd.GetFlowmeterPrepareRealTimeDataCmd(false, true, ref ackParams);
+                                _dynoCmd.GetFlowmeterPrepareRealTimeDataCmd(false, true, ref ackParams, out errMsg);
                                 SelfcheckDoneEventArgs args = new SelfcheckDoneEventArgs {
                                     Result = _dicResults[this]
                                 };
@@ -87,28 +88,33 @@ namespace Dyno_Geely {
 
         public void StartSelfcheck(bool bStart) {
             if (bStart) {
-                // 现在的测功机服务端软件需要发两次开始命令才能接收实时数据
-                if (!_dynoCmd.StartFlowmeterPrepareCmd(false, false)) {
+                // 现在的测功机服务端软件使用的“DeviceVirtual.dll”虚拟流量计驱动需要发两次开始命令才能接收实时数据
+                if (!_dynoCmd.StartFlowmeterPrepareCmd(false, false, out string errMsg)) {
                     MessageBox.Show("执行开始流量计准备命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
-                    System.Threading.Thread.Sleep(_mainCfg.RealtimeInterval);
-                    GetFlowmeterPrepareRealTimeDataAckParams ackParams = new GetFlowmeterPrepareRealTimeDataAckParams();
-                    if (_dynoCmd.GetFlowmeterPrepareRealTimeDataCmd(true, false, ref ackParams) && ackParams != null && ackParams.step >= 0) {
-                        _timer.Enabled = true;
-                    } else {
-                        if (!_dynoCmd.StartFlowmeterPrepareCmd(false, false)) {
-                            MessageBox.Show("执行开始流量计准备命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        } else {
-                            _timer.Enabled = true;
+                    for (int i = 0; i < 3; i++) {
+                        GetFlowmeterPrepareRealTimeDataAckParams ackParams = new GetFlowmeterPrepareRealTimeDataAckParams();
+                        if (_dynoCmd.GetFlowmeterPrepareRealTimeDataCmd(true, false, ref ackParams, out errMsg) || ackParams != null || ackParams.step >= 0 || ackParams.msg != "手动终止检测") {
+                            if (!_dynoCmd.StartFlowmeterPrepareCmd(false, false, out errMsg)) {
+                                MessageBox.Show("执行开始流量计准备命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            } else {
+                                _timer.Enabled = true;
+                                break;
+                            }
                         }
                     }
                 }
             } else {
-                if (!_dynoCmd.StartFlowmeterPrepareCmd(true, true)) {
+                _timer.Enabled = false;
+                Thread.Sleep(_mainCfg.RealtimeInterval);
+                if (!_dynoCmd.StartFlowmeterPrepareCmd(true, true, out string errMsg) && errMsg != "ati >= 0") {
                     MessageBox.Show("执行停止流量计准备命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                } else {
-                    _timer.Enabled = false;
-                    lblMsg.Text = "已手动停止流量计自检";
+                } else if (errMsg.Length > 0) {
+                    if (errMsg == "ati >= 0") {
+                        lblMsg.Text = "已手动停止流量计自检";
+                    } else if (errMsg != "OK") {
+                        lblMsg.Text = errMsg;
+                    }
                 }
             }
         }

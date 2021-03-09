@@ -33,7 +33,7 @@ namespace Dyno_Geely {
 
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e) {
             GetDynoPreheatRealTimeDataAckParams ackParams = new GetDynoPreheatRealTimeDataAckParams();
-            if (_dynoCmd.GetDynoPreheatRealTimeDataCmd(ref ackParams) && ackParams != null) {
+            if (_dynoCmd.GetDynoPreheatRealTimeDataCmd(ref ackParams, out string errMsg) && ackParams != null) {
                 if (_timer != null && _timer.Enabled) {
                     try {
                         Invoke((EventHandler)delegate {
@@ -70,7 +70,7 @@ namespace Dyno_Geely {
                             EndTime = DateTime.Now,
                             Operator = _mainCfg.Name
                         };
-                        if (!_dynoCmd.SaveDynoPreheatDataCmd(cmdParams)) {
+                        if (!_dynoCmd.SaveDynoPreheatDataCmd(cmdParams, out errMsg)) {
                             MessageBox.Show("执行保存测功机预热数据命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             //return;
                         }
@@ -96,7 +96,7 @@ namespace Dyno_Geely {
             btnBeamUp.Enabled = true;
             btnStart.Enabled = true;
             btnStop.Enabled = false;
-            if (!_dynoCmd.DynoBeamDownCmd()) {
+            if (!_dynoCmd.DynoBeamDownCmd(out string errMsg)) {
                 MessageBox.Show("执行举升下降命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -106,7 +106,7 @@ namespace Dyno_Geely {
             btnBeamUp.Enabled = false;
             btnStart.Enabled = false;
             btnStop.Enabled = false;
-            if (!_dynoCmd.DynoBeamUpCmd()) {
+            if (!_dynoCmd.DynoBeamUpCmd(out string errMsg)) {
                 MessageBox.Show("执行举升上升命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -122,26 +122,27 @@ namespace Dyno_Geely {
                 MessageBox.Show("执行开始测功机预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (msg.Length > 0) {
-                lblMsg.Text = msg;
-            }
             _timer.Enabled = true;
         }
 
         private void BtnStop_Click(object sender, EventArgs e) {
             _timer.Enabled = false;
-            System.Threading.Thread.Sleep(_mainCfg.RealtimeInterval);
             //_dynoCmd.ReconnectServer();
+            System.Threading.Thread.Sleep(_mainCfg.RealtimeInterval);
             btnBeamDown.Enabled = false;
             btnBeamUp.Enabled = true;
             btnStart.Enabled = true;
             btnStop.Enabled = false;
-            if (!_dynoCmd.StartDynoPreheatCmd(true, out string msg)) {
+            if (!_dynoCmd.StartDynoPreheatCmd(true, out string errMsg) && errMsg != "ati >= 0") {
                 MessageBox.Show("执行停止测功机预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (msg.Length > 0) {
-                lblMsg.Text = msg;
+            if (errMsg.Length > 0) {
+                if (errMsg == "ati >= 0") {
+                    lblMsg.Text = "手动停止测功机预热";
+                } else if (errMsg != "OK") {
+                    lblMsg.Text = errMsg;
+                }
             }
             lblSpeed.Text = "--";
         }

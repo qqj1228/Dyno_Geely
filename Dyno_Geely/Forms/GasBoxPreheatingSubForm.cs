@@ -66,7 +66,14 @@ namespace Dyno_Geely.Forms {
             if (_iResults[_step] == 1) {
                 _timer.Enabled = false;
                 if (_step < _iResults.Length - 1) {
-                    if (!_dynoCmd.StartGasBoxPreheatSelfCheckCmd(false, ++_step, true, false)) {
+                    StartGasBoxPreheatSelfCheckParams cmdParams = new StartGasBoxPreheatSelfCheckParams() {
+                        ClientID = _dynoCmd.ClientID,
+                        stopCheck = false,
+                        step = ++_step,
+                        isQY = true,
+                        isRetry = false
+                    };
+                    if (!_dynoCmd.StartGasBoxPreheatSelfCheckCmd(cmdParams, out string errMsg)) {
                         MessageBox.Show("执行开始分析仪预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     } else {
                         _timer.Enabled = true;
@@ -79,7 +86,7 @@ namespace Dyno_Geely.Forms {
 
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e) {
             GetGasBoxPreheatSelfCheckRealTimeDataAckParams ackParams = new GetGasBoxPreheatSelfCheckRealTimeDataAckParams();
-            if (_dynoCmd.GetGasBoxPreheatSelfCheckRealTimeDataCmd(ref ackParams) && ackParams != null) {
+            if (_dynoCmd.GetGasBoxPreheatSelfCheckRealTimeDataCmd(ref ackParams, out string errMsg) && ackParams != null) {
                 if (_timer != null && _timer.Enabled) {
                     try {
                         Invoke((EventHandler)delegate {
@@ -190,7 +197,14 @@ namespace Dyno_Geely.Forms {
             for (int i = 0; i < _iResults.Length; i++) {
                 _iResults[i] = 0;
             }
-            if (!_dynoCmd.StartGasBoxPreheatSelfCheckCmd(false, _step, true, false)) {
+            StartGasBoxPreheatSelfCheckParams cmdParams = new StartGasBoxPreheatSelfCheckParams {
+                ClientID = _dynoCmd.ClientID,
+                stopCheck = false,
+                step = _step,
+                isQY = true,
+                isRetry = false
+            };
+            if (!_dynoCmd.StartGasBoxPreheatSelfCheckCmd(cmdParams, out string msg)) {
                 MessageBox.Show("执行开始分析仪预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
             } else {
                 _timer.Enabled = true;
@@ -204,18 +218,32 @@ namespace Dyno_Geely.Forms {
 
         private void BtnStop_Click(object sender, EventArgs e) {
             _timer.Enabled = false;
-            lblMsg.Text = "手动停止尾气分析仪预热";
+            Thread.Sleep(_mainCfg.RealtimeInterval);
+            //_dynoCmd.ReconnectServer();
+            StartGasBoxPreheatSelfCheckParams cmdParams = new StartGasBoxPreheatSelfCheckParams() {
+                ClientID = _dynoCmd.ClientID,
+                stopCheck = true,
+                step = -1,
+                isQY = true,
+                isRetry = false
+            };
+            if (!_dynoCmd.StartGasBoxPreheatSelfCheckCmd(cmdParams, out string errMsg) && errMsg != "ati >= 0") {
+                MessageBox.Show("执行停止分析仪预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (errMsg.Length > 0) {
+                if (errMsg == "ati >= 0") {
+                    lblMsg.Text = "手动停止尾气分析仪预热";
+                } else if (errMsg != "OK") {
+                    lblMsg.Text = errMsg;
+                }
+            }
             lblHC.Text = "--";
             lblNO.Text = "--";
             lblCO.Text = "--";
             lblCO2.Text = "--";
             lblO2.Text = "--";
             lblPEF.Text = "--";
-            Thread.Sleep(_mainCfg.RealtimeInterval);
-            //_dynoCmd.ReconnectServer();
-            if (!_dynoCmd.StartGasBoxPreheatSelfCheckCmd(true, -1, true, false)) {
-                MessageBox.Show("执行停止分析仪预热命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
         }
 
         private void GasBoxPreheatingSubForm_Resize(object sender, EventArgs e) {

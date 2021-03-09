@@ -16,7 +16,6 @@ namespace Dyno_Geely {
         private readonly SerialPortClass _sp;
         private readonly DynoParamRecv _dynoParamRecver;
         private readonly ManualResetEvent _dynoParamRecvFlag;
-        private DynoParam _dynoParam;
         private string _serialRecvBuf;
         private float _lastHeight;
         private int _carID;
@@ -104,10 +103,13 @@ namespace Dyno_Geely {
         private void OnDynoParamRecv(object sender, DynoParamRecvEventArgs e) {
             _dynoParamRecvFlag.Set();
             if (e.Code == "200") {
-                _dynoParam = JsonConvert.DeserializeObject<DynoParam>(e.Msg);
-                GetEmissionInfoFromParam(_dynoParam);
+                EI = JsonConvert.DeserializeObject<EmissionInfo>(e.Msg);
+                VI.VehicleModel = EI.VehicleModel;
+                EI.OpenInfoSN = string.Empty;
+                VI.OpenInfoSN = string.Empty;
+                EI.EngineSN = string.Empty;
+                EI.Name = string.Empty;
             } else {
-                _dynoParam = null;
                 _log.TraceError(string.Format("Get dyno parameter from MES error, Code: {0}, Error: {1}", e.Code, e.Msg));
                 MessageBox.Show(string.Format("从MES获取测功机参数失败, Code: {0}, Error: {1}", e.Code, e.Msg),
                     "获取测功机参数", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -115,68 +117,6 @@ namespace Dyno_Geely {
             Invoke((EventHandler)delegate {
                 FillInputTextBox();
             });
-        }
-
-        private void GetEmissionInfoFromParam(DynoParam dynoParam) {
-            VI.VIN = dynoParam.VehicleInfo1.VIN;
-            VI.VehicleModel = dynoParam.VehicleInfo1.CLXH;
-            VI.OpenInfoSN = string.Empty;
-            EI.VehicleModel = dynoParam.VehicleInfo1.CLXH;
-            EI.OpenInfoSN = string.Empty;
-            EI.VehicleMfr = dynoParam.VehicleInfo2.QCZZCJ;
-            EI.EngineModel = dynoParam.VehicleInfo1.FDJXH;
-            EI.EngineSN = string.Empty;
-            EI.EngineMfr = dynoParam.VehicleInfo2.FDJZZC;
-            EI.EngineVolume = Convert.ToDouble(dynoParam.VehicleInfo2.Volume.Length > 0 ? dynoParam.VehicleInfo2.Volume : null);
-            EI.CylinderQTY = Convert.ToInt32(dynoParam.VehicleInfo2.Cylinder.Length > 0 ? dynoParam.VehicleInfo2.Cylinder : null);
-            if (dynoParam.VehicleInfo2.SupplyMode.Length > 0) {
-                EI.FuelSupply = Convert.ToInt32(dynoParam.VehicleInfo2.SupplyMode) + 1;
-            } else {
-                EI.FuelSupply = 0;
-            }
-            EI.RatedPower = Convert.ToDouble(dynoParam.VehicleInfo2.RatedPower.Length > 0 ? dynoParam.VehicleInfo2.RatedPower : null);
-            EI.RatedRPM = Convert.ToInt32(dynoParam.VehicleInfo2.RatedRev.Length > 0 ? dynoParam.VehicleInfo2.RatedRev : null);
-            if (dynoParam.VehicleInfo2.StandardID.Length > 0) {
-                EI.EmissionStage = Convert.ToInt32(dynoParam.VehicleInfo2.StandardID) + 1;
-            } else {
-                EI.EmissionStage = 0;
-            }
-            if (dynoParam.VehicleInfo2.GearBoxType.Length > 0) {
-                EI.Transmission = Convert.ToInt32(dynoParam.VehicleInfo2.GearBoxType) + 1;
-            } else {
-                EI.Transmission = 0;
-            }
-            EI.CatConverter = dynoParam.VehicleInfo2.CHZHQXH;
-            EI.RefMass = Convert.ToInt32(dynoParam.VehicleInfo2.RefMass.Length > 0 ? dynoParam.VehicleInfo2.RefMass : null);
-            EI.MaxMass = Convert.ToInt32(dynoParam.VehicleInfo2.MaxMass.Length > 0 ? dynoParam.VehicleInfo2.MaxMass : null);
-            EI.OBDLocation = string.Empty;
-            string strSCR = dynoParam.VehicleInfo2.SCR == "是" ? "SCR" : string.Empty;
-            string strDPF = dynoParam.VehicleInfo2.DPF == "是" ? "DPF" : string.Empty;
-            EI.PostProcessing = (strSCR + "+" + strDPF).Trim('+');
-            string strSCRXH = dynoParam.VehicleInfo2.SCRXH.Length > 0 ? "SCR:" + dynoParam.VehicleInfo2.SCRXH : string.Empty;
-            string strDPFXH = dynoParam.VehicleInfo2.DPFXH.Length > 0 ? "DPF:" + dynoParam.VehicleInfo2.DPFXH : string.Empty;
-            EI.PostProcessor = (strSCRXH + ";" + strDPFXH).Trim(';');
-            EI.MotorModel = dynoParam.VehicleInfo2.DDJXH;
-            EI.EnergyStorage = dynoParam.VehicleInfo2.XNZZXH;
-            EI.BatteryCap = dynoParam.VehicleInfo2.DCRL;
-            if (dynoParam.VehicleInfo2.JCFF.Contains("免检")) {
-                EI.TestMethod = 0;
-            } else if (dynoParam.VehicleInfo2.JCFF.Contains("双怠速")) {
-                EI.TestMethod = 1;
-            } else if (dynoParam.VehicleInfo2.JCFF.Contains("稳态工况")) {
-                EI.TestMethod = 2;
-            } else if (dynoParam.VehicleInfo2.JCFF.Contains("简易瞬态")) {
-                EI.TestMethod = 3;
-            } else if (dynoParam.VehicleInfo2.JCFF.Contains("加载减速")) {
-                EI.TestMethod = 4;
-            } else if (dynoParam.VehicleInfo2.JCFF.Contains("自由加速")) {
-                EI.TestMethod = 6;
-            } else if (dynoParam.VehicleInfo2.JCFF.Length > 0) {
-                EI.TestMethod = 9;
-            } else {
-                EI.TestMethod = 5;
-            }
-            EI.Name = string.Empty;
         }
 
         private void FillInputTextBox() {
@@ -211,8 +151,8 @@ namespace Dyno_Geely {
             txtBoxRefMass.Text = EI.RefMass.ToString("");
             txtBoxMaxMass.Text = EI.MaxMass.ToString("");
             txtBoxOBDLocation.Text = EI.OBDLocation;
-            txtBoxPostProcessing.Text = EI.PostProcessing;
-            txtBoxPostProcessor.Text = EI.PostProcessor;
+            txtBoxPostProcessorType.Text = EI.PostProcessorType;
+            txtBoxPostProcessorModel.Text = EI.PostProcessorModel;
             txtBoxMotorModel.Text = EI.MotorModel;
             txtBoxEnergyStorage.Text = EI.EnergyStorage;
             txtBoxBatteryCap.Text = EI.BatteryCap;
@@ -244,8 +184,8 @@ namespace Dyno_Geely {
             EI.RefMass = Convert.ToInt32(txtBoxRefMass.Text);
             EI.MaxMass = Convert.ToInt32(txtBoxMaxMass.Text);
             EI.OBDLocation = txtBoxOBDLocation.Text;
-            EI.PostProcessing = txtBoxPostProcessing.Text;
-            EI.PostProcessor = txtBoxPostProcessor.Text;
+            EI.PostProcessorType = txtBoxPostProcessorType.Text;
+            EI.PostProcessorModel = txtBoxPostProcessorModel.Text;
             EI.MotorModel = txtBoxMotorModel.Text;
             EI.EnergyStorage = txtBoxEnergyStorage.Text;
             EI.BatteryCap = txtBoxBatteryCap.Text;
@@ -272,7 +212,7 @@ namespace Dyno_Geely {
             newVehicle.DCRL = EI.BatteryCap;
             newVehicle.HasOBD = EI.OBDLocation.Length <= 0 || EI.OBDLocation.Contains("无") || EI.OBDLocation.Contains("没有") ? "无" : "有";
             newVehicle.CHQXH = EI.CatConverter;
-            string[] PostProcessings = EI.PostProcessing.Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] PostProcessings = EI.PostProcessorType.Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (string item in PostProcessings) {
                 if (item.Contains("DPF")) {
                     newVehicle.DPF = item;
@@ -281,7 +221,7 @@ namespace Dyno_Geely {
                     newVehicle.SCR = item;
                 }
             }
-            string[] PostProcessors = EI.PostProcessor.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] PostProcessors = EI.PostProcessorModel.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (string item in PostProcessors) {
                 if (item.Contains("DPF")) {
                     int index = item.IndexOf(':');
@@ -330,6 +270,145 @@ namespace Dyno_Geely {
                 break;
             }
             newVehicle.CheckType = _db.GetVINCountFromNewVehicle(VI.VIN) <= 0 ? "初检" : "复检";
+        }
+
+        private void SetUseVehicle(UseVehicle useVehicle) {
+            useVehicle.VIN = VI.VIN;
+            useVehicle.CarId = _db.GetLastNewVehicleID() + 1;
+            useVehicle.HPHM = string.Empty;
+            useVehicle.HPYS = string.Empty;
+            useVehicle.CLXH = EI.VehicleModel;
+            useVehicle.JZZL = EI.RefMass.ToString();
+            useVehicle.ZDZZL = EI.MaxMass.ToString();
+            useVehicle.FDJXH = EI.EngineModel;
+            useVehicle.FDJHM = EI.EngineSN;
+            useVehicle.FDJPL = EI.EngineVolume.ToString("F");
+            useVehicle.EDZS = EI.RatedRPM.ToString();
+            useVehicle.FDJEDGL = EI.RatedPower.ToString("F");
+
+            string[] PostProcessorTypes = EI.PostProcessorType.Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string item in PostProcessorTypes) {
+                if (item.Contains("DPF")) {
+                    useVehicle.DPF = item;
+                }
+                if (item.Contains("SCR")) {
+                    useVehicle.SRC = item;
+                }
+            }
+            string[] PostProcessorModels = EI.PostProcessorModel.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string item in PostProcessorModels) {
+                if (item.Contains("DPF")) {
+                    int index = item.IndexOf(':');
+                    if (index < 0) {
+                        useVehicle.DPFXH = item;
+                    } else {
+                        useVehicle.DPFXH = item.Substring(index + 1);
+                    }
+                }
+                if (item.Contains("SCR")) {
+                    int index = item.IndexOf(':');
+                    if (index < 0) {
+                        useVehicle.SRCXH = item;
+                    } else {
+                        useVehicle.SRCXH = item.Substring(index + 1);
+                    }
+                }
+            }
+
+            useVehicle.QGS = EI.CylinderQTY.ToString();
+            useVehicle.QDDJXH = EI.MotorModel;
+            useVehicle.CNZZXH = EI.EnergyStorage;
+            useVehicle.DCRL = EI.BatteryCap;
+            useVehicle.CLSCQY = EI.VehicleMfr;
+            useVehicle.CLCCRQ = string.Empty;
+            useVehicle.LJXSLC = string.Empty;
+            useVehicle.CZXMorDW = string.Empty;
+            useVehicle.LXDH = string.Empty;
+
+            switch (EI.TestMethod) {
+            case 4:
+            case 6:
+            case 7:
+                useVehicle.RYLX = "柴油";
+                break;
+            default:
+                useVehicle.RYLX = "汽油";
+                break;
+            }
+
+            useVehicle.GYFS = EI.GetFuelSupplyString();
+            useVehicle.QDFS = string.Empty;
+            useVehicle.PPorXH = string.Empty;
+            useVehicle.BSQXS = EI.GetTransmissionString();
+            useVehicle.SYXZ = string.Empty;
+            useVehicle.CCDJRI = string.Empty;
+            useVehicle.HasOBD = EI.OBDLocation.Length <= 0 || EI.OBDLocation.Contains("无") || EI.OBDLocation.Contains("没有") ? "无" : "有";
+
+            switch (EI.TestMethod) {
+            case 0:
+                useVehicle.CheckMethod = "免检";
+                break;
+            case 1:
+                useVehicle.CheckMethod = "双怠速";
+                break;
+            case 2:
+                useVehicle.CheckMethod = "稳态工况";
+                break;
+            case 3:
+                useVehicle.CheckMethod = "简易瞬态";
+                break;
+            case 4:
+                useVehicle.CheckMethod = "加载减速";
+                break;
+            case 6:
+                useVehicle.CheckMethod = "自由加速";
+                break;
+            case 7:
+                useVehicle.CheckMethod = "林格曼黑度";
+                break;
+            case 8:
+                useVehicle.CheckMethod = "瞬态工况";
+                break;
+            case 9:
+                useVehicle.CheckMethod = "其他";
+                break;
+            }
+
+            useVehicle.CheckType = _db.GetVINCountFromNewVehicle(VI.VIN) <= 0 ? "初检" : "复检";
+            useVehicle.CLLX = string.Empty;
+            useVehicle.CXXL = string.Empty;
+            useVehicle.CSYS = string.Empty;
+            useVehicle.ZKRS = string.Empty;
+            useVehicle.DPH = string.Empty;
+            useVehicle.LTQY = string.Empty;
+            useVehicle.SYZT = string.Empty;
+            useVehicle.DWS = string.Empty;
+            useVehicle.LCBDS = string.Empty;
+            useVehicle.DCZZ = string.Empty;
+            useVehicle.JCZQ = string.Empty;
+            useVehicle.SFSYGYYB = string.Empty;
+            useVehicle.PFSP = EI.GetEmissionStageString();
+            useVehicle.CLS = string.Empty;
+            useVehicle.JQFS = string.Empty;
+            useVehicle.HPZL = string.Empty;
+            useVehicle.CCS = string.Empty;
+            useVehicle.FDJZZCJ = EI.EngineMfr;
+            useVehicle.EDNJ = string.Empty;
+            useVehicle.EDNJZS = string.Empty;
+            useVehicle.PQCLZZ = string.Empty;
+            useVehicle.PQGSL = string.Empty;
+            useVehicle.SFSYSRL = string.Empty;
+            useVehicle.CHQXH = EI.CatConverter;
+            useVehicle.ZRCL = string.Empty;
+            useVehicle.JRCZ = string.Empty;
+            useVehicle.YQBF = string.Empty;
+            useVehicle.CZLX = string.Empty;
+            useVehicle.CLLB = string.Empty;
+            useVehicle.CZDZ = string.Empty;
+            useVehicle.XQBH = string.Empty;
+            useVehicle.SFYSYCHQ = string.Empty;
+            useVehicle.ZBZL = string.Empty;
+            useVehicle.CheckStatus = "待检";
         }
 
         private void TxtBoxRatedRPM_KeyPress(object sender, KeyPressEventArgs e) {
@@ -394,8 +473,8 @@ namespace Dyno_Geely {
             txtBoxRefMass.Enabled = chkBoxNewVehicleModel.Checked;
             txtBoxMaxMass.Enabled = chkBoxNewVehicleModel.Checked;
             txtBoxOBDLocation.Enabled = chkBoxNewVehicleModel.Checked;
-            txtBoxPostProcessing.Enabled = chkBoxNewVehicleModel.Checked;
-            txtBoxPostProcessor.Enabled = chkBoxNewVehicleModel.Checked;
+            txtBoxPostProcessorType.Enabled = chkBoxNewVehicleModel.Checked;
+            txtBoxPostProcessorModel.Enabled = chkBoxNewVehicleModel.Checked;
             txtBoxMotorModel.Enabled = chkBoxNewVehicleModel.Checked;
             txtBoxEnergyStorage.Enabled = chkBoxNewVehicleModel.Checked;
             txtBoxBatteryCap.Enabled = chkBoxNewVehicleModel.Checked;
@@ -475,18 +554,65 @@ namespace Dyno_Geely {
             bCanTest = bCanTest && (maxMass > 0);
             bCanTest = bCanTest && (cmbBoxTestMethod.SelectedIndex != 5);
             if (bCanTest) {
-                NewVehicle newVehicle = new NewVehicle();
-                SetNewVehicle(newVehicle);
-                SaveNewVehicleInfoParams cmdParams = new SaveNewVehicleInfoParams() {
+                // 目前欧润特软件只能使用“在用车”登录接口
+                //NewVehicle newVehicle = new NewVehicle();
+                //SetNewVehicle(newVehicle);
+                //SaveNewVehicleInfoParams cmdParams = new SaveNewVehicleInfoParams() {
+                //    ClientID = _dynoCmd.ClientID,
+                //    Newvehicle = newVehicle
+                //};
+                //if (_dynoCmd.SaveNewVehicleInfoCmd(cmdParams, out string errMsg)) {
+                //    DialogResult = DialogResult.OK;
+                //    Close();
+                //} else {
+                //    MessageBox.Show("保存车辆登录表单至服务器时出错", "车辆登录", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //}
+
+                DateTime fromDate = DateTime.Now;
+                UseVehicle useVehicle = new UseVehicle();
+                SetUseVehicle(useVehicle);
+                SaveInUseVehicleInfoParams cmdParams = new SaveInUseVehicleInfoParams() {
                     ClientID = _dynoCmd.ClientID,
-                    Newvehicle = newVehicle
+                    Usevehicle = useVehicle
                 };
-                if (_dynoCmd.SaveNewVehicleInfoCmd(cmdParams)) {
-                    DialogResult = DialogResult.OK;
-                    Close();
+                if (_dynoCmd.SaveInUseVehicleInfoCmd(cmdParams, out string errMsg)) {
+                    // 调用“GetWaitCheckQueueInfo”接口获取 WJBGBH
+                    string WJBGBH = string.Empty;
+                    GetWaitCheckQueueInfoParams cmdParams2 = new GetWaitCheckQueueInfoParams {
+                        ClientID = _dynoCmd.ClientID,
+                        FromDate = fromDate.ToLocalTime().ToString("yyyy-M-d HH:mm:ss"),
+                        ToDate = DateTime.Now.ToLocalTime().ToString("yyyy-M-d HH:mm:ss"),
+                    };
+                    GetWaitCheckQueueInfoAckParams ackParams2 = new GetWaitCheckQueueInfoAckParams();
+                    if (_dynoCmd.GetWaitCheckQueueInfoCmd(cmdParams2, ref ackParams2, out errMsg) && ackParams2 != null) {
+                        for (int i = 0; i < ackParams2.waitCheckQueueInfo.Rows.Count; i++) {
+                            if(ackParams2.waitCheckQueueInfo.Rows[i]["VIN"].ToString() == VI.VIN) {
+                                WJBGBH = ackParams2.waitCheckQueueInfo.Rows[i]["WJBGBH"].ToString();
+                            }
+                        }
+                        // 使用上一步得到的 WJBGBH 调用“GetOneWaitVehicleInfo”接口填充服务器端 vehicleInfo 变量
+                        GetOneWaitVehicleInfoParams cmdParams3 = new GetOneWaitVehicleInfoParams {
+                            ClientID = _dynoCmd.ClientID,
+                            WJBGBH = WJBGBH,
+                            DLY = EI.Name,
+                            DLSJ = DateTime.Now.ToLocalTime().ToString("yyyy-M-d HH:mm:ss"),
+                            HPHM = string.Empty,
+                            HPYS = string.Empty
+                        };
+                        GetOneWaitVehicleInfoAckParams ackParams3 = new GetOneWaitVehicleInfoAckParams();
+                        if (_dynoCmd.GetOneWaitVehicleInfoCmd(cmdParams3, ref ackParams3, out errMsg) && ackParams3 != null) {
+                            DialogResult = DialogResult.OK;
+                            Close();
+                        } else {
+                            MessageBox.Show("获取待检车辆信息时出错", "车辆登录", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    } else {
+                        MessageBox.Show("获取待检队列时出错", "车辆登录", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 } else {
                     MessageBox.Show("保存车辆登录表单至服务器时出错", "车辆登录", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+
             } else {
                 if (txtBoxGettedVIN.TextLength <= 0) {
                     txtBoxGettedVIN.BackColor = Color.Yellow;

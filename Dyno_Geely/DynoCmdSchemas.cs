@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -273,6 +274,61 @@ namespace Dyno_Geely {
     public class SaveNewVehicleInfoParams {
         public string ClientID { get; set; }
         public NewVehicle Newvehicle { get; set; }
+    }
+
+    public class GetWaitCheckQueueInfoParams {
+        public string ClientID { get; set; }
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
+    }
+    public class GetWaitCheckQueueInfoAckParams {
+        public DataTable waitCheckQueueInfo { get; set; }
+    }
+
+    public class GetOneWaitVehicleInfoParams {
+        public string ClientID { get; set; }
+        public string WJBGBH { get; set; }
+        public string DLY { get; set; }
+        public string DLSJ { get; set; }
+        public string HPHM { get; set; }
+        public string HPYS { get; set; }
+    }
+    public class GetOneWaitVehicleInfoAckParams {
+        public string WJBGBH { get; set; }
+        public string PlatformSerialNumber { get; set; }
+        public string CarId { get; set; }
+        public string HPHM { get; set; }
+        public string HPYS { get; set; }
+        public string CheckMethod { get; set; }
+        public string SurfaceCheckMark { get; set; }
+        public string OBDCheckMark { get; set; }
+        public string DischargeCheckMark { get; set; }
+        public string CheckFinishResult { get; set; }
+        public string CheckType { get; set; }
+        public string CheckStatus { get; set; }
+        public string HPZL { get; set; }
+        public string VIN { get; set; }
+        public string CLLB { get; set; }
+        public string CLLX { get; set; }
+        public string CCDJRI { get; set; }
+        public string CLCCRQ { get; set; }
+        public string CLXH { get; set; }
+        public string ZDZZL { get; set; }
+        public string ZKRS { get; set; }
+        public string ZBZL { get; set; }
+        public string JZZL { get; set; }
+        public string FDJXH { get; set; }
+        public string FDJHM { get; set; }
+        public string GYFS { get; set; }
+        public string RYLX { get; set; }
+        public string JQFS { get; set; }
+        public string SFYSYCHQ { get; set; }
+        public string FDJEDGL { get; set; }
+        public string EDZS { get; set; }
+        public string BSQXS { get; set; }
+        public string CZXMorDW { get; set; }
+        public string DLY { get; set; }
+        public string DLSJ { get; set; }
     }
 
     public class StartGasboxPrepareParams {
@@ -812,5 +868,23 @@ namespace Dyno_Geely {
         public bool LightSmokeRealTime { get; set; }
         public double InverterTargetFreq { get; set; }
         public double InverterRealFreq { get; set; }
+    }
+
+    public class SetDataBaseInitInfoParams {
+        public string ClientID { get; set; }
+        public string ServerName { get; set; }
+        public string DataBaseName { get; set; }
+        public string UID { get; set; }
+        public string PWD { get; set; }
+    }
+
+    public class GetDataBaseInitInfoParams {
+        public string ClientID { get; set; }
+    }
+    public class GetDataBaseInitInfoAckParams {
+        public string ServerName { get; set; }
+        public string DataBaseName { get; set; }
+        public string UID { get; set; }
+        public string PWD { get; set; }
     }
 }

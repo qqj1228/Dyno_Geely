@@ -39,7 +39,7 @@ namespace Dyno_Geely {
 
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e) {
             GetSmokerPreheatSelfCheckRealTimeDataAckParams ackParams = new GetSmokerPreheatSelfCheckRealTimeDataAckParams();
-            if (_dynoCmd.GetSmokerPreheatSelfCheckRealTimeDataCmd(ref ackParams) && ackParams != null) {
+            if (_dynoCmd.GetSmokerPreheatSelfCheckRealTimeDataCmd(ref ackParams, out string errMsg) && ackParams != null) {
                 if (_timer != null && _timer.Enabled) {
                     try {
                         Invoke((EventHandler)delegate {
@@ -196,7 +196,7 @@ namespace Dyno_Geely {
                 EndTime = DateTime.Now,
                 Result = lblResult.Text
             };
-            if (!_dynoCmd.SaveSmokerPreheatSelfCheckDataCmd(cmdParams)) {
+            if (!_dynoCmd.SaveSmokerPreheatSelfCheckDataCmd(cmdParams, out string errMsg)) {
                 MessageBox.Show("执行保存烟度计预热数据命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             PreheatingDoneEventArgs args = new PreheatingDoneEventArgs {

@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -64,7 +65,7 @@ namespace Dyno_Geely {
 
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e) {
             GetLdRealTimeDataAckParams ackParams = new GetLdRealTimeDataAckParams();
-            if (_dynoCmd.GetLdRealTimeDataCmd(false, ref ackParams) && ackParams != null) {
+            if (_dynoCmd.GetLdRealTimeDataCmd(false, ref ackParams, out string errMsg) && ackParams != null) {
                 if (_timer != null && _timer.Enabled) {
                     try {
                         DataRow dr = _dtRealTime.NewRow();
@@ -104,7 +105,7 @@ namespace Dyno_Geely {
                         }
                         if (ackParams.step == 11) {
                             GetLdCheckResultAckParams ackParams2 = new GetLdCheckResultAckParams();
-                            if (_dynoCmd.GetLdCheckResultDataCmd(ref ackParams2)) {
+                            if (_dynoCmd.GetLdCheckResultDataCmd(ref ackParams2, out errMsg)) {
                                 _resultData.RatedRPM = _RatedRPM;
                                 _resultData.MaxRPM = _MaxRPM;
                                 _resultData.VelMaxHP = ackParams2.VelMaxHP;
@@ -150,7 +151,7 @@ namespace Dyno_Geely {
 
         public void StartTest(bool bStart) {
             if (bStart) {
-                if (!_dynoCmd.StartLdCheckCmd(false, 1)) {
+                if (!_dynoCmd.StartLdCheckCmd(false, 1, out string errMsg)) {
                     MessageBox.Show("执行开始加载减速检测命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _dtRealTime.Rows.Clear();
@@ -158,18 +159,22 @@ namespace Dyno_Geely {
                     _startTime = DateTime.Now;
                 }
             } else {
-                if (!_dynoCmd.StartLdCheckCmd(true, 1)) {
+                _timer.Enabled = false;
+                Thread.Sleep(_mainCfg.RealtimeInterval);
+                if (!_dynoCmd.StartLdCheckCmd(true, 1, out string errMsg) && errMsg != "ati >= 0") {
                     MessageBox.Show("执行停止加载减速检测命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                } else {
-                    _timer.Enabled = false;
-                    lblMsg.Text = "已停止加载减速检测";
+                } else if (errMsg.Length > 0) {
+                    if (errMsg == "ati >= 0") {
+                        lblMsg.Text = "已停止加载减速检测";
+                    } else if (errMsg != "OK") {
+                        lblMsg.Text = errMsg;
+                    }
                 }
             }
         }
 
         public void StopCheck() {
-            _dynoCmd.ReconnectServer();
-            _timer.Enabled = false;
+            //_dynoCmd.ReconnectServer();
             StartTest(false);
         }
 

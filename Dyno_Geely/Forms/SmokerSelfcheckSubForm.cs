@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -34,7 +35,7 @@ namespace Dyno_Geely {
 
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e) {
             GetSmokePrepareRealTimeDataAckParams ackParams = new GetSmokePrepareRealTimeDataAckParams();
-            if (_dynoCmd.GetSmokePrepareRealTimeDataCmd(true, false, ref ackParams) && ackParams != null) {
+            if (_dynoCmd.GetSmokePrepareRealTimeDataCmd(true, false, ref ackParams, out string errMsg) && ackParams != null) {
                 if (_timer != null && _timer.Enabled) {
                     try {
                         Invoke((EventHandler)delegate {
@@ -62,7 +63,7 @@ namespace Dyno_Geely {
                                 _dicResults[this] = bResult;
                                 lblResult.Text = _dicResults[this] ? "成功" : "失败";
                                 ackParams = new GetSmokePrepareRealTimeDataAckParams();
-                                _dynoCmd.GetSmokePrepareRealTimeDataCmd(false, true, ref ackParams);
+                                _dynoCmd.GetSmokePrepareRealTimeDataCmd(false, true, ref ackParams, out errMsg);
                                 SelfcheckDoneEventArgs args = new SelfcheckDoneEventArgs {
                                     Result = _dicResults[this]
                                 };
@@ -78,17 +79,22 @@ namespace Dyno_Geely {
 
         public void StartSelfcheck(bool bStart) {
             if (bStart) {
-                if (!_dynoCmd.StartSmokePrepareCmd(false, false)) {
+                if (!_dynoCmd.StartSmokePrepareCmd(false, false, out string errMsg)) {
                     MessageBox.Show("执行开始烟度计准备命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _timer.Enabled = true;
                 }
             } else {
-                if (!_dynoCmd.StartSmokePrepareCmd(true, true)) {
+                _timer.Enabled = false;
+                Thread.Sleep(_mainCfg.RealtimeInterval);
+                if (!_dynoCmd.StartSmokePrepareCmd(true, true, out string errMsg) && errMsg != "ati >= 0") {
                     MessageBox.Show("执行停止烟度计准备命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                } else {
-                    _timer.Enabled = false;
-                    lblMsg.Text = "已手动停止烟度计自检";
+                } else if (errMsg.Length > 0) {
+                    if (errMsg == "ati >= 0") {
+                        lblMsg.Text = "已手动停止烟度计自检";
+                    } else if (errMsg != "OK") {
+                        lblMsg.Text = errMsg;
+                    }
                 }
             }
         }

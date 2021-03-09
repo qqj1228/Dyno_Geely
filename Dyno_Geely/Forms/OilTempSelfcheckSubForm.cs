@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -34,7 +35,7 @@ namespace Dyno_Geely {
 
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e) {
             GetOilTempPrepareRealTimeDataAckParams ackParams = new GetOilTempPrepareRealTimeDataAckParams();
-            if (_dynoCmd.GetOilTempPrepareRealTimeDataCmd(true, false, ref ackParams) && ackParams != null) {
+            if (_dynoCmd.GetOilTempPrepareRealTimeDataCmd(true, false, ref ackParams, out string errMsg) && ackParams != null) {
                 if (_timer != null && _timer.Enabled) {
                     try {
                         Invoke((EventHandler)delegate {
@@ -43,15 +44,15 @@ namespace Dyno_Geely {
                             lblOilTempOBD.Text = ackParams.oilTempOBD.ToString("F");
                             lblLQYTempOBD.Text = ackParams.LQYTempOBD.ToString("F");
                             bool tempOK = ackParams.oilTemp > 0;
-                            tempOK = tempOK && ackParams.oilTempCY > 0;
-                            tempOK = tempOK && ackParams.oilTempOBD > 0;
-                            tempOK = tempOK && ackParams.LQYTempOBD > 0;
-                            if (tempOK && _dicStops[this]) {
+                            tempOK = tempOK || ackParams.oilTempCY > 0;
+                            tempOK = tempOK || ackParams.oilTempOBD > 0;
+                            tempOK = tempOK || ackParams.LQYTempOBD > 0;
+                            if (tempOK || _dicStops[this]) {
                                 if (++_counter >= OK_COUNTER || _dicStops[this]) {
                                     _timer.Enabled = false;
                                     _dicResults[this] = true;
                                     ackParams = new GetOilTempPrepareRealTimeDataAckParams();
-                                    _dynoCmd.GetOilTempPrepareRealTimeDataCmd(false, true, ref ackParams);
+                                    _dynoCmd.GetOilTempPrepareRealTimeDataCmd(false, true, ref ackParams, out errMsg);
                                     SelfcheckDoneEventArgs args = new SelfcheckDoneEventArgs {
                                         Result = _dicResults[this]
                                     };
@@ -69,16 +70,17 @@ namespace Dyno_Geely {
         public void StartSelfcheck(bool bStart) {
             GetOilTempPrepareRealTimeDataAckParams ackParams = new GetOilTempPrepareRealTimeDataAckParams();
             if (bStart) {
-                if (!_dynoCmd.GetOilTempPrepareRealTimeDataCmd(true, false, ref ackParams)) {
+                if (!_dynoCmd.GetOilTempPrepareRealTimeDataCmd(true, false, ref ackParams, out string errMsg)) {
                     MessageBox.Show("执行开始获取油温计实时数据命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _timer.Enabled = true;
                     _counter = 0;
                 }
             } else {
-                if (!_dynoCmd.GetOilTempPrepareRealTimeDataCmd(false, true, ref ackParams)) {
+                Thread.Sleep(_mainCfg.RealtimeInterval);
+                if (!_dynoCmd.GetOilTempPrepareRealTimeDataCmd(false, true, ref ackParams, out string errMsg)) {
                     MessageBox.Show("执行停止获取油温计实时数据命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                } else {
+                } else if (errMsg.Length > 0) {
                     _timer.Enabled = false;
                     lblMsg.Text = "已手动停止油温计自检";
                 }

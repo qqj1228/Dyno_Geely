@@ -407,9 +407,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Configs\DeviceInfo.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Configs\MainSetting.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

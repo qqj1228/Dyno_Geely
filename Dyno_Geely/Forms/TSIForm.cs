@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -70,7 +71,7 @@ namespace Dyno_Geely {
                 ignoreOil = false,
             };
             GetTsiRealTimeDataAckParams ackParams = new GetTsiRealTimeDataAckParams();
-            if (_dynoCmd.GetTSIRealTimeDataCmd(cmdParams, ref ackParams) && ackParams != null) {
+            if (_dynoCmd.GetTSIRealTimeDataCmd(cmdParams, ref ackParams, out string errMsg) && ackParams != null) {
                 if (_timer != null && _timer.Enabled) {
                     try {
                         DataRow dr = _dtRealTime.NewRow();
@@ -105,7 +106,7 @@ namespace Dyno_Geely {
                         });
                         if (ackParams.step == 8) {
                             GetTsiCheckResultAckParams ackParams2 = new GetTsiCheckResultAckParams();
-                            if (_dynoCmd.GetTSICheckResultDataCmd(ref ackParams2)) {
+                            if (_dynoCmd.GetTSICheckResultDataCmd(ref ackParams2, out errMsg)) {
                                 _resultData.HighCOLimit = ackParams2.HighCOLimit;
                                 _resultData.HighHCLimit = ackParams2.HighHCLimit;
                                 _resultData.HighCO = ackParams2.HighCO;
@@ -154,7 +155,7 @@ namespace Dyno_Geely {
 
         public void StartTest(bool bStart, bool bRetry) {
             if (bStart) {
-                if (!_dynoCmd.StartTSICheckCmd(false, bRetry)) {
+                if (!_dynoCmd.StartTSICheckCmd(false, bRetry, out string errMsg)) {
                     MessageBox.Show("执行开始双怠速检测命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _dtRealTime.Rows.Clear();
@@ -162,18 +163,22 @@ namespace Dyno_Geely {
                     _startTime = DateTime.Now;
                 }
             } else {
-                if (!_dynoCmd.StartTSICheckCmd(true, bRetry)) {
+                _timer.Enabled = false;
+                Thread.Sleep(_mainCfg.RealtimeInterval);
+                if (!_dynoCmd.StartTSICheckCmd(true, bRetry, out string errMsg) && errMsg != "ati >= 0") {
                     MessageBox.Show("执行停止双怠速检测命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                } else {
-                    _timer.Enabled = false;
-                    lblMsg.Text = "已停止双怠速检测";
+                } else if (errMsg.Length > 0) {
+                    if (errMsg == "ati >= 0") {
+                        lblMsg.Text = "已停止双怠速检测";
+                    } else if (errMsg != "OK") {
+                        lblMsg.Text = errMsg;
+                    }
                 }
             }
         }
 
         public void StopCheck() {
-            System.Threading.Thread.Sleep(_mainCfg.RealtimeInterval);
-            _dynoCmd.ReconnectServer();
+            //_dynoCmd.ReconnectServer();
             StartTest(false, false);
         }
 

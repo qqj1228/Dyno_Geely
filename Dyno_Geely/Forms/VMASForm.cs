@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -86,7 +87,7 @@ namespace Dyno_Geely {
 
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e) {
             GetVmasRealTimeDataAckParams ackParams = new GetVmasRealTimeDataAckParams();
-            if (_dynoCmd.GetVMASRealTimeDataCmd(_speedOverTime, ref ackParams) && ackParams != null) {
+            if (_dynoCmd.GetVMASRealTimeDataCmd(_speedOverTime, ref ackParams, out string errMsg) && ackParams != null) {
                 if (_timer != null && _timer.Enabled) {
                     try {
                         DataRow dr = _dtRealTime.NewRow();
@@ -135,7 +136,7 @@ namespace Dyno_Geely {
                         // 判断“速度连续超差时间”是否大于2秒
                         if (ackParams.speedContinuityOverProofTime > 2) {
                             GetVmasCheckResultAckParams ackParams2 = new GetVmasCheckResultAckParams();
-                            if (_dynoCmd.GetVMASCheckResultDataCmd(ref ackParams2)) {
+                            if (_dynoCmd.GetVMASCheckResultDataCmd(ref ackParams2, out errMsg)) {
                                 _resultData.HCLimit = ackParams2.HCLimit;
                                 _resultData.COLimit = ackParams2.COLimit;
                                 _resultData.NOLimit = ackParams2.NOLimit;
@@ -158,7 +159,7 @@ namespace Dyno_Geely {
                         }
                         if (ackParams.step == 3) {
                             GetVmasCheckResultAckParams ackParams2 = new GetVmasCheckResultAckParams();
-                            if (_dynoCmd.GetVMASCheckResultDataCmd(ref ackParams2)) {
+                            if (_dynoCmd.GetVMASCheckResultDataCmd(ref ackParams2, out errMsg)) {
                                 _resultData.HCLimit = ackParams2.HCLimit;
                                 _resultData.COLimit = ackParams2.COLimit;
                                 _resultData.NOLimit = ackParams2.NOLimit;
@@ -205,7 +206,7 @@ namespace Dyno_Geely {
         public void StartTest(bool bStart, bool bRetry) {
             StartVmasCheckAckParams ackParams = new StartVmasCheckAckParams();
             if (bStart) {
-                if (!_dynoCmd.StartVMASCheckCmd(false, bRetry, ref ackParams)) {
+                if (!_dynoCmd.StartVMASCheckCmd(false, bRetry, ref ackParams, out string errMsg)) {
                     MessageBox.Show("执行开始简易瞬态工况检测命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _speedRange = ackParams.VmasCheckSpeedSpan;
@@ -219,18 +220,22 @@ namespace Dyno_Geely {
                     _startTime = DateTime.Now;
                 }
             } else {
-                if (!_dynoCmd.StartVMASCheckCmd(true, bRetry, ref ackParams)) {
+                _timer.Enabled = false;
+                Thread.Sleep(_mainCfg.RealtimeInterval);
+                if (!_dynoCmd.StartVMASCheckCmd(true, bRetry, ref ackParams, out string errMsg) && errMsg != "ati >= 0") {
                     MessageBox.Show("执行停止简易瞬态工况检测命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                } else {
-                    _timer.Enabled = false;
-                    lblMsg.Text = "已停止简易瞬态工况检测";
+                } else if (errMsg.Length > 0) {
+                    if (errMsg == "ati >= 0") {
+                        lblMsg.Text = "已停止简易瞬态工况检测";
+                    } else if (errMsg != "OK") {
+                        lblMsg.Text = errMsg;
+                    }
                 }
             }
         }
 
         public void StopCheck() {
-            System.Threading.Thread.Sleep(_mainCfg.RealtimeInterval);
-            _dynoCmd.ReconnectServer();
+            //_dynoCmd.ReconnectServer();
             StartTest(false, false);
         }
 

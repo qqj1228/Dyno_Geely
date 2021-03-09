@@ -25,14 +25,11 @@ namespace Dyno_Geely {
     public class Config {
         private readonly Logger m_log;
         public ConfigFile<MainSetting> Main { get; set; }
-        public ConfigFile<DeviceInfo> Device { get; set; }
 
         public Config(Logger logger) {
             m_log = logger;
             Main = new ConfigFile<MainSetting>(".\\Configs\\MainSetting.xml");
-            Device = new ConfigFile<DeviceInfo>(".\\Configs\\DeviceInfo.xml");
             LoadConfig(Main);
-            LoadConfig(Device);
             LoadVMASSpeed(".\\Configs\\VMASSpeed.csv");
         }
 

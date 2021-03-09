@@ -30,7 +30,7 @@ namespace Dyno_Geely {
 
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e) {
             GetOilThermometerPreheatSelfCheckRealTimeDataAckParams ackParams = new GetOilThermometerPreheatSelfCheckRealTimeDataAckParams();
-            if (_dynoCmd.GetOilThermometerPreheatSelfCheckRealTimeDataCmd(ref ackParams) && ackParams != null) {
+            if (_dynoCmd.GetOilThermometerPreheatSelfCheckRealTimeDataCmd(ref ackParams, out string errMsg) && ackParams != null) {
                 if (_timer != null && _timer.Enabled) {
                     try {
                         Invoke((EventHandler)delegate {
@@ -135,7 +135,7 @@ namespace Dyno_Geely {
                 ReError = lblErrRel.Text,
                 Result = lblResult.Text
             };
-            if (!_dynoCmd.SaveOilThermometerPreheatSelfCheckCmd(cmdParams)) {
+            if (!_dynoCmd.SaveOilThermometerPreheatSelfCheckCmd(cmdParams, out string errMsg)) {
                 MessageBox.Show("执行保存油温计预热数据命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             PreheatingDoneEventArgs args = new PreheatingDoneEventArgs {

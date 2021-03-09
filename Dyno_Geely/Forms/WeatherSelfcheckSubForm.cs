@@ -36,14 +36,14 @@ namespace Dyno_Geely {
 
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e) {
             GetWeatherPrepareRealTimeDataAckParams ackParams = new GetWeatherPrepareRealTimeDataAckParams();
-            if (_dynoCmd.GetWeatherPrepareRealTimeDataCmd(true, false, ref ackParams) && ackParams != null) {
+            if (_dynoCmd.GetWeatherPrepareRealTimeDataCmd(true, false, ref ackParams, out string errMsg) && ackParams != null) {
                 if (_timer != null && _timer.Enabled) {
                     try {
                         Invoke((EventHandler)delegate {
                             lblTemperature.Text = ackParams.temperature.ToString("F");
                             lblHumidity.Text = ackParams.humidity.ToString("F");
                             lblPressure.Text = ackParams.amibientPressure.ToString("F");
-                            if ((ackParams.temperature > 0 && ackParams.humidity > 0 && ackParams.amibientPressure > 0) || _dicStops[this]) {
+                            if ((/*ackParams.temperature > 0 && */ackParams.humidity > 0 && ackParams.amibientPressure > 0) || _dicStops[this]) {
                                 if (++_counter >= OK_COUNTER || _dicStops[this]) {
                                     _envData.Temperature = ackParams.temperature;
                                     _envData.Humidity = ackParams.humidity;
@@ -51,7 +51,7 @@ namespace Dyno_Geely {
                                     _timer.Enabled = false;
                                     _dicResults[this] = true;
                                     ackParams = new GetWeatherPrepareRealTimeDataAckParams();
-                                    _dynoCmd.GetWeatherPrepareRealTimeDataCmd(false, true, ref ackParams);
+                                    _dynoCmd.GetWeatherPrepareRealTimeDataCmd(false, true, ref ackParams, out errMsg);
                                     SelfcheckDoneEventArgs args = new SelfcheckDoneEventArgs {
                                         Result = _dicResults[this]
                                     };
@@ -69,14 +69,14 @@ namespace Dyno_Geely {
         public void StartSelfcheck(bool bStart) {
             GetWeatherPrepareRealTimeDataAckParams ackParams = new GetWeatherPrepareRealTimeDataAckParams();
             if (bStart) {
-                if (!_dynoCmd.GetWeatherPrepareRealTimeDataCmd(true, false, ref ackParams)) {
+                if (!_dynoCmd.GetWeatherPrepareRealTimeDataCmd(true, false, ref ackParams, out string errMsg)) {
                     MessageBox.Show("执行开始获取气象站实时数据命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _timer.Enabled = true;
                     _counter = 0;
                 }
             } else {
-                if (!_dynoCmd.GetWeatherPrepareRealTimeDataCmd(false, true, ref ackParams)) {
+                if (!_dynoCmd.GetWeatherPrepareRealTimeDataCmd(false, true, ref ackParams, out string errMsg)) {
                     MessageBox.Show("执行停止获取气象站实时数据命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } else {
                     _timer.Enabled = false;

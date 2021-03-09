@@ -14,8 +14,14 @@ CREATE TABLE ProAsm_G4.dbo.SH_VehicleInfo (
     VehicleModel VARCHAR(100) NOT NULL, -- 车型
     OpenInfoSN VARCHAR(29), -- 信息公开号
     TestQTY INT NOT NULL DEFAULT(0), -- 检测次数
+    Upload INT NOT NULL DEFAULT(0), -- 数据是否已上传，1：已上传，0：未上传
+    Skip INT NOT NULL DEFAULT(0), -- 是否跳过不上传，1：不上传，0：要上传
 )
 GO
+
+-- 在测功机的已检车辆表内增加2个字段
+ALTER TABLE ProAsm_G4.dbo.FinishCheckVehicles ADD Upload INT NOT NULL DEFAULT(0) -- 表示是否已上传，1：已上传，0：未上传
+ALTER TABLE ProAsm_G4.dbo.FinishCheckVehicles ADD Skip INT NOT NULL DEFAULT(0) -- 表示是否需要跳过上传，1：跳过上传，0：不跳过上传
 
 -- 车型排放信息表
 CREATE TABLE ProAsm_G4.dbo.SH_EmissionInfo (
@@ -37,8 +43,8 @@ CREATE TABLE ProAsm_G4.dbo.SH_EmissionInfo (
     RefMass INT NOT NULL, -- 基准质量(kg)
     MaxMass INT NOT NULL, -- 最大设计总质量(kg)
     OBDLocation VARCHAR(50), -- OBD接口位置
-    PostProcessing VARCHAR(100), -- 后处理类型
-    PostProcessor VARCHAR(100), -- 后处理型号
+    PostProcessorType VARCHAR(100), -- 后处理类型
+    PostProcessorModel VARCHAR(100), -- 后处理型号
     MotorModel VARCHAR(100), -- 电动机型号
     EnergyStorage VARCHAR(100), -- 储能装置型号
     BatteryCap VARCHAR(50), -- 电池容量

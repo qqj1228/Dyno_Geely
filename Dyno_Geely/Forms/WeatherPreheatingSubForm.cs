@@ -36,7 +36,7 @@ namespace Dyno_Geely {
 
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e) {
             GetWeatherCheckRealTimeDataAckParams ackParams = new GetWeatherCheckRealTimeDataAckParams();
-            if (_dynoCmd.GetWeatherCheckRealTimeDataCmd(ref ackParams) && ackParams != null) {
+            if (_dynoCmd.GetWeatherCheckRealTimeDataCmd(ref ackParams, out string errMsg) && ackParams != null) {
                 if (_timer != null && _timer.Enabled) {
                     try {
                         Invoke((EventHandler)delegate {
@@ -191,7 +191,7 @@ namespace Dyno_Geely {
                 InstrumentPressure = Convert.ToDouble(lblPressure.Text),
                 Result = lblResult.Text
             };
-            if (!_dynoCmd.SaveWeatherCheckDataCmd(cmdParams)) {
+            if (!_dynoCmd.SaveWeatherCheckDataCmd(cmdParams, out string errMsg)) {
                 MessageBox.Show("执行保存气象站预热数据命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             PreheatingDoneEventArgs args = new PreheatingDoneEventArgs {

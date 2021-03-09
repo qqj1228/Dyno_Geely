@@ -68,7 +68,7 @@ namespace Dyno_Geely {
             frmLoading.BackgroundWorkAction = () => {
                 frmLoading.CurrentMsg = new KeyValuePair<int, string>(50, "退出测功机服务器中。。。");
                 try {
-                    _dynoCmd.LogoutCmd();
+                    _dynoCmd.LogoutCmd(out string errMsg);
                     frmLoading.CurrentMsg = new KeyValuePair<int, string>(100, "已安全退出测功机服务器");
                 } catch (Exception ex) {
                     _log.TraceError("Logout error: " + ex.Message);
@@ -103,8 +103,8 @@ namespace Dyno_Geely {
                     break;
                 }
 #if DEBUG
-                //SelfcheckForm f_prepare = new SelfcheckForm(_dynoCmd, _cfg.Main.Data, envData, bDiesel);
-                //f_prepare.ShowDialog();
+                SelfcheckForm f_prepare = new SelfcheckForm(_dynoCmd, _cfg.Main.Data, envData, bDiesel);
+                f_prepare.ShowDialog();
 
                 //LugdownForm f_Lugdown = new LugdownForm(f_vehicleLogin.VI.VIN, _dynoCmd, _cfg.Main.Data, _db, envData, _log);
                 //f_Lugdown.ShowDialog();
