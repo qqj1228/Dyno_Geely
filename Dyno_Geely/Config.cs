@@ -23,11 +23,11 @@ namespace Dyno_Geely {
     }
 
     public class Config {
-        private readonly Logger m_log;
+        private readonly Logger _log;
         public ConfigFile<MainSetting> Main { get; set; }
 
         public Config(Logger logger) {
-            m_log = logger;
+            _log = logger;
             Main = new ConfigFile<MainSetting>(".\\Configs\\MainSetting.xml");
             LoadConfig(Main);
             LoadVMASSpeed(".\\Configs\\VMASSpeed.csv");
@@ -41,7 +41,7 @@ namespace Dyno_Geely {
                     reader.Close();
                 }
             } catch (Exception ex) {
-                m_log.TraceError("Using default " + config.Name + " because of failed to load them, reason: " + ex.Message);
+                _log.TraceError("Using default " + config.Name + " because of failed to load them, reason: " + ex.Message);
                 config.Data = new T();
                 MessageBox.Show(null,
                     string.Format("{0}配置文件加载失败，{1}\n已使用默认配置启动软件",
@@ -58,12 +58,14 @@ namespace Dyno_Geely {
             }
             try {
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
+                XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
+                namespaces.Add(string.Empty, string.Empty);
                 using (TextWriter writer = new StreamWriter(config.File_xml)) {
-                    xmlSerializer.Serialize(writer, config.Data);
+                    xmlSerializer.Serialize(writer, config.Data, namespaces);
                     writer.Close();
                 }
             } catch (Exception ex) {
-                m_log.TraceError("Save " + config.Name + " error, reason: " + ex.Message);
+                _log.TraceError("Save " + config.Name + " error, reason: " + ex.Message);
             }
         }
 
@@ -87,9 +89,9 @@ namespace Dyno_Geely {
                         }
                     }
                 }
-            } catch (Exception) {
-
-                throw;
+            } catch (Exception ex) {
+                _log.TraceError("Load VMAS speed .csv file error, reason: " + ex.Message);
+                MessageBox.Show(null, "加载 VMAS 速度曲线文件出错：" + ex.Message, "加载配置文件失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
