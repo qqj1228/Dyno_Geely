@@ -14,6 +14,7 @@ namespace Dyno_Geely {
         private readonly ModelLocal _db;
         private readonly DynoCmd _dynoCmd;
         private float _lastHeight;
+        private List<bool> _selfChecks;
 
         public MainForm(Logger log, Config cfg, ModelLocal db, DynoCmd dynoCmd) {
             InitializeComponent();
@@ -22,6 +23,7 @@ namespace Dyno_Geely {
             _cfg = cfg;
             _db = db;
             _dynoCmd = dynoCmd;
+            _selfChecks = new List<bool>();
         }
 
         private void ResizeContrlFont(Control control, float scale) {
@@ -94,18 +96,42 @@ namespace Dyno_Geely {
             f_vehicleLogin.ShowDialog();
             if (f_vehicleLogin.DialogResult == DialogResult.OK) {
                 EnvironmentData envData = new EnvironmentData();
+
                 bool bDiesel = false;
                 switch (f_vehicleLogin.EI.TestMethod) {
+                case 1:
+                    _selfChecks = _cfg.SelfCheck.Data.TSI;
+                    break;
+                case 2:
+                    _selfChecks = _cfg.SelfCheck.Data.ASM;
+                    break;
+                case 3:
+                    _selfChecks = _cfg.SelfCheck.Data.VMAS;
+                    break;
                 case 4:
-                case 6:
-                case 7:
+                    _selfChecks = _cfg.SelfCheck.Data.LD;
                     bDiesel = true;
                     break;
+                case 6:
+                    _selfChecks = _cfg.SelfCheck.Data.FAL;
+                    bDiesel = true;
+                    break;
+                case 7:
+                    _selfChecks = _cfg.SelfCheck.Data.Default;
+                    bDiesel = true;
+                    break;
+                default:
+                    _selfChecks = _cfg.SelfCheck.Data.Default;
+                    break;
                 }
-#if DEBUG
-                SelfcheckForm f_prepare = new SelfcheckForm(_dynoCmd, _cfg.Main.Data, envData, bDiesel);
-                f_prepare.ShowDialog();
+                if (_selfChecks.Count != 6) {
+                    _selfChecks = _cfg.SelfCheck.Data.Default;
+                    MessageBox.Show("仪器准备配置出错，将使用默认配置！", "仪器准备配置出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
 
+                SelfcheckForm f_prepare = new SelfcheckForm(_dynoCmd, _cfg.Main.Data, _selfChecks, envData, bDiesel);
+                f_prepare.ShowDialog();
+#if DEBUG
                 //LugdownForm f_Lugdown = new LugdownForm(f_vehicleLogin.VI.VIN, _dynoCmd, _cfg.Main.Data, _db, envData, _log);
                 //f_Lugdown.ShowDialog();
                 //ASMForm f_ASM = new ASMForm(f_vehicleLogin.VI.VIN, _dynoCmd, _cfg.Main.Data, _db, envData, _log);
@@ -117,8 +143,6 @@ namespace Dyno_Geely {
                 VMASForm f_VMAS = new VMASForm(f_vehicleLogin.VI.VIN, _dynoCmd, _cfg.Main.Data, _db, envData, _log);
                 f_VMAS.ShowDialog();
 #else
-                SelfcheckForm f_prepare = new SelfcheckForm(_dynoCmd, _cfg.Main.Data, envData, bDiesel);
-                f_prepare.ShowDialog();
                 if (f_prepare.DialogResult == DialogResult.Yes) {
                     switch (f_vehicleLogin.EI.TestMethod) {
                     case 0:

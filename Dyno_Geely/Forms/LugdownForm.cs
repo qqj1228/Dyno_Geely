@@ -27,6 +27,7 @@ namespace Dyno_Geely {
         private DateTime _startTime;
         private readonly int _RatedRPM;
         private int _MaxRPM;
+        private bool _canGetMaxRpm;
 
         public LugdownForm(string VIN, DynoCmd dynoCmd, MainSetting mainCfg, ModelLocal db, EnvironmentData envData, Logger log) {
             InitializeComponent();
@@ -41,6 +42,7 @@ namespace Dyno_Geely {
             _db.GetEmissionInfoFromVIN(_VIN, ei);
             _RatedRPM = ei.RatedRPM;
             _MaxRPM = -1;
+            _canGetMaxRpm = false;
 
             _dtRealTime = new DataTable("LugdownRealTime");
             _dtRealTime.Columns.Add("VIN");
@@ -65,7 +67,7 @@ namespace Dyno_Geely {
 
         private void OnTimer(object source, System.Timers.ElapsedEventArgs e) {
             GetLdRealTimeDataAckParams ackParams = new GetLdRealTimeDataAckParams();
-            if (_dynoCmd.GetLdRealTimeDataCmd(false, ref ackParams, out string errMsg) && ackParams != null) {
+            if (_dynoCmd.GetLdRealTimeDataCmd(_canGetMaxRpm, ref ackParams, out string errMsg) && ackParams != null) {
                 if (_timer != null && _timer.Enabled) {
                     try {
                         DataRow dr = _dtRealTime.NewRow();
@@ -98,12 +100,20 @@ namespace Dyno_Geely {
                                 ind.Value = ackParams.Speed;
                             }
                         });
+                        int maxRPM = -1;
                         if (ackParams.step == 0) {
+                            if (ackParams.msg.Contains("点击[获取转速]")) {
+                                maxRPM = ackParams.RPM;
+                                _canGetMaxRpm = true;
+                            }
                             if (_MaxRPM < ackParams.RPM) {
                                 _MaxRPM = ackParams.RPM;
                             }
+                        } else {
+                            _canGetMaxRpm = false;
                         }
-                        if (ackParams.step == 11) {
+                        _MaxRPM = maxRPM > 0 ? maxRPM : _MaxRPM;
+                        if (ackParams.step == 11 && !f_result.Visible) {
                             GetLdCheckResultAckParams ackParams2 = new GetLdCheckResultAckParams();
                             if (_dynoCmd.GetLdCheckResultDataCmd(ref ackParams2, out errMsg)) {
                                 _resultData.RatedRPM = _RatedRPM;
@@ -117,12 +127,10 @@ namespace Dyno_Geely {
                                 _resultData.NOx80Limit = ackParams2.NOx80Limit;
                                 _resultData.NOx80 = ackParams2.NOx80;
                                 _resultData.Result = ackParams2.LdCheckeResult;
-                                if (!f_result.Visible) {
-                                    Invoke((EventHandler)delegate {
-                                        f_result.ShowResult(_resultData);
-                                        f_result.ShowDialog();
-                                    });
-                                }
+                                Invoke((EventHandler)delegate {
+                                    f_result.ShowResult(_resultData);
+                                    f_result.ShowDialog();
+                                });
                             } else {
                                 _log.TraceError("GetLdCheckResultDataCmd() return false");
                                 MessageBox.Show("执行获取加载减速检测结果数据命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -174,7 +182,6 @@ namespace Dyno_Geely {
         }
 
         public void StopCheck() {
-            //_dynoCmd.ReconnectServer();
             StartTest(false);
         }
 

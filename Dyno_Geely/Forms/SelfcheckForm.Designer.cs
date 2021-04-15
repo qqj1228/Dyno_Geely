@@ -25,6 +25,8 @@
         private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SelfcheckForm));
             this.layoutMain = new DevComponents.DotNetBar.Layout.LayoutControl();
+            this.btnBeamUp = new System.Windows.Forms.Button();
+            this.btnBeamDown = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnSkip = new System.Windows.Forms.Button();
             this.pnlForm = new System.Windows.Forms.Panel();
@@ -41,6 +43,8 @@
             this.layoutControlItem5 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem6 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem7 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem10 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
+            this.layoutControlItem11 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem8 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutControlItem9 = new DevComponents.DotNetBar.Layout.LayoutControlItem();
             this.layoutMain.SuspendLayout();
@@ -49,6 +53,8 @@
             // layoutMain
             // 
             this.layoutMain.BackColor = System.Drawing.Color.Transparent;
+            this.layoutMain.Controls.Add(this.btnBeamUp);
+            this.layoutMain.Controls.Add(this.btnBeamDown);
             this.layoutMain.Controls.Add(this.btnCancel);
             this.layoutMain.Controls.Add(this.btnSkip);
             this.layoutMain.Controls.Add(this.pnlForm);
@@ -73,29 +79,53 @@
             this.layoutControlItem5,
             this.layoutControlItem6,
             this.layoutControlItem7,
+            this.layoutControlItem10,
+            this.layoutControlItem11,
             this.layoutControlItem8,
             this.layoutControlItem9});
             this.layoutMain.Size = new System.Drawing.Size(784, 561);
             this.layoutMain.TabIndex = 0;
             // 
+            // btnBeamUp
+            // 
+            this.btnBeamUp.Location = new System.Drawing.Point(200, 508);
+            this.btnBeamUp.Margin = new System.Windows.Forms.Padding(0);
+            this.btnBeamUp.Name = "btnBeamUp";
+            this.btnBeamUp.Size = new System.Drawing.Size(188, 48);
+            this.btnBeamUp.TabIndex = 8;
+            this.btnBeamUp.Text = "举升上升";
+            this.btnBeamUp.UseVisualStyleBackColor = true;
+            this.btnBeamUp.Click += new System.EventHandler(this.BtnBeamUp_Click);
+            // 
+            // btnBeamDown
+            // 
+            this.btnBeamDown.Location = new System.Drawing.Point(4, 508);
+            this.btnBeamDown.Margin = new System.Windows.Forms.Padding(0);
+            this.btnBeamDown.Name = "btnBeamDown";
+            this.btnBeamDown.Size = new System.Drawing.Size(188, 48);
+            this.btnBeamDown.TabIndex = 7;
+            this.btnBeamDown.Text = "举升下降";
+            this.btnBeamDown.UseVisualStyleBackColor = true;
+            this.btnBeamDown.Click += new System.EventHandler(this.BtnBeamDown_Click);
+            // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(396, 508);
+            this.btnCancel.Location = new System.Drawing.Point(592, 508);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(0);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(384, 48);
-            this.btnCancel.TabIndex = 8;
+            this.btnCancel.Size = new System.Drawing.Size(188, 48);
+            this.btnCancel.TabIndex = 10;
             this.btnCancel.Text = "取消自检";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.BtnCancel_Click);
             // 
             // btnSkip
             // 
-            this.btnSkip.Location = new System.Drawing.Point(4, 508);
+            this.btnSkip.Location = new System.Drawing.Point(396, 508);
             this.btnSkip.Margin = new System.Windows.Forms.Padding(0);
             this.btnSkip.Name = "btnSkip";
-            this.btnSkip.Size = new System.Drawing.Size(384, 48);
-            this.btnSkip.TabIndex = 7;
+            this.btnSkip.Size = new System.Drawing.Size(188, 48);
+            this.btnSkip.TabIndex = 9;
             this.btnSkip.Text = "跳过当前步骤";
             this.btnSkip.UseVisualStyleBackColor = true;
             this.btnSkip.Click += new System.EventHandler(this.BtnSkip_Click);
@@ -247,6 +277,24 @@
             this.layoutControlItem7.Width = 100;
             this.layoutControlItem7.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
+            // layoutControlItem10
+            // 
+            this.layoutControlItem10.Control = this.btnBeamDown;
+            this.layoutControlItem10.Height = 10;
+            this.layoutControlItem10.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem10.Name = "layoutControlItem10";
+            this.layoutControlItem10.Width = 25;
+            this.layoutControlItem10.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
+            // layoutControlItem11
+            // 
+            this.layoutControlItem11.Control = this.btnBeamUp;
+            this.layoutControlItem11.Height = 10;
+            this.layoutControlItem11.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            this.layoutControlItem11.Name = "layoutControlItem11";
+            this.layoutControlItem11.Width = 25;
+            this.layoutControlItem11.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
+            // 
             // layoutControlItem8
             // 
             this.layoutControlItem8.Control = this.btnSkip;
@@ -254,7 +302,7 @@
             this.layoutControlItem8.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             this.layoutControlItem8.MinSize = new System.Drawing.Size(32, 20);
             this.layoutControlItem8.Name = "layoutControlItem8";
-            this.layoutControlItem8.Width = 50;
+            this.layoutControlItem8.Width = 25;
             this.layoutControlItem8.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
             // layoutControlItem9
@@ -264,7 +312,7 @@
             this.layoutControlItem9.HeightType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             this.layoutControlItem9.MinSize = new System.Drawing.Size(32, 20);
             this.layoutControlItem9.Name = "layoutControlItem9";
-            this.layoutControlItem9.Width = 50;
+            this.layoutControlItem9.Width = 25;
             this.layoutControlItem9.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
             // SelfcheckForm
@@ -306,5 +354,9 @@
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem7;
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem8;
         private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem9;
+        private System.Windows.Forms.Button btnBeamDown;
+        private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem10;
+        private System.Windows.Forms.Button btnBeamUp;
+        private DevComponents.DotNetBar.Layout.LayoutControlItem layoutControlItem11;
     }
 }

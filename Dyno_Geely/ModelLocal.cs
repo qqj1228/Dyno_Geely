@@ -102,6 +102,12 @@ namespace Dyno_Geely {
             return ret == null ? -1 : (int)ret;
         }
 
+        public int GetVINCountFromUseVehicle(string strVIN) {
+            string strSQL = "select count(VIN) from UseVehicle where VIN = '" + strVIN + "'";
+            object ret = QueryOne(strSQL);
+            return ret == null ? -1 : (int)ret;
+        }
+
         /// <summary>
         /// 输入VIN获取EmissionInfo信息，返回找到的VIN在数据库中的主键ID值，若未找到则返回-1
         /// </summary>
@@ -175,7 +181,8 @@ namespace Dyno_Geely {
         }
 
         public int GetLastNewVehicleID() {
-            string strSQL = "select top(1) WJBGBH from OBDResult order by WJBGBH desc";
+            //string strSQL = "select top(1) WJBGBH from OBDResult order by WJBGBH desc";
+            string strSQL = "select top(1) ID from SH_VehicleInfo order by ID desc";
             object ret = QueryOne(strSQL);
             return ret == null ? -1 : (int)ret;
         }

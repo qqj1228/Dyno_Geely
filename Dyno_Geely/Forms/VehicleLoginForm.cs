@@ -234,9 +234,9 @@ namespace Dyno_Geely {
                 if (item.Contains("SCR")) {
                     int index = item.IndexOf(':');
                     if (index < 0) {
-                        newVehicle.SRCXH = item;
+                        newVehicle.SCRXH = item;
                     } else {
-                        newVehicle.SRCXH = item.Substring(index + 1);
+                        newVehicle.SCRXH = item.Substring(index + 1);
                     }
                 }
             }
@@ -374,7 +374,7 @@ namespace Dyno_Geely {
                 break;
             }
 
-            useVehicle.CheckType = _db.GetVINCountFromNewVehicle(VI.VIN) <= 0 ? "初检" : "复检";
+            useVehicle.CheckType = _db.GetVINCountFromUseVehicle(VI.VIN) <= 0 ? "初检" : "复检";
             useVehicle.CLLX = string.Empty;
             useVehicle.CXXL = string.Empty;
             useVehicle.CSYS = string.Empty;
@@ -409,12 +409,6 @@ namespace Dyno_Geely {
             useVehicle.SFYSYCHQ = string.Empty;
             useVehicle.ZBZL = string.Empty;
             useVehicle.CheckStatus = "待检";
-        }
-
-        private void TxtBoxRatedRPM_KeyPress(object sender, KeyPressEventArgs e) {
-            if (e.KeyChar != (char)Keys.Back && !char.IsDigit(e.KeyChar)) {
-                e.Handled = true;
-            }
         }
 
         private void VehicleLoginForm_Load(object sender, EventArgs e) {
@@ -452,7 +446,7 @@ namespace Dyno_Geely {
 
             chkBoxNewVehicleModel.Checked = false;
             UpdateVehicleModelUI();
-            chkBoxAutoStart.Checked = true;
+            //chkBoxAutoStart.Checked = true;
         }
 
         private void UpdateVehicleModelUI() {
@@ -586,18 +580,20 @@ namespace Dyno_Geely {
                     GetWaitCheckQueueInfoAckParams ackParams2 = new GetWaitCheckQueueInfoAckParams();
                     if (_dynoCmd.GetWaitCheckQueueInfoCmd(cmdParams2, ref ackParams2, out errMsg) && ackParams2 != null) {
                         for (int i = 0; i < ackParams2.waitCheckQueueInfo.Rows.Count; i++) {
-                            if(ackParams2.waitCheckQueueInfo.Rows[i]["VIN"].ToString() == VI.VIN) {
+                            if (ackParams2.waitCheckQueueInfo.Rows[i]["VIN"].ToString() == VI.VIN) {
                                 WJBGBH = ackParams2.waitCheckQueueInfo.Rows[i]["WJBGBH"].ToString();
                             }
                         }
                         // 使用上一步得到的 WJBGBH 调用“GetOneWaitVehicleInfo”接口填充服务器端 vehicleInfo 变量
                         GetOneWaitVehicleInfoParams cmdParams3 = new GetOneWaitVehicleInfoParams {
                             ClientID = _dynoCmd.ClientID,
+                            IsInUseCar = true,
                             WJBGBH = WJBGBH,
                             DLY = EI.Name,
                             DLSJ = DateTime.Now.ToLocalTime().ToString("yyyy-M-d HH:mm:ss"),
                             HPHM = string.Empty,
-                            HPYS = string.Empty
+                            HPYS = string.Empty,
+                            VIN = VI.VIN
                         };
                         GetOneWaitVehicleInfoAckParams ackParams3 = new GetOneWaitVehicleInfoAckParams();
                         if (_dynoCmd.GetOneWaitVehicleInfoCmd(cmdParams3, ref ackParams3, out errMsg) && ackParams3 != null) {
@@ -662,6 +658,18 @@ namespace Dyno_Geely {
             if (_mainCfg.DynoParamIP.Length <= 0) {
                 if (_db.GetEmissionInfoFromVehicleModel(cmbBoxSelectVehicleModel.Text, EI)) {
                     FillInputTextBox();
+                }
+            }
+        }
+
+        private void TxtBox_KeyPress(object sender, KeyPressEventArgs e) {
+            if (sender is TextBox txtBox) {
+                if (e.KeyChar != '\b' && e.KeyChar != '.' && !char.IsDigit(e.KeyChar)) {
+                    // 允许退格、删除、小数点和数字输入
+                    e.Handled = true;
+                } else if (e.KeyChar == '.' && txtBox.Text.Contains(".")) {
+                    // 只允许输入一个小数点
+                    e.Handled = true;
                 }
             }
         }

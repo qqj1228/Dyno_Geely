@@ -209,7 +209,6 @@ namespace Dyno_Geely {
         private void BtnStop_Click(object sender, EventArgs e) {
             _timer.Enabled = false;
             System.Threading.Thread.Sleep(_mainCfg.RealtimeInterval);
-            //_dynoCmd.ReconnectServer();
             StartFlowmeterCheckParams cmdParams = new StartFlowmeterCheckParams {
                 ClientID = _dynoCmd.ClientID,
                 stopCheck = true,

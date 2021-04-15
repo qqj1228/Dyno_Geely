@@ -61,7 +61,7 @@ namespace LibBase {
         public void TestConnect() {
             using (DbConnection_IT dbConn = new DbConnection_IT(_param.DataBaseType, _strConn)) {
                 try {
-                dbConn.DbConnection.Open();
+                    dbConn.DbConnection.Open();
                 } catch (Exception ex) {
                     _log.TraceError("TestConnect error: " + ex.Message);
                     throw;
@@ -363,10 +363,12 @@ namespace LibBase {
         /// <param name="dt"></param>
         /// <param name="whereCol"></param>
         /// <param name="whereVals"></param>
-        public int UpdateRecords(DataTable dt, string whereCol, List<string> whereVals) {
+        public int UpdateRecords(DataTable dt, string whereCol, List<string> whereVals, string primaryKey = "ID") {
             string strSQL = "update " + dt.TableName + " set ";
             for (int j = 0; j < dt.Columns.Count; j++) {
-                strSQL += dt.Columns[j].ColumnName + " = " + _prefixParam + dt.Columns[j].ColumnName + ", ";
+                if (primaryKey != dt.Columns[j].ColumnName) {
+                    strSQL += dt.Columns[j].ColumnName + " = " + _prefixParam + dt.Columns[j].ColumnName + ", ";
+                }
             }
             strSQL = strSQL.Substring(0, strSQL.Length - 2);
             string strSQLSet = strSQL;

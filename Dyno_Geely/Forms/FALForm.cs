@@ -104,7 +104,7 @@ namespace Dyno_Geely {
                         if (_MaxRPM < ackParams.RPM) {
                             _MaxRPM = ackParams.RPM;
                         }
-                        if (ackParams.step == 14) {
+                        if (ackParams.step == 14 && !f_result.Visible) {
                             GetFalCheckResultAckParams ackParams2 = new GetFalCheckResultAckParams();
                             if (_dynoCmd.GetFALCheckResultDataCmd(ref ackParams2, out errMsg)) {
                                 _resultData.RatedRPM = _RatedRPM;
@@ -120,12 +120,10 @@ namespace Dyno_Geely {
                                     lblK2.Text = ackParams2.K2.ToString("F");
                                     lblK3.Text = ackParams2.K3.ToString("F");
                                 });
-                                if (!f_result.Visible) {
-                                    Invoke((EventHandler)delegate {
-                                        f_result.ShowResult(_resultData);
-                                        f_result.ShowDialog();
-                                    });
-                                }
+                                Invoke((EventHandler)delegate {
+                                    f_result.ShowResult(_resultData);
+                                    f_result.ShowDialog();
+                                });
                             } else {
                                 _log.TraceError("GetFALCheckResultDataCmd() return false");
                                 MessageBox.Show("执行获取自由加速不透光检测结果数据命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -177,7 +175,6 @@ namespace Dyno_Geely {
         }
 
         public void StopCheck() {
-            //_dynoCmd.ReconnectServer();
             StartTest(false);
         }
 

@@ -55,7 +55,7 @@ namespace Dyno_Geely {
             SafeClose();
         }
 
-        private void SafeClose() {
+        public void SafeClose() {
             if (_clientStream != null) {
                 _clientStream.Close();
             }
@@ -124,7 +124,7 @@ namespace Dyno_Geely {
         }
 
         public void SendCmd(MsgBaseStr msgCmd) {
-            Connected = SafeTestConnect();
+            //Connected = SafeTestConnect();
             if (!Connected) {
                 _log.TraceError("Can't connect server");
                 throw new ApplicationException("Can't connect server");
@@ -200,28 +200,30 @@ namespace Dyno_Geely {
         }
 
         private void Transact(MsgBaseStr msgCmd, bool bShowDlg) {
-            SendCmd(msgCmd);
-            _RecvFlag.Reset();
-            bool recvResult = false;
-            if (bShowDlg) {
-                LoadingForm frmLoading = new LoadingForm();
-                frmLoading.BackgroundWorkAction = () => {
-                    frmLoading.CurrentMsg = new KeyValuePair<int, string>(50, string.Format("执行{0}命令中。。。", msgCmd.Cmd));
+            if (ConnectServer()) {
+                SendCmd(msgCmd);
+                _RecvFlag.Reset();
+                bool recvResult = false;
+                if (bShowDlg) {
+                    LoadingForm frmLoading = new LoadingForm();
+                    frmLoading.BackgroundWorkAction = () => {
+                        frmLoading.CurrentMsg = new KeyValuePair<int, string>(50, string.Format("执行{0}命令中。。。", msgCmd.Cmd));
+                        if (_RecvFlag.WaitOne(_cfg.Main.Data.RecvTimeout, false)) {
+                            recvResult = true;
+                        }
+                        frmLoading.CurrentMsg = new KeyValuePair<int, string>(100, string.Format("执行{0}命令结束", msgCmd.Cmd));
+                    };
+                    frmLoading.ShowDialog();
+                } else {
                     if (_RecvFlag.WaitOne(_cfg.Main.Data.RecvTimeout, false)) {
                         recvResult = true;
                     }
-                    frmLoading.CurrentMsg = new KeyValuePair<int, string>(100, string.Format("执行{0}命令结束", msgCmd.Cmd));
-                };
-                frmLoading.ShowDialog();
-            } else {
-                if (_RecvFlag.WaitOne(_cfg.Main.Data.RecvTimeout, false)) {
-                    recvResult = true;
                 }
-            }
-            if (!recvResult) {
                 SafeClose();
-                _log.TraceError("MsgCmd[" + msgCmd.Cmd + "]Receive timeout");
-                throw new ApplicationException("MsgCmd[" + msgCmd.Cmd + "]Receive timeout");
+                if (!recvResult) {
+                    _log.TraceError("MsgCmd[" + msgCmd.Cmd + "]Receive timeout");
+                    throw new ApplicationException("MsgCmd[" + msgCmd.Cmd + "]Receive timeout");
+                }
             }
         }
 

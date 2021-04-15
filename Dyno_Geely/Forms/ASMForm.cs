@@ -125,7 +125,7 @@ namespace Dyno_Geely {
                                 indRPM.Value = ackParams.RPM / 1000.0;
                             }
                         });
-                        if (ackParams.step == 14) {
+                        if (ackParams.step == 14 && !f_result.Visible) {
                             GetASMCheckResultAckParams ackParams2 = new GetASMCheckResultAckParams();
                             if (_dynoCmd.GetASMCheckResultDataCmd(ref ackParams2, out errMsg)) {
                                 _resultData.HC5025Limit = ackParams2.HC5025Limit;
@@ -149,12 +149,10 @@ namespace Dyno_Geely {
                                 _resultData.NO2540Evl = ackParams2.NO2540Evl;
 
                                 _resultData.Result = ackParams2.ASMCheckeResult;
-                                if (!f_result.Visible) {
-                                    Invoke((EventHandler)delegate {
-                                        f_result.ShowResult(_resultData);
-                                        f_result.ShowDialog();
-                                    });
-                                }
+                                Invoke((EventHandler)delegate {
+                                    f_result.ShowResult(_resultData);
+                                    f_result.ShowDialog();
+                                });
                             } else {
                                 _log.TraceError("GetASMCheckResultDataCmd() return false");
                                 MessageBox.Show("执行获取稳态工况检测结果数据命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -206,7 +204,6 @@ namespace Dyno_Geely {
         }
 
         public void StopCheck() {
-            //_dynoCmd.ReconnectServer();
             StartTest(false, false);
         }
 

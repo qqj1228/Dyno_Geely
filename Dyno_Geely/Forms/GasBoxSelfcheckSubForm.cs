@@ -97,7 +97,7 @@ namespace Dyno_Geely {
             }
         }
 
-        public void StartSelfcheck(bool bStart) {
+        private void StartSelfcheck(bool bStart) {
             string fuel = "汽油";
             if (_bDiesel) {
                 fuel = "柴油";
@@ -149,7 +149,6 @@ namespace Dyno_Geely {
         }
 
         private void BtnStop_Click(object sender, EventArgs e) {
-            _dynoCmd.ReconnectServer();
             StartSelfcheck(false);
         }
 

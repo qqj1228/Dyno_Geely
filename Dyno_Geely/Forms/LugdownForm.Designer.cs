@@ -147,10 +147,10 @@
             this.lblCO2.AutoSize = true;
             this.lblCO2.BackColor = System.Drawing.Color.Black;
             this.lblCO2.ForeColor = System.Drawing.Color.Gold;
-            this.lblCO2.Location = new System.Drawing.Point(810, 637);
+            this.lblCO2.Location = new System.Drawing.Point(820, 637);
             this.lblCO2.Margin = new System.Windows.Forms.Padding(0);
             this.lblCO2.Name = "lblCO2";
-            this.lblCO2.Size = new System.Drawing.Size(194, 35);
+            this.lblCO2.Size = new System.Drawing.Size(184, 35);
             this.lblCO2.TabIndex = 5;
             this.lblCO2.Text = "--";
             this.lblCO2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -160,7 +160,7 @@
             this.lblNOx.AutoSize = true;
             this.lblNOx.BackColor = System.Drawing.Color.Black;
             this.lblNOx.ForeColor = System.Drawing.Color.Gold;
-            this.lblNOx.Location = new System.Drawing.Point(478, 637);
+            this.lblNOx.Location = new System.Drawing.Point(488, 637);
             this.lblNOx.Margin = new System.Windows.Forms.Padding(0);
             this.lblNOx.Name = "lblNOx";
             this.lblNOx.Size = new System.Drawing.Size(182, 35);
@@ -176,7 +176,7 @@
             this.lblK.Location = new System.Drawing.Point(146, 637);
             this.lblK.Margin = new System.Windows.Forms.Padding(0);
             this.lblK.Name = "lblK";
-            this.lblK.Size = new System.Drawing.Size(182, 35);
+            this.lblK.Size = new System.Drawing.Size(192, 35);
             this.lblK.TabIndex = 3;
             this.lblK.Text = "--";
             this.lblK.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -336,7 +336,7 @@
             this.layoutControlItem5.Text = "烟度值(K值):";
             this.layoutControlItem5.TextAlignment = DevComponents.DotNetBar.Layout.eTextAlignment.Center;
             this.layoutControlItem5.TextLineAlignment = DevComponents.DotNetBar.Layout.eTextLineAlignment.Middle;
-            this.layoutControlItem5.Width = 33;
+            this.layoutControlItem5.Width = 34;
             this.layoutControlItem5.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
             // layoutControlItem6
@@ -360,7 +360,7 @@
             this.layoutControlItem4.Text = "CO2(%):";
             this.layoutControlItem4.TextAlignment = DevComponents.DotNetBar.Layout.eTextAlignment.Center;
             this.layoutControlItem4.TextLineAlignment = DevComponents.DotNetBar.Layout.eTextLineAlignment.Middle;
-            this.layoutControlItem4.Width = 34;
+            this.layoutControlItem4.Width = 33;
             this.layoutControlItem4.WidthType = DevComponents.DotNetBar.Layout.eLayoutSizeType.Percent;
             // 
             // layoutControlItem10

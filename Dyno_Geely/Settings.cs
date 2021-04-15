@@ -140,6 +140,25 @@ namespace Dyno_Geely {
         }
     }
 
+    [Serializable]
+    public class SelfCheckSetting {
+        public List<bool> ASM { get; set; }
+        public List<bool> TSI { get; set; }
+        public List<bool> VMAS { get; set; }
+        public List<bool> FAL { get; set; }
+        public List<bool> LD { get; set; }
+        [XmlIgnore]
+        public List<bool> Default { get; set; }
+        public SelfCheckSetting() {
+            //ASM = new List<bool>() { true, false, false, true, true, true };
+            //TSI = new List<bool>() { true, false, false, true, true, true };
+            //VMAS = new List<bool>() { true, true, false, false, true, true };
+            //FAL = new List<bool>() { false, false, true, true, true, true };
+            //LD = new List<bool>() { true, false, true, true, true, true };
+            Default = new List<bool>() { true, true, true, true, true, true };
+        }
+    }
+
     public class VehicleInfo {
         public string VIN { get; set; }
         public string VehicleModel { get; set; } // 车辆型号
@@ -362,7 +381,7 @@ namespace Dyno_Geely {
         public string DPF { get; set; } // 有没有DPF
         public string DPFXH { get; set; } // DPF型号
         public string SCR { get; set; } // 有没有SCR
-        public string SRCXH { get; set; } // SCR型号
+        public string SCRXH { get; set; } // SCR型号
         public string CheckMethod { get; set; } // 检测方法
         public string CheckType { get; set; } // 检测类型【初检、复检】
     }

@@ -219,7 +219,6 @@ namespace Dyno_Geely.Forms {
         private void BtnStop_Click(object sender, EventArgs e) {
             _timer.Enabled = false;
             Thread.Sleep(_mainCfg.RealtimeInterval);
-            //_dynoCmd.ReconnectServer();
             StartGasBoxPreheatSelfCheckParams cmdParams = new StartGasBoxPreheatSelfCheckParams() {
                 ClientID = _dynoCmd.ClientID,
                 stopCheck = true,

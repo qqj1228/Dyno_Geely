@@ -46,6 +46,7 @@ namespace Dyno_Geely {
                             log.TraceError("Can't connect to Dyno server");
                             MessageBox.Show("无法与测功机服务器建立连接，请检查设置", "初始化错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
+                        dynoCmd.SafeClose();
 
                         frmLoading.CurrentMsg = new KeyValuePair<int, string>(60, "正在登录测功机服务器...");
                         if (!dynoCmd.LoginCmd(out string errMsg)) {

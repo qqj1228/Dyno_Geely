@@ -110,7 +110,6 @@ namespace Dyno_Geely {
         }
 
         private void BtnStop_Click(object sender, EventArgs e) {
-            _dynoCmd.ReconnectServer();
             StartSelfcheck(false);
         }
     }

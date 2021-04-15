@@ -16,7 +16,6 @@ namespace Dyno_Geely {
         private readonly Dictionary<Form, bool> _dicStops;
         private readonly Dictionary<Button, Form> _dicSubForms;
         private readonly Button[] _buttonsOrder;
-        private readonly System.Timers.Timer _timer;
         private readonly GasBoxSelfcheckSubForm f_gasBoxSelfcheck;
         private readonly FlowmeterSelfcheckSubForm f_flowmeterSelfcheck;
         private readonly SmokerSelfcheckSubForm f_smokerSelfcheck;
@@ -24,18 +23,16 @@ namespace Dyno_Geely {
         private readonly TachometerSelfcheckSubForm f_tachometerSelfcheck;
         private readonly WeatherSelfcheckSubForm f_weatherSelfcheck;
         private readonly EnvironmentData _envData;
+        private readonly List<bool> _selfChecks;
 
-        public SelfcheckForm(DynoCmd dynoCmd, MainSetting mainCfg, EnvironmentData envData, bool bDiesel) {
+        public SelfcheckForm(DynoCmd dynoCmd, MainSetting mainCfg, List<bool> selfChecks, EnvironmentData envData, bool bDiesel) {
             InitializeComponent();
             _lastHeight = Height;
             _dynoCmd = dynoCmd;
             _dicResults = new Dictionary<Form, bool>();
             _dicStops = new Dictionary<Form, bool>();
             _envData = envData;
-
-            _timer = new System.Timers.Timer(mainCfg.RealtimeInterval);
-            _timer.Elapsed += OnTimer;
-            _timer.AutoReset = false;
+            _selfChecks = selfChecks;
 
             f_gasBoxSelfcheck = new GasBoxSelfcheckSubForm(_dynoCmd, mainCfg, _dicResults, _dicStops, bDiesel);
             f_flowmeterSelfcheck = new FlowmeterSelfcheckSubForm(_dynoCmd, mainCfg, _dicResults, _dicStops);
@@ -51,12 +48,12 @@ namespace Dyno_Geely {
             f_tachometerSelfcheck.SelfcheckDone += OnSelfcheckDone;
             f_weatherSelfcheck.SelfcheckDone += OnSelfcheckDone;
 
-            _dicResults.Add(f_gasBoxSelfcheck, false);
-            _dicResults.Add(f_flowmeterSelfcheck, false);
-            _dicResults.Add(f_smokerSelfcheck, false);
-            _dicResults.Add(f_oilTempSelfcheck, false);
-            _dicResults.Add(f_tachometerSelfcheck, false);
-            _dicResults.Add(f_weatherSelfcheck, false);
+            _dicResults.Add(f_gasBoxSelfcheck, !selfChecks[0]);
+            _dicResults.Add(f_flowmeterSelfcheck, !selfChecks[1]);
+            _dicResults.Add(f_smokerSelfcheck, !selfChecks[2]);
+            _dicResults.Add(f_oilTempSelfcheck, !selfChecks[3]);
+            _dicResults.Add(f_tachometerSelfcheck, !selfChecks[4]);
+            _dicResults.Add(f_weatherSelfcheck, !selfChecks[5]);
 
             _dicStops.Add(f_gasBoxSelfcheck, false);
             _dicStops.Add(f_flowmeterSelfcheck, false);
@@ -66,6 +63,11 @@ namespace Dyno_Geely {
             _dicStops.Add(f_weatherSelfcheck, false);
 
             _buttonsOrder = new Button[] { btn1GasBox, btn2Flowmeter, btn3Smoker, btn4OilTemp, btn5Tachometer, btn6Weather };
+            for (int i = 0; i < selfChecks.Count; i++) {
+                if (_buttonsOrder.Length > i) {
+                    _buttonsOrder[i].Enabled = selfChecks[i];
+                }
+            }
 
             _dicSubForms = new Dictionary<Button, Form> {
                 { btn1GasBox, f_gasBoxSelfcheck },
@@ -82,14 +84,23 @@ namespace Dyno_Geely {
                 if (sender is Form form) {
                     var keys = _dicSubForms.Where(kv => kv.Value == form).Select(kv => kv.Key);
                     int index = 0;
+                    int preIndex = 0;
                     for (int i = 0; i < _buttonsOrder.Length; i++) {
                         if (_buttonsOrder[i] == keys.FirstOrDefault()) {
                             index = i + 1;
+                            preIndex = i;
+                        }
+                    }
+                    for (int i = index; i < _selfChecks.Count; i++) {
+                        if (!_selfChecks[i]) {
+                            index++;
+                        } else {
+                            break;
                         }
                     }
                     if (index < _buttonsOrder.Length) {
                         Invoke((EventHandler)delegate {
-                            _buttonsOrder[index - 1].BackColor = Color.Lime;
+                            _buttonsOrder[preIndex].BackColor = Color.Lime;
                             _buttonsOrder[index].Enabled = true;
                             _buttonsOrder[index].PerformClick();
                             _dicSubForms[_buttonsOrder[index]].AcceptButton.PerformClick();
@@ -101,10 +112,6 @@ namespace Dyno_Geely {
             }
         }
 
-        private void OnTimer(object source, System.Timers.ElapsedEventArgs e) {
-            f_gasBoxSelfcheck.StartSelfcheck(true);
-        }
-
         private void SelfcheckForm_Load(object sender, EventArgs e) {
             foreach (Form form in _dicSubForms.Values) {
                 form.TopLevel = false;
@@ -113,21 +120,29 @@ namespace Dyno_Geely {
                 pnlForm.Controls.Add(form);
             }
             PnlForm_Resize(pnlForm, null);
-            btn1GasBox.PerformClick();
 #if DEBUG
-            btn2Flowmeter.Enabled = true;
-            btn3Smoker.Enabled = true;
-            btn4OilTemp.Enabled = true;
-            btn5Tachometer.Enabled = true;
-            btn6Weather.Enabled = true;
+            btn1GasBox.Enabled = _selfChecks[0];
+            btn2Flowmeter.Enabled = _selfChecks[1];
+            btn3Smoker.Enabled = _selfChecks[2];
+            btn4OilTemp.Enabled = _selfChecks[3];
+            btn5Tachometer.Enabled = _selfChecks[4];
+            btn6Weather.Enabled = _selfChecks[5];
 #else
+            btn1GasBox.Enabled = false;
             btn2Flowmeter.Enabled = false;
             btn3Smoker.Enabled = false;
             btn4OilTemp.Enabled = false;
             btn5Tachometer.Enabled = false;
             btn6Weather.Enabled = false;
 #endif
-            _timer.Enabled = true;
+            for (int i = 0; i < _selfChecks.Count; i++) {
+                if (_selfChecks[i]) {
+                    _buttonsOrder[i].Enabled = true;
+                    _buttonsOrder[i].PerformClick();
+                    _dicSubForms[_buttonsOrder[i]].AcceptButton.PerformClick();
+                    break;
+                }
+            }
         }
 
         private void PnlForm_Resize(object sender, EventArgs e) {
@@ -185,6 +200,22 @@ namespace Dyno_Geely {
             f_gasBoxSelfcheck.SelfcheckDone -= OnSelfcheckDone;
         }
 
+        private void BtnBeamDown_Click(object sender, EventArgs e) {
+            btnBeamDown.Enabled = false;
+            btnBeamUp.Enabled = true;
+            if (!_dynoCmd.DynoBeamDownCmd(out string errMsg)) {
+                MessageBox.Show("执行举升下降命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnBeamUp_Click(object sender, EventArgs e) {
+            btnBeamDown.Enabled = true;
+            btnBeamUp.Enabled = false;
+            if (!_dynoCmd.DynoBeamUpCmd(out string errMsg)) {
+                MessageBox.Show("执行举升上升命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void BtnSkip_Click(object sender, EventArgs e) {
             int index = 0;
             foreach (Button activebtn in _dicSubForms.Keys) {
@@ -195,6 +226,13 @@ namespace Dyno_Geely {
                             index = i + 1;
                         }
                     }
+                    break;
+                }
+            }
+            for (int i = index; i < _selfChecks.Count; i++) {
+                if (!_selfChecks[i]) {
+                    index++;
+                } else {
                     break;
                 }
             }

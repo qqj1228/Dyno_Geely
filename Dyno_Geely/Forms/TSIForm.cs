@@ -104,7 +104,7 @@ namespace Dyno_Geely {
                                 ind.Value = ackParams.RPM / 1000.0;
                             }
                         });
-                        if (ackParams.step == 8) {
+                        if (ackParams.step == 8 && !f_result.Visible) {
                             GetTsiCheckResultAckParams ackParams2 = new GetTsiCheckResultAckParams();
                             if (_dynoCmd.GetTSICheckResultDataCmd(ref ackParams2, out errMsg)) {
                                 _resultData.HighCOLimit = ackParams2.HighCOLimit;
@@ -121,12 +121,10 @@ namespace Dyno_Geely {
                                 _resultData.Lambda = ackParams2.Lumda;
                                 _resultData.LambdaResult = ackParams2.LumdaResult;
                                 _resultData.Result = ackParams2.TsiCheckeResult;
-                                if (!f_result.Visible) {
-                                    Invoke((EventHandler)delegate {
-                                        f_result.ShowResult(_resultData);
-                                        f_result.ShowDialog();
-                                    });
-                                }
+                                Invoke((EventHandler)delegate {
+                                    f_result.ShowResult(_resultData);
+                                    f_result.ShowDialog();
+                                });
                             } else {
                                 _log.TraceError("GetTSICheckResultDataCmd() return false");
                                 MessageBox.Show("执行获取双怠速检测结果数据命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -178,7 +176,6 @@ namespace Dyno_Geely {
         }
 
         public void StopCheck() {
-            //_dynoCmd.ReconnectServer();
             StartTest(false, false);
         }
 

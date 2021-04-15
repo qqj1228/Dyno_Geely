@@ -72,7 +72,6 @@ namespace Dyno_Geely {
                         };
                         if (!_dynoCmd.SaveDynoPreheatDataCmd(cmdParams, out errMsg)) {
                             MessageBox.Show("执行保存测功机预热数据命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            //return;
                         }
                         PreheatingDoneEventArgs args = new PreheatingDoneEventArgs {
                             Result = _dicResults[this]
@@ -127,7 +126,6 @@ namespace Dyno_Geely {
 
         private void BtnStop_Click(object sender, EventArgs e) {
             _timer.Enabled = false;
-            //_dynoCmd.ReconnectServer();
             System.Threading.Thread.Sleep(_mainCfg.RealtimeInterval);
             btnBeamDown.Enabled = false;
             btnBeamUp.Enabled = true;

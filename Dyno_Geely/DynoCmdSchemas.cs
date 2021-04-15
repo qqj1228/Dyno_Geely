@@ -287,11 +287,13 @@ namespace Dyno_Geely {
 
     public class GetOneWaitVehicleInfoParams {
         public string ClientID { get; set; }
+        public bool IsInUseCar { get; set; }
         public string WJBGBH { get; set; }
         public string DLY { get; set; }
         public string DLSJ { get; set; }
         public string HPHM { get; set; }
         public string HPYS { get; set; }
+        public string VIN { get; set; }
     }
     public class GetOneWaitVehicleInfoAckParams {
         public string WJBGBH { get; set; }

@@ -26,6 +26,7 @@
             DevComponents.Instrumentation.GaugeCircularScale gaugeCircularScale1 = new DevComponents.Instrumentation.GaugeCircularScale();
             DevComponents.Instrumentation.GaugePointer gaugePointer1 = new DevComponents.Instrumentation.GaugePointer();
             DevComponents.Instrumentation.GaugeSection gaugeSection1 = new DevComponents.Instrumentation.GaugeSection();
+            DevComponents.Instrumentation.GaugeSection gaugeSection2 = new DevComponents.Instrumentation.GaugeSection();
             DevComponents.Instrumentation.GradientFillColor gradientFillColor1 = new DevComponents.Instrumentation.GradientFillColor();
             DevComponents.Instrumentation.GradientFillColor gradientFillColor2 = new DevComponents.Instrumentation.GradientFillColor();
             DevComponents.Instrumentation.GaugeText gaugeText1 = new DevComponents.Instrumentation.GaugeText();
@@ -128,9 +129,12 @@
             // gaugeSpeed
             // 
             gaugeCircularScale1.Labels.Layout.RotateLabel = false;
+            gaugeCircularScale1.MajorTickMarks.Interval = 2D;
             gaugeCircularScale1.MaxPin.Name = "MaxPin";
-            gaugeCircularScale1.MinorTickMarks.Interval = 5D;
+            gaugeCircularScale1.MaxValue = 8D;
+            gaugeCircularScale1.MinorTickMarks.Interval = 1D;
             gaugeCircularScale1.MinPin.Name = "MinPin";
+            gaugeCircularScale1.MinValue = -8D;
             gaugeCircularScale1.Name = "Scale1";
             gaugePointer1.CapFillColor.BorderColor = System.Drawing.Color.DimGray;
             gaugePointer1.CapFillColor.BorderWidth = 1;
@@ -148,8 +152,13 @@
             gaugeSection1.FillColor.Color1 = System.Drawing.Color.CornflowerBlue;
             gaugeSection1.FillColor.Color2 = System.Drawing.Color.Purple;
             gaugeSection1.Name = "Section1";
+            gaugeSection2.EndValue = 2D;
+            gaugeSection2.FillColor.Color1 = System.Drawing.Color.Lime;
+            gaugeSection2.Name = "Section2";
+            gaugeSection2.StartValue = -2D;
             gaugeCircularScale1.Sections.AddRange(new DevComponents.Instrumentation.GaugeSection[] {
-            gaugeSection1});
+            gaugeSection1,
+            gaugeSection2});
             gaugeCircularScale1.StartAngle = 160F;
             gaugeCircularScale1.SweepAngle = 220F;
             this.gaugeSpeed.CircularScales.AddRange(new DevComponents.Instrumentation.GaugeCircularScale[] {

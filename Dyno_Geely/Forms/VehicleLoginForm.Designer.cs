@@ -213,6 +213,7 @@
             this.txtBoxMaxMass.Name = "txtBoxMaxMass";
             this.txtBoxMaxMass.Size = new System.Drawing.Size(304, 29);
             this.txtBoxMaxMass.TabIndex = 21;
+            this.txtBoxMaxMass.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxtBox_KeyPress);
             // 
             // txtBoxRefMass
             // 
@@ -221,6 +222,7 @@
             this.txtBoxRefMass.Name = "txtBoxRefMass";
             this.txtBoxRefMass.Size = new System.Drawing.Size(304, 29);
             this.txtBoxRefMass.TabIndex = 20;
+            this.txtBoxRefMass.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxtBox_KeyPress);
             // 
             // txtBoxCatConverter
             // 
@@ -238,7 +240,7 @@
             this.txtBoxRatedRPM.Name = "txtBoxRatedRPM";
             this.txtBoxRatedRPM.Size = new System.Drawing.Size(304, 29);
             this.txtBoxRatedRPM.TabIndex = 16;
-            this.txtBoxRatedRPM.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxtBoxRatedRPM_KeyPress);
+            this.txtBoxRatedRPM.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxtBox_KeyPress);
             // 
             // txtBoxRatedPower
             // 
@@ -247,6 +249,7 @@
             this.txtBoxRatedPower.Name = "txtBoxRatedPower";
             this.txtBoxRatedPower.Size = new System.Drawing.Size(304, 29);
             this.txtBoxRatedPower.TabIndex = 15;
+            this.txtBoxRatedPower.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxtBox_KeyPress);
             // 
             // txtBoxCylinderQTY
             // 
@@ -255,6 +258,7 @@
             this.txtBoxCylinderQTY.Name = "txtBoxCylinderQTY";
             this.txtBoxCylinderQTY.Size = new System.Drawing.Size(304, 29);
             this.txtBoxCylinderQTY.TabIndex = 13;
+            this.txtBoxCylinderQTY.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxtBox_KeyPress);
             // 
             // txtBoxEngineVolume
             // 
@@ -263,6 +267,7 @@
             this.txtBoxEngineVolume.Name = "txtBoxEngineVolume";
             this.txtBoxEngineVolume.Size = new System.Drawing.Size(304, 29);
             this.txtBoxEngineVolume.TabIndex = 12;
+            this.txtBoxEngineVolume.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxtBox_KeyPress);
             // 
             // txtBoxEngineMfr
             // 
@@ -1207,7 +1212,6 @@
             // 
             // VehicleLoginForm
             // 
-            this.AcceptButton = this.btnStart;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 729);

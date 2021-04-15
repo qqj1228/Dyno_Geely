@@ -26,8 +26,14 @@ namespace Dyno_Geely {
         private readonly VMASResultData _resultData;
         private readonly VMASResultForm f_result;
         private DateTime _startTime;
+        private double _rangeScale;
         private double _speedRange;
         private double _speedOverTime;
+        private double _speedMax;
+        private double _speedMin;
+        private double _speedStart;
+        private double _speedEnd;
+        private double _XPosition;
 
         public VMASForm(string VIN, DynoCmd dynoCmd, MainSetting mainCfg, ModelLocal db, EnvironmentData envData, Logger log) {
             InitializeComponent();
@@ -38,7 +44,13 @@ namespace Dyno_Geely {
             _db = db;
             _envData = envData;
             _log = log;
+            _rangeScale = 3;
             _speedRange = 3;
+            _speedMax = 0 + _speedRange * _rangeScale;
+            _speedMin = 0 + _speedRange * _rangeScale;
+            _speedStart = 0 + _speedRange;
+            _speedEnd = 0 - _speedRange;
+            _XPosition = 0;
 
             _dtRealTime = new DataTable("VMASRealTime");
             _dtRealTime.Columns.Add("VIN");
@@ -60,18 +72,18 @@ namespace Dyno_Geely {
 
             _dtSpeeds = new DataTable();
             _dtSpeeds.Columns.Add(_mainCfg.VMASSpeed.Columns[0].ToString());
-            _dtSpeeds.Columns.Add("Speed");
             _dtSpeeds.Columns.Add(_mainCfg.VMASSpeed.Columns[1].ToString());
             _dtSpeeds.Columns.Add(_mainCfg.VMASSpeed.Columns[2].ToString());
             _dtSpeeds.Columns.Add(_mainCfg.VMASSpeed.Columns[3].ToString());
+            _dtSpeeds.Columns.Add("Speed");
 
             for (int i = 0; i < _mainCfg.VMASSpeed.Rows.Count; i++) {
                 DataRow dr = _dtSpeeds.NewRow();
                 if (_mainCfg.VMASSpeed.Rows[i][1].ToString().Length > 0) {
                     dr[0] = _mainCfg.VMASSpeed.Rows[i][0];
-                    dr[2] = _mainCfg.VMASSpeed.Rows[i][1];
-                    dr[3] = _mainCfg.VMASSpeed.Rows[i][2];
-                    dr[4] = _mainCfg.VMASSpeed.Rows[i][3];
+                    dr[1] = _mainCfg.VMASSpeed.Rows[i][1];
+                    dr[2] = _mainCfg.VMASSpeed.Rows[i][2];
+                    dr[3] = _mainCfg.VMASSpeed.Rows[i][3];
                 }
                 _dtSpeeds.Rows.Add(dr);
             }
@@ -116,7 +128,14 @@ namespace Dyno_Geely {
 
                         if (_dtRealTime.Rows.Count % (1000 / _mainCfg.RealtimeInterval) == 0) {
                             int index = _dtRealTime.Rows.Count / (1000 / _mainCfg.RealtimeInterval) - 1;
-                            _dtSpeeds.Rows[index]["Speed"] = ackParams.speed;
+                            if (index>0 && index < _dtSpeeds.Rows.Count) {
+                                _dtSpeeds.Rows[index]["Speed"] = ackParams.speed;
+                                _speedMax = Math.Round(Convert.ToDouble(_dtSpeeds.Rows[index]["SpeedSTD"])) + _speedRange * _rangeScale;
+                                _speedMin = Math.Round(Convert.ToDouble(_dtSpeeds.Rows[index]["SpeedSTD"])) - _speedRange * _rangeScale;
+                                _speedStart = Math.Round(Convert.ToDouble(_dtSpeeds.Rows[index]["SpeedSTD"])) + _speedRange;
+                                _speedEnd = Math.Round(Convert.ToDouble(_dtSpeeds.Rows[index]["SpeedSTD"])) - _speedRange;
+                                _XPosition = index;
+                            }
                         }
 
                         Invoke((EventHandler)delegate {
@@ -127,7 +146,14 @@ namespace Dyno_Geely {
                             lblHC.Text = ackParams.HC.ToString("F");
                             lblNO.Text = ackParams.NO.ToString("F");
                             lblCO.Text = ackParams.CO.ToString("F");
+                            chart1.ChartAreas[0].CursorX.Position = _XPosition + 1;
                             chart1.DataBind();
+                            if (_speedRange > 0) {
+                                gaugeSpeed.CircularScales["Scale1"].MaxValue = _speedMax;
+                                gaugeSpeed.CircularScales["Scale1"].MinValue = _speedMin;
+                                gaugeSpeed.CircularScales["Scale1"].Sections["Section2"].StartValue = _speedStart;
+                                gaugeSpeed.CircularScales["Scale1"].Sections["Section2"].EndValue = _speedEnd;
+                            }
                             gaugeSpeed.CircularScales["Scale1"].Pointers["Pointer1"].Value = ackParams.speed;
                             if (gaugeSpeed.GaugeItems["Indicator1"] is NumericIndicator ind) {
                                 ind.Value = ackParams.speed;
@@ -157,7 +183,7 @@ namespace Dyno_Geely {
                                 lblMsg.Text = "因“速度连续超差时间”大于2秒而停止简易瞬态工况检测";
                             });
                         }
-                        if (ackParams.step == 3) {
+                        if (ackParams.step == 3 && !f_result.Visible) {
                             GetVmasCheckResultAckParams ackParams2 = new GetVmasCheckResultAckParams();
                             if (_dynoCmd.GetVMASCheckResultDataCmd(ref ackParams2, out errMsg)) {
                                 _resultData.HCLimit = ackParams2.HCLimit;
@@ -171,12 +197,10 @@ namespace Dyno_Geely {
                                 _resultData.COEvl = ackParams2.COEvl;
                                 _resultData.NOEvl = ackParams2.NOEvl;
                                 _resultData.Result = ackParams2.VmasCheckeResult;
-                                if (!f_result.Visible) {
-                                    Invoke((EventHandler)delegate {
-                                        f_result.ShowResult(_resultData);
-                                        f_result.ShowDialog();
-                                    });
-                                }
+                                Invoke((EventHandler)delegate {
+                                    f_result.ShowResult(_resultData);
+                                    f_result.ShowDialog();
+                                });
                             } else {
                                 _log.TraceError("GetVMASCheckResultDataCmd() return false");
                                 MessageBox.Show("执行获取简易瞬态工况检测结果数据命令失败", "执行命令出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -189,7 +213,7 @@ namespace Dyno_Geely {
                                 });
                             }
                             StopCheck();
-                            SaveDBData();
+                            //SaveDBData();
                             if (_resultData.Result == "合格") {
                                 Invoke((EventHandler)delegate {
                                     Close();
@@ -212,9 +236,15 @@ namespace Dyno_Geely {
                     _speedRange = ackParams.VmasCheckSpeedSpan;
                     _speedOverTime = 0;
                     for (int i = 0; i < _dtSpeeds.Rows.Count; i++) {
-                        _dtSpeeds.Rows[i][3] = Convert.ToDouble(_dtSpeeds.Rows[i][3]) + (_speedRange - 2);
-                        _dtSpeeds.Rows[i][4] = Convert.ToDouble(_dtSpeeds.Rows[i][4]) - (_speedRange - 2);
+                        _dtSpeeds.Rows[i][2] = Convert.ToDouble(_dtSpeeds.Rows[i][2]) + (_speedRange - 2);
+                        _dtSpeeds.Rows[i][3] = Convert.ToDouble(_dtSpeeds.Rows[i][3]) - (_speedRange - 2);
                     }
+                    Invoke((EventHandler)delegate {
+                        gaugeSpeed.CircularScales["Scale1"].MaxValue = _speedMax;
+                        gaugeSpeed.CircularScales["Scale1"].MinValue = _speedMin;
+                        gaugeSpeed.CircularScales["Scale1"].MajorTickMarks.Interval = _speedRange;
+                        gaugeSpeed.CircularScales["Scale1"].MinorTickMarks.Interval = 1;
+                    });
                     _dtRealTime.Rows.Clear();
                     _timer.Enabled = true;
                     _startTime = DateTime.Now;
@@ -235,7 +265,6 @@ namespace Dyno_Geely {
         }
 
         public void StopCheck() {
-            //_dynoCmd.ReconnectServer();
             StartTest(false, false);
         }
 
@@ -260,14 +289,14 @@ namespace Dyno_Geely {
 
         private void VMASForm_Load(object sender, EventArgs e) {
             lblMsg.Text = "简易瞬态工况法测试";
-            chart1.Series[0].Name = "实测车速(km/h)";
-            chart1.Series.Add("标准车速(km/h)");
+            chart1.Series[0].Name = "标准车速(km/h)";
             chart1.Series.Add("上限车速(km/h)");
             chart1.Series.Add("下限车速(km/h)");
-            chart1.Series[0].Color = Color.Black;
-            chart1.Series[1].Color = Color.Red;
-            chart1.Series[2].Color = Color.DodgerBlue;
-            chart1.Series[3].Color = Color.SeaGreen;
+            chart1.Series.Add("实测车速(km/h)");
+            chart1.Series[0].Color = Color.Red;
+            chart1.Series[1].Color = Color.DodgerBlue;
+            chart1.Series[2].Color = Color.SeaGreen;
+            chart1.Series[3].Color = Color.Black;
             chart1.Series[0].ChartType = SeriesChartType.FastLine;
             chart1.Series[1].ChartType = SeriesChartType.FastLine;
             chart1.Series[2].ChartType = SeriesChartType.FastLine;
@@ -275,7 +304,7 @@ namespace Dyno_Geely {
             chart1.Series[0].BorderWidth = 2;
             chart1.Series[1].BorderWidth = 2;
             chart1.Series[2].BorderWidth = 2;
-            chart1.Series[3].BorderWidth = 2;
+            chart1.Series[3].BorderWidth = 5;
             chart1.Series[0].XValueMember = _dtSpeeds.Columns[0].ToString();
             chart1.Series[0].YValueMembers = _dtSpeeds.Columns[1].ToString();
             chart1.Series[1].XValueMember = _dtSpeeds.Columns[0].ToString();
@@ -298,6 +327,10 @@ namespace Dyno_Geely {
             chart1.ChartAreas[0].AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dash;
             chart1.ChartAreas[0].AxisY.MajorGrid.LineColor = Color.Gray;
             chart1.ChartAreas[0].AxisY.Title = "车速(km/h)";
+            chart1.ChartAreas[0].CursorX.Position = _XPosition;
+            chart1.ChartAreas[0].CursorX.LineColor = Color.Black;
+            chart1.ChartAreas[0].CursorX.LineDashStyle = ChartDashStyle.Dash;
+            chart1.ChartAreas[0].CursorX.LineWidth = 2;
             chart1.DataSource = _dtSpeeds;
             chart1.DataBind();
             RectangleAnnotation speed50 = new RectangleAnnotation();

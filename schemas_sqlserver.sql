@@ -14,8 +14,6 @@ CREATE TABLE ProAsm_G4.dbo.SH_VehicleInfo (
     VehicleModel VARCHAR(100) NOT NULL, -- 车型
     OpenInfoSN VARCHAR(29), -- 信息公开号
     TestQTY INT NOT NULL DEFAULT(0), -- 检测次数
-    Upload INT NOT NULL DEFAULT(0), -- 数据是否已上传，1：已上传，0：未上传
-    Skip INT NOT NULL DEFAULT(0), -- 是否跳过不上传，1：不上传，0：要上传
 )
 GO
 
