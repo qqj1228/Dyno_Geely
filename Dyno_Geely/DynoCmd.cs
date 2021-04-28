@@ -1291,5 +1291,79 @@ namespace Dyno_Geely {
             return false;
         }
 
+        public bool StartQYDynoLoadGlideCheckCmd(StartQYDynoLoadGlideCheckParams cmdParams, ref StartQYDynoLoadGlideCheckAckParams ackParams, out string errMsg) {
+            errMsg = string.Empty;
+            if (!DoCmd("StartQYDynoLoadGlideCheck", cmdParams, true)) {
+                _log.TraceError("DoCmd(\"StartQYDynoLoadGlideCheck\") return false");
+                return false;
+            }
+            if (_msgAckRecv != null) {
+                errMsg = _msgAckRecv.Message;
+                if (_msgAckRecv.Cmd == "StartQYDynoLoadGlideCheckAck" && _msgAckRecv.Params != null) {
+                    ackParams = JsonConvert.DeserializeObject<StartQYDynoLoadGlideCheckAckParams>(((JObject)_msgAckRecv.Params).ToString(), _dateTimeConverter);
+                    return true;
+                }
+            }
+            _log.TraceError("Return value of \"StartQYDynoLoadGlideCheckAck\" is wrong");
+            return false;
+        }
+
+        public bool GetQYDynoLoadGlideCheckRealTimeDataCmd(ref GetQYDynoLoadGlideCheckRealTimeDataAckParams ackParams, out string errMsg) {
+            errMsg = string.Empty;
+            GetQYDynoLoadGlideCheckRealTimeDataParams cmdParams = new GetQYDynoLoadGlideCheckRealTimeDataParams {
+                ClientID = ClientID
+            };
+            if (!DoCmd("GetQYDynoLoadGlideCheckRealTimeData", cmdParams, false)) {
+                _log.TraceError("DoCmd(\"GetQYDynoLoadGlideCheckRealTimeData\") return false");
+                return false;
+            }
+            if (_msgAckRecv != null) {
+                errMsg = _msgAckRecv.Message;
+                if (_msgAckRecv.Cmd == "GetQYDynoLoadGlideCheckRealTimeDataAck" && _msgAckRecv.Params != null) {
+                    ackParams = JsonConvert.DeserializeObject<GetQYDynoLoadGlideCheckRealTimeDataAckParams>(((JObject)_msgAckRecv.Params).ToString(), _dateTimeConverter);
+                    return true;
+                }
+            }
+            _log.TraceError("Return value of \"GetQYDynoLoadGlideCheckRealTimeDataAck\" is wrong");
+            return false;
+        }
+
+        public bool StartCYDynoLoadGlideCheckCmd(StartCYDynoLoadGlideCheckParams cmdParams, out string errMsg) {
+            errMsg = string.Empty;
+            if (!DoCmd("StartCYDynoLoadGlideCheck", cmdParams, true)) {
+                _log.TraceError("DoCmd(\"StartCYDynoLoadGlideCheck\") return false");
+                return false;
+            }
+            if (_msgAckRecv != null) {
+                errMsg = _msgAckRecv.Message;
+                if (_msgAckRecv.Cmd == "StartCYDynoLoadGlideCheckAck") {
+                    return true;
+                }
+            }
+            _log.TraceError("Return value of \"StartQYDynoLoadGlideCheckAck\" is wrong");
+            return false;
+        }
+
+        public bool GetCYDynoLoadGlideCheckRealTimeDataCmd(double loadPower, ref GetCYDynoLoadGlideCheckRealTimeDataAckParams ackParams, out string errMsg) {
+            errMsg = string.Empty;
+            GetCYDynoLoadGlideCheckRealTimeDataParams cmdParams = new GetCYDynoLoadGlideCheckRealTimeDataParams {
+                ClientID = ClientID,
+                loadPower = loadPower
+            };
+            if (!DoCmd("GetCYDynoLoadGlideCheckRealTimeData", cmdParams, false)) {
+                _log.TraceError("DoCmd(\"GetCYDynoLoadGlideCheckRealTimeData\") return false");
+                return false;
+            }
+            if (_msgAckRecv != null) {
+                errMsg = _msgAckRecv.Message;
+                if (_msgAckRecv.Cmd == "GetCYDynoLoadGlideCheckRealTimeDataAck" && _msgAckRecv.Params != null) {
+                    ackParams = JsonConvert.DeserializeObject<GetCYDynoLoadGlideCheckRealTimeDataAckParams>(((JObject)_msgAckRecv.Params).ToString(), _dateTimeConverter);
+                    return true;
+                }
+            }
+            _log.TraceError("Return value of \"GetCYDynoLoadGlideCheckRealTimeDataAck\" is wrong");
+            return false;
+        }
+
     }
 }

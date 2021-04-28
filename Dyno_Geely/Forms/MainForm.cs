@@ -132,16 +132,16 @@ namespace Dyno_Geely {
                 SelfcheckForm f_prepare = new SelfcheckForm(_dynoCmd, _cfg.Main.Data, _selfChecks, envData, bDiesel);
                 f_prepare.ShowDialog();
 #if DEBUG
-                //LugdownForm f_Lugdown = new LugdownForm(f_vehicleLogin.VI.VIN, _dynoCmd, _cfg.Main.Data, _db, envData, _log);
-                //f_Lugdown.ShowDialog();
+                LugdownForm f_Lugdown = new LugdownForm(f_vehicleLogin.VI.VIN, _dynoCmd, _cfg.Main.Data, _db, envData, _log);
+                f_Lugdown.ShowDialog();
                 //ASMForm f_ASM = new ASMForm(f_vehicleLogin.VI.VIN, _dynoCmd, _cfg.Main.Data, _db, envData, _log);
                 //f_ASM.ShowDialog();
                 //FALForm f_FAL = new FALForm(f_vehicleLogin.VI.VIN, _dynoCmd, _cfg.Main.Data, _db, envData, _log);
                 //f_FAL.ShowDialog();
                 //TSIForm f_TSI = new TSIForm(f_vehicleLogin.VI.VIN, _dynoCmd, _cfg.Main.Data, _db, envData, _log);
                 //f_TSI.ShowDialog();
-                VMASForm f_VMAS = new VMASForm(f_vehicleLogin.VI.VIN, _dynoCmd, _cfg.Main.Data, _db, envData, _log);
-                f_VMAS.ShowDialog();
+                //VMASForm f_VMAS = new VMASForm(f_vehicleLogin.VI.VIN, _dynoCmd, _cfg.Main.Data, _db, envData, _log);
+                //f_VMAS.ShowDialog();
 #else
                 if (f_prepare.DialogResult == DialogResult.Yes) {
                     switch (f_vehicleLogin.EI.TestMethod) {
@@ -180,6 +180,16 @@ namespace Dyno_Geely {
                 }
 #endif
             }
+        }
+
+        private void BtnGasGlideCheck_Click(object sender, EventArgs e) {
+            DynoGlideCheckForm f_dynoGlideCheck = new DynoGlideCheckForm(_dynoCmd, _cfg.Main.Data, _log, false);
+            f_dynoGlideCheck.ShowDialog();
+        }
+
+        private void BtnDieselGlideCheck_Click(object sender, EventArgs e) {
+            DynoGlideCheckForm f_dynoGlideCheck = new DynoGlideCheckForm(_dynoCmd, _cfg.Main.Data, _log, true);
+            f_dynoGlideCheck.ShowDialog();
         }
     }
 }

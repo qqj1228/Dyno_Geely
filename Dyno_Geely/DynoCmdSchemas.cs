@@ -889,4 +889,223 @@ namespace Dyno_Geely {
         public string UID { get; set; }
         public string PWD { get; set; }
     }
+
+    public class StartQYDynoLoadGlideCheckParams {
+        public string ClientID { get; set; }
+        public bool stopCheck { get; set; }
+        public bool FlagPrepareHeat { get; set; }
+        public double LoadPower { get; set; }
+        public double TargetSpeed { get; set; }
+    }
+    public class StartQYDynoLoadGlideCheckAckParams {
+        public double PLHP25_11kw { get; set; }
+        public double PLHP40_11kw { get; set; }
+        public double CCDT25_11kw { get; set; }
+        public double CCDT40_11kw { get; set; }
+    }
+
+    public class GetQYDynoLoadGlideCheckRealTimeDataParams {
+        public string ClientID { get; set; }
+    }
+    public class GetQYDynoLoadGlideCheckRealTimeDataAckParams {
+        public int step { get; set; }
+        public double power { get; set; }
+        public double speed { get; set; }
+        public double torquef { get; set; }
+        public double torque { get; set; }
+        public double acc { get; set; }
+        public double DIW { get; set; }
+        public double ACDT25_11kw { get; set; }
+        public double ACDT40_11kw { get; set; }
+        public double Error25_11kw { get; set; }
+        public double Error40_11kw { get; set; }
+        public string result { get; set; }
+        public bool DynoTaxiCheckIsOk { get; set; }
+    }
+
+    public class StartQYDynoAdditionalLossCheckParams {
+        public string ClientID { get; set; }
+        public bool stopCheck { get; set; }
+        public double targetSpeed { get; set; }
+    }
+
+    public class GetStartQYDynoAdditionalLossCheckRealTimeDataParams {
+        public string ClientID { get; set; }
+    }
+    public class GetStartQYDynoAdditionalLossCheckRealTimeDataAckParams {
+        public int step { get; set; }
+        public double speed { get; set; }
+        public double power { get; set; }
+        public double torquef { get; set; }
+        public double DIW { get; set; }
+        public double ACDT25 { get; set; }
+        public double ACDT40 { get; set; }
+        public double PLHP25 { get; set; }
+        public double PLHP40 { get; set; }
+        public double N25 { get; set; }
+        public double N40 { get; set; }
+        public bool DynoTaxiCheckIsOk { get; set; }
+    }
+
+    public class StartCYDynoLoadGlideCheckParams {
+        public string ClientID { get; set; }
+        public bool stopCheck { get; set; }
+        public bool FlagPrepareHeat { get; set; }
+        public double LoadPower { get; set; }
+    }
+
+    public class GetCYDynoLoadGlideCheckRealTimeDataParams {
+        public string ClientID { get; set; }
+        public double loadPower { get; set; }
+    }
+    public class GetCYDynoLoadGlideCheckRealTimeDataAckParams {
+        public int step { get; set; }
+        public double power { get; set; }
+        public double speed { get; set; }
+        public double torquef { get; set; }
+        public double torque { get; set; }
+        public double acc { get; set; }
+        public double DIW { get; set; }
+        public double PLHP90_30kw { get; set; }
+        public double PLHP80_30kw { get; set; }
+        public double PLHP70_30kw { get; set; }
+        public double PLHP60_30kw { get; set; }
+        public double PLHP50_30kw { get; set; }
+        public double PLHP40_30kw { get; set; }
+        public double PLHP30_30kw { get; set; }
+        public double PLHP20_30kw { get; set; }
+        public double CCDT90_30kw { get; set; }
+        public double CCDT80_30kw { get; set; }
+        public double CCDT70_30kw { get; set; }
+        public double CCDT60_30kw { get; set; }
+        public double CCDT50_30kw { get; set; }
+        public double CCDT40_30kw { get; set; }
+        public double CCDT30_30kw { get; set; }
+        public double CCDT20_30kw { get; set; }
+        public double ACDT90_30kw { get; set; }
+        public double ACDT80_30kw { get; set; }
+        public double ACDT70_30kw { get; set; }
+        public double ACDT60_30kw { get; set; }
+        public double ACDT50_30kw { get; set; }
+        public double ACDT40_30kw { get; set; }
+        public double ACDT30_30kw { get; set; }
+        public double ACDT20_30kw { get; set; }
+        public double Error90_30kw { get; set; }
+        public double Error80_30kw { get; set; }
+        public double Error70_30kw { get; set; }
+        public double Error60_30kw { get; set; }
+        public double Error50_30kw { get; set; }
+        public double Error40_30kw { get; set; }
+        public double Error30_30kw { get; set; }
+        public double Error20_30kw { get; set; }
+        public double PLHP90_20kw { get; set; }
+        public double PLHP80_20kw { get; set; }
+        public double PLHP70_20kw { get; set; }
+        public double PLHP60_20kw { get; set; }
+        public double PLHP50_20kw { get; set; }
+        public double PLHP40_20kw { get; set; }
+        public double PLHP30_20kw { get; set; }
+        public double PLHP20_20kw { get; set; }
+        public double CCDT90_20kw { get; set; }
+        public double CCDT80_20kw { get; set; }
+        public double CCDT70_20kw { get; set; }
+        public double CCDT60_20kw { get; set; }
+        public double CCDT50_20kw { get; set; }
+        public double CCDT40_20kw { get; set; }
+        public double CCDT30_20kw { get; set; }
+        public double CCDT20_20kw { get; set; }
+        public double ACDT90_20kw { get; set; }
+        public double ACDT80_20kw { get; set; }
+        public double ACDT70_20kw { get; set; }
+        public double ACDT60_20kw { get; set; }
+        public double ACDT50_20kw { get; set; }
+        public double ACDT40_20kw { get; set; }
+        public double ACDT30_20kw { get; set; }
+        public double ACDT20_20kw { get; set; }
+        public double Error90_20kw { get; set; }
+        public double Error80_20kw { get; set; }
+        public double Error70_20kw { get; set; }
+        public double Error60_20kw { get; set; }
+        public double Error50_20kw { get; set; }
+        public double Error40_20kw { get; set; }
+        public double Error30_20kw { get; set; }
+        public double Error20_20kw { get; set; }
+        public double PLHP90_10kw { get; set; }
+        public double PLHP80_10kw { get; set; }
+        public double PLHP70_10kw { get; set; }
+        public double PLHP60_10kw { get; set; }
+        public double PLHP50_10kw { get; set; }
+        public double PLHP40_10kw { get; set; }
+        public double PLHP30_10kw { get; set; }
+        public double PLHP20_10kw { get; set; }
+        public double CCDT90_10kw { get; set; }
+        public double CCDT80_10kw { get; set; }
+        public double CCDT70_10kw { get; set; }
+        public double CCDT60_10kw { get; set; }
+        public double CCDT50_10kw { get; set; }
+        public double CCDT40_10kw { get; set; }
+        public double CCDT30_10kw { get; set; }
+        public double CCDT20_10kw { get; set; }
+        public double ACDT90_10kw { get; set; }
+        public double ACDT80_10kw { get; set; }
+        public double ACDT70_10kw { get; set; }
+        public double ACDT60_10kw { get; set; }
+        public double ACDT50_10kw { get; set; }
+        public double ACDT40_10kw { get; set; }
+        public double ACDT30_10kw { get; set; }
+        public double ACDT20_10kw { get; set; }
+        public double Error90_10kw { get; set; }
+        public double Error80_10kw { get; set; }
+        public double Error70_10kw { get; set; }
+        public double Error60_10kw { get; set; }
+        public double Error50_10kw { get; set; }
+        public double Error40_10kw { get; set; }
+        public double Error30_10kw { get; set; }
+        public double Error20_10kw { get; set; }
+        public string result { get; set; }
+        public bool DynoTaxiCheckIsOk { get; set; }
+    }
+
+    public class StartCYDynoAdditionalLossCheckParams {
+        public string ClientID { get; set; }
+        public bool stopCheck { get; set; }
+        public double targetSpeed { get; set; }
+    }
+
+    public class GetStartCYDynoAdditionalLossCheckRealTimeDataParams {
+        public string ClientID { get; set; }
+    }
+    public class GetStartCYDynoAdditionalLossCheckRealTimeDataAckParams {
+        public int step { get; set; }
+        public double speed { get; set; }
+        public double power { get; set; }
+        public double torquef { get; set; }
+        public double DIW { get; set; }
+        public double PLHP90 { get; set; }
+        public double PLHP80 { get; set; }
+        public double PLHP70 { get; set; }
+        public double PLHP60 { get; set; }
+        public double PLHP50 { get; set; }
+        public double PLHP40 { get; set; }
+        public double PLHP30 { get; set; }
+        public double PLHP20 { get; set; }
+        public double ACDT90 { get; set; }
+        public double ACDT80 { get; set; }
+        public double ACDT70 { get; set; }
+        public double ACDT60 { get; set; }
+        public double ACDT50 { get; set; }
+        public double ACDT40 { get; set; }
+        public double ACDT30 { get; set; }
+        public double ACDT20 { get; set; }
+        public double N90 { get; set; }
+        public double N80 { get; set; }
+        public double N70 { get; set; }
+        public double N60 { get; set; }
+        public double N50 { get; set; }
+        public double N40 { get; set; }
+        public double N30 { get; set; }
+        public double N20 { get; set; }
+        public bool DynoTaxiCheckIsOk { get; set; }
+    }
+
 }
